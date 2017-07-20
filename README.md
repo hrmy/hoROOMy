@@ -1,4 +1,4 @@
-# horoomy
+# Horoomy
 Horoomy - Housing as a Service
 
 Hosting service: Heroku; 
