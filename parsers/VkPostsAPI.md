@@ -1,5 +1,10 @@
 # **hoROOMy**   Vk posts API
 *****
+
+## Если лень читать всё это
+## [Внизу](#shortcuts) есть shortcuts
+
+
 ## Запрос
 
 #### URL запроса:
@@ -44,6 +49,7 @@ many_posts = json.loads(r.text)
 print(len(many_posts), "elements in the list")  # over9000 elements in the list
 ```
 
+<a name="shortcuts"></a>
 ## Shortcuts
 
 ##### Получить 150 записей *сдам*:
