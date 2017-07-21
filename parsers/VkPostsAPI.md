@@ -1,8 +1,8 @@
 # **hoROOMy**   Vk posts API
 *****
 
-## Если лень читать всё это
-## [Внизу](#shortcuts) есть shortcuts
+>Если лень читать всё это
+>[Внизу](#shortcuts) есть shortcuts
 
 
 ## Запрос
