@@ -43,3 +43,11 @@ many_posts = json.loads(r.text)
 
 print(len(many_posts), "elements in the list")  # over9000 elements in the list
 ```
+
+## Shortcuts
+
+##### Получить 150 записей *сдам*:
+https://horoomy-parsers.herokuapp.com/giveMePosts/sdam?num=150
+
+##### Получить 150 записей *сниму*:
+https://horoomy-parsers.herokuapp.com/giveMePosts/snimu?num=150
