@@ -2,7 +2,7 @@
 *****
 
 >Если лень читать всё это
->[Внизу](#shortcuts) есть shortcuts
+[Внизу](#shortcuts) есть shortcuts
 
 
 ## Запрос
