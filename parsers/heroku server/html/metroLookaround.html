@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script src="https://api-maps.yandex.ru/1.1/index.xml" type="text/javascript"></script>
+
+<script type="text/javascript">
+  
+
+var geocoder = new YMaps.Geocoder("Московский энергетический институт", {results: 1});
+
+YMaps.Events.observe(geocoder, geocoder.Events.Load, function () { 
+
+var metro = new YMaps.Metro.Closest(this.get(0).getGeoPoint(), {span: new YMaps.Size(0.05, 0.05)});
+console.log(metro);
+
+  })
+
+
+
+</script>
+</head>
+<body>
+
+</body>
+</html>

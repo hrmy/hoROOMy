@@ -1,0 +1,5 @@
+statuses/*.txt
+__pycache__
+/parseRes.db
+/alerts.json
+/writetoalerts.py

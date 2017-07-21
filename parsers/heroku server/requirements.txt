@@ -1,0 +1,6 @@
+bottle
+bs4
+requests
+html5lib
+lxml
+dropbox
