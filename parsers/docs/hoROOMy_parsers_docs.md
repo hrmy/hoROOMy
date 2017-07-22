@@ -7,7 +7,8 @@
 
 ### Root
 
-##### .py файлы
+##### .py файлы  
+
 *app.py* -- сервер на Bottle  
 *botAPI.py* -- телеграм-бот (for alerts)  
 *database.py* -- методы работы с базой данных  
@@ -15,81 +16,91 @@
 *parseAPI.py* -- **парсеры тут**  
 *parser_class.py* -- определение класса **Parse** для оптимизации
 
-##### Файлы для сервера
-*.gitignore*
-*procfile*
-*requirements.txt* -- используемые библиотеки
+##### Файлы для сервера  
+
+*.gitignore*  
+*procfile*  
+*requirements.txt* -- используемые библиотеки  
 *runtime.txt* -- версия интерпретатора
 
-##### Прочие файлы
-*parseRes.db* -- база данных сервера
+##### Прочие файлы  
+
+*parseRes.db* -- база данных сервера  
 *parser_list.json* -- список активных парсеров
 
 ### html
 
-##### Системные
-*main.html* -- управление парсерами*//
-*main-adm.html* -- редактировать main//
+##### Системные  
+
+*main.html* -- управление парсерами*//  
+*main-adm.html* -- редактировать main//  
 
 ##### Для пользователя
 
-*search.html* -- поиск по базе
-*tableRes.html* -- результаты поиска*//
-*circler.html* -- показать дом на карте*
+*search.html* -- поиск по базе  
+*tableRes.html* -- результаты поиска*//  
+*circler.html* -- показать дом на карте*  
 
-##### Сырое
-*metroLookAround.html* -- выводит соседние станции метро по данной (in production)*
-*stats.html* -- форма получения статистики из БД (unnecessary)
-*giveMeStats.html* -- статистика по параметрам из формы//
+##### Сырое  
+
+*metroLookAround.html* -- выводит соседние станции метро по данной (in production)*  
+*stats.html* -- форма получения статистики из БД (unnecessary)  
+*giveMeStats.html* -- статистика по параметрам из формы//  
 ```
-* -- includes JS code
-// -- is rendered as a template
+* -- includes JS code  
+// -- is rendered as a template  
 ```
 
-### css
+### css  
 
 *style.css* -- стили для *tableRes.html*
 
-### pics
+### pics  
 
 *foto.png* -- если фотографии в объявлении отсутствуют (для *tableRes.html*)
 
-## Методы сервера
+## Методы сервера  
 
 Обращения к серверу осуществляются с помощью GET-запросов. **POST запросы не используются в данном АПИ.**
 
-### System
+### System  
 
 Консоль администратора
 
-#### /system/
+#### /system/  
+
 Графический интерфейс управления парсерами. Требует ввода логина и пароля.
 >Отуствует хэширование и хранение пар **логин-хэш** в базе данных. Данная функция создана только для защиты от "дураков".
 
 Авторизация через Auth headers.
 
-#### /system/edit
+#### /system/edit  
+
 HTML страница для редактирования блока *"Уведомления от разработчика"* в main.html -- ~~ненужная фигня~~ 
 
-#### /system/сhangemain
-HTML из `/system/edit` посылает GET-запрос сюда для изменения блока *"Уведомления от разработчика"*
+#### /system/сhangemain  
+
+HTML из `/system/edit` посылает GET-запрос сюда для изменения блока *"Уведомления от разработчика"*  
 ~~Не задокументировано, так как нафиг никому не нужно~~
 
-### Parsers
+### Parsers  
 
 Методы управления парсерами
 
-#### /parsers/start_social
-Начать парсинг записей ВК
+#### /parsers/start_social  
+
+Начать парсинг записей ВК  
 **Необязательные параметры**:
 * num=<int> - количество записей, которые необходимо взять у каждой группы (по умолчанию 100)
 
-#### /parsers/start_parse
+#### /parsers/start_parse  
+
 Запустить все парсеры агрегаторов (то есть всё, кроме парсинга ВК)
 **Необязательные параметры**:
 * maxprice=<int> - ограничение по цене для квартир (по умолчанию 55000)
 
-#### /parsers/special_parse
+#### /parsers/special_parse  
+
 Тестирование одного парсера:
 * Для ВК: парсинг 100 записей в каждой группе
 * Для других парсеров: парсинг объявлений с maxprice=15000
@@ -103,7 +114,8 @@ HTML из `/system/edit` посылает GET-запрос сюда для из�
 ?parser_name=***<название парсера из parser_list.json>*** - запуск данного парсера
 
 
-#### *ПРИМЕРЫ:*
+#### *ПРИМЕРЫ:*  
+
 ```python
 # parse VK
 # 100 posts in each community
@@ -134,28 +146,30 @@ requests.get(url+params)    # <response 200>
 
 ### Results
 
-#### /results/giveMeResults/<parser_name>
-Возвращает [json с данными](resultsFormat), полученными указанным парсером.
+#### /results/giveMeResults/<parser_name>  
+
+Возвращает [json с данными](resultsFormat), полученными указанным парсером.  
 *Версия с большим количеством параметров --* [/giveMeFlats](giveMeFlats)
 
-#### /results/clearAll
+#### /results/clearAll  
+
 Очищает таблицы Results и Snimu в [базе данных](databaseStructure).
 
 #### Примеры
 ```python
 # get existing results
-url = "http://horoomy-parsers.herokuapp.com/results/giveMeResults/"
-parser = "realEstate"
-r = requests.get(url+parser).text
+url = "http://horoomy-parsers.herokuapp.com/results/giveMeResults/"  
+parser = "realEstate"  
+r = requests.get(url+parser).text  
 print(r)    # "[(''), (''), ...]"
 
 # clear results
-url = "http://horoomy-parsers.herokuapp.com/results/clearAll"
+url = "http://horoomy-parsers.herokuapp.com/results/clearAll"  
 r = requests.get(url)   # <response 200>
 
 # try to get results
-url = "http://horoomy-parsers.herokuapp.com/results/giveMeResults/"
-parser1 = "realEstate"
+url = "http://horoomy-parsers.herokuapp.com/results/giveMeResults/"  
+parser1 = "realEstate"  
 parser2 = "rentooki"
 r1 = requests.get(url+parser1).text
 r2 = requests.get(url+parser2).text
@@ -163,7 +177,8 @@ print(r1)    # "[]"
 print(r2)    # "[]"
 ```
 
-### Statuses
+### Statuses  
+
 Методы проверки состояния парсеров
 *****
 ***Cтатус может принимать следующие значения:***
@@ -172,13 +187,16 @@ print(r2)    # "[]"
 * *last updated on: never* -- в бд нет данных этого парсера
 *****
 
-#### /statuses/plist
+#### /statuses/plist  
+
 Возвращает список активных парсеров *(parser_list.json)*
 
-#### /statuses/giveMeStatus/<parser>
+#### /statuses/giveMeStatus/<parser>  
+
 Возвращает статус для данного парсера.
 
-#### Примеры
+#### Примеры  
+
 ```python
 # list active parsers
 url = "http://horoomy-parsers.herokuapp.com/statuses/plist"
@@ -192,12 +210,14 @@ status = requests.get(url+parser).text
 print(status)   # "133"
 ```
 
-### User Experience
+### User Experience  
 
-#### /search
+#### /search  
+
 Возвращает search.html
 
-#### /giveMeFlats
+#### /giveMeFlats  
+
 Возвращает список из 20 объектов (квартиры, комнаты) по данным параметрам
 
 **Необязательные параметры:**
@@ -222,7 +242,8 @@ print(status)   # "133"
 
 **По умолчанию: html=on**
 
-#### Примеры:
+#### Примеры:  
+
 ```python
 url = "http://horoomy-parsers.herokuapp.com/statuses/giveMeFlats"
 r = requests.get(url)
@@ -259,9 +280,10 @@ print(r.text)   # "<html>...</html>"
 [Read more about rendering tableRes.html](rendering)
 [Read more about the json](resultsFormat)
 
-### Map
+### Map  
 
-#### /map/geolocate
+#### /map/geolocate  
+
 Возвращает circler.html с указанием места на карте
 
 ***Обязательные*** **параметры**:
@@ -271,39 +293,54 @@ print(r.text)   # "<html>...</html>"
 
 ### DataBase
 
-#### /db/download
+#### /db/download  
+
 Загрузка базы данных на устройство
 
-#### /db/sync
+#### /db/sync  
+
 [Выгрузка базы данных в dropbox](dropbox)
 
-### Stuff
+### Stuff  
 
-#### /pics/<filename>
+#### /pics/<filename>  
+
 Получить картирку по названию из каталога ./pics/
 
-#### /css/<filename>
+#### /css/<filename>  
+
 Получить stylesheet по названию из каталога ./css/
 
-## Классы
+## Классы  
 
-### DataBase (database.py)
+### DataBase (database.py)  
+
 ```python
 class DataBase:
     name = ''
     _db_connection = None
     _db_cur = None
 ```
-#### .query(self, query)
-Executes a single SQL statement.
-#### .fetch(self, query)
-Returns the result of a statement execution.
-#### .format(self)
-Create [all tables]('db_tables')
-#### .delete_table(self, table)
-Clear all results in a table
-#### `__del__`(self)
-Close DataBase connection.
+#### .query(self, query)  
+
+Executes a single SQL statement.  
+
+#### .fetch(self, query)  
+
+Returns the result of a statement execution.  
+
+#### .format(self)  
+
+Create [all tables]('db_tables')  
+
+#### .delete_table(self, table)  
+
+Clear all results in a table  
+
+#### `__del__`(self)  
+
+Close DataBase connection.  
+
 #### Пример:
 ```python
 # create a db connection
@@ -333,7 +370,8 @@ del db
 
 ```
 
-### BackuppedFile (driveAPI.py)
+### BackuppedFile (driveAPI.py)  
+
 Все изменения в файлах, хранящихся на heroku, сбрасываются при перезагрузке сервера (перезагрузка осуществляется автоматически не менее одного раза в день).
 Чтобы сохранять и восстанавливать эти изменения, введён класс BackuppedFile.
 ```python
@@ -341,11 +379,16 @@ class BackuppedFile:
     filename = ''       # filename on the device
     DBXfilename = ''    # filename in the cloud
 ```
-#### .upload(self)
-Выгрузить файл в Dropbox - сохранить изменения.
-#### . sync(self)
-Загрузить файл с Dropbox на устройство - восстановить изменения.
-#### Пример:
+#### .upload(self)  
+
+Выгрузить файл в Dropbox - сохранить изменения.  
+
+#### . sync(self)  
+
+Загрузить файл с Dropbox на устройство - восстановить изменения.  
+
+#### Пример:  
+
 ```python
 # before server run, beggining of the .py file
 myFile = BackuppedFile("myFile.txt")
@@ -359,34 +402,50 @@ change_smth_in_myFiletxt()
 myFile.upload() # save changes to the file
 ```
 
-### Parse (parser_class.py)
+### Parse (parser_class.py)  
+
 ```python
 class Parse:
     name = ""
     db = None   # each parser has its own db connection to enable multithreading
 ```
-#### .write_status(self, status=<int>)
-Вносит новый статус (количество обработанных объявлений) в таблицу `Statuses` бд для данного парсера (self.name).
-#### .add_date(self)
-Пишет `last updated on: YYYY.MM.DD HH:MM:SS` в таблицу `Statuses` бд.
-#### .get_results(self)
-Возвращает результаты, полученные этим парсером
-#### .get_status(self)
-Возвращает статус данного парсера
-#### .append(self, data, useHash=False)
-Добавляет данные из словаря `data` в таблицу `Results`.
+#### .write_status(self, status=<int>)  
+
+Вносит новый статус (количество обработанных объявлений) в таблицу `Statuses` бд для данного парсера (self.name).  
+
+#### .add_date(self)  
+
+Пишет `last updated on: YYYY.MM.DD HH:MM:SS` в таблицу `Statuses` бд.  
+
+#### .get_results(self)  
+
+Возвращает результаты, полученные этим парсером  
+
+#### .get_status(self)  
+
+Возвращает статус данного парсера  
+
+#### .append(self, data, useHash=False)  
+
+Добавляет данные из словаря `data` в таблицу `Results`.  
+
 ```python
 if useHash:
     unique_id = hash(data['descr'])
 else:
     unique_id = getUID(data)
 ```
-#### .append_snimu(self, data)
+#### .append_snimu(self, data)  
+
 Добавляет данные из `data` в таблицу `Snimu`.
-**Всегда используется hash() для получения идентификатора объявления**
-#### `__del__`(self)
-Закрывает соединение с `self.db`.
-#### Пример:
+**Всегда используется hash() для получения идентификатора объявления**  
+
+#### `__del__`(self)  
+
+Закрывает соединение с `self.db`.  
+
+#### Пример:  
+
 ```python
 # create a Parse object
 p = Parse('cian')
