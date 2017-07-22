@@ -76,7 +76,9 @@
 ### System  
 
 Консоль администратора
-<br><br>
+<br>
+***
+<br>
 
 #### /system/  
 
@@ -100,7 +102,9 @@ HTML из `/system/edit` посылает GET-запрос сюда для из�
 ### Parsers  
 
 Методы управления парсерами
-<br><br>
+<br>
+***
+<br>
 
 #### /parsers/start_social  
 
@@ -163,7 +167,9 @@ requests.get(url+params)    # <response 200>
 ```
 <br><br><br><br>
 ### Results
-<br><br>
+<br>
+***
+<br>
 
 #### /results/giveMeResults/<parser_name>  
 
@@ -207,7 +213,9 @@ print(r2)    # "[]"
 * *last updated on: YYYY.MM.DD HH:MM:SS*
 * *last updated on: never* -- в бд нет данных этого парсера
 *****
-<br><br>
+<br>
+***
+<br>
 
 #### /statuses/plist  
 
@@ -236,7 +244,9 @@ print(status)   # "133"
 <br><br><br><br>
 
 ### User Experience  
-<br><br>
+<br>
+***
+<br>
 #### /search  
 
 Возвращает search.html
@@ -310,7 +320,9 @@ print(r.text)   # "<html>...</html>"
 <br><br><br><br>
 
 ### Map  
-<br><br>
+<br>
+***
+<br>
 
 #### /map/geolocate  
 
@@ -323,7 +335,9 @@ print(r.text)   # "<html>...</html>"
 <br><br><br><br>
 
 ### DataBase
-<br><br>
+<br>
+***
+<br>
 
 #### /db/download  
 
@@ -336,7 +350,9 @@ print(r.text)   # "<html>...</html>"
 <br><br><br><br>
 
 ### Stuff  
-<br><br>
+<br>
+***
+<br>
 
 #### /pics/<filename>  
 
@@ -359,7 +375,9 @@ class DataBase:
     _db_connection = None
     _db_cur = None
 ```
-<br><br>
+<br>
+***
+<br>
 
 #### .query(self, query)  
 
@@ -425,7 +443,9 @@ class BackuppedFile:
     filename = ''       # filename on the device
     DBXfilename = ''    # filename in the cloud
 ```
-<br><br>
+<br>
+***
+<br>
 
 #### .upload(self)  
 
@@ -460,7 +480,9 @@ class Parse:
     name = ""
     db = None   # each parser has its own db connection to enable multithreading
 ```
-<br><br>
+<br>
+***
+<br>
 #### .write_status(self, status=<int>)  
 
 Вносит новый статус (количество обработанных объявлений) в таблицу `Statuses` бд для данного парсера (self.name).  
