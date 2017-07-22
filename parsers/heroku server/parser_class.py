@@ -5,7 +5,7 @@ import requests
 from database import DataBase, DBcon
 from time import gmtime, strftime
 from driveAPI import BackuppedFile
-from botApi import alertExc, alertBot
+from botAPI import alertExc, alertBot
 
 
 # when we start app.py
@@ -37,8 +37,6 @@ def evolve(a):
 # for optimizating work of all parsers
 class Parse:
     name = ""
-    #status_key = ""
-    #results_file = ""
     db = None
 
 
@@ -75,7 +73,7 @@ class Parse:
 
     def get_results(self):
         cmnd = "SELECT * FROM Results WHERE fromwhere = '%s';" % self.name
-        return str(self.db.fetch(cmnd))
+        return json.dumps(self.db.fetch(cmnd), ensure_ascii=False)
 
     def get_status(self):
         try:

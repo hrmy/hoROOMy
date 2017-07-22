@@ -19,7 +19,7 @@
 
 					function get(ourl) {
 
-					var nurl = "/parse_status/" + ourl + "?cache=dont"
+					var nurl = "/statuses/giveMeStatus/" + ourl + "?cache=dont"
 					var r = new XMLHttpRequest();
 					r.open('GET', nurl);
 					r.send();
@@ -34,7 +34,7 @@
 
 
 				var r = new XMLHttpRequest();
-				r.open('GET', '/plist');
+				r.open('GET', '/statuses/plist');
 				r.send();
 				r.onreadystatechange=function()
 				{
@@ -45,7 +45,7 @@
 						parsers.forEach(function(parser, i) {
 							var divs = document.getElementById("parserdivs");
 							if (once == "OK") {
-							divs.innerHTML = divs.innerHTML + `<div><span style="margin-right: 20%; margin-left: 3%; display: inline-block; width: 30px;">`+parser+`:</span><span id="`+parser+`" style="margin-right: 3%; display: inline-block; width: 20%;">xtnf</span><button onclick="window.location = '/res/`+parser+`';">Просмотреть результаты</a></div>`;
+							divs.innerHTML = divs.innerHTML + `<div><span style="margin-right: 20%; margin-left: 3%; display: inline-block; width: 30px;">`+parser+`:</span><span id="`+parser+`" style="margin-right: 3%; display: inline-block; width: 20%;">xtnf</span><button onclick="window.location = '/results/giveMeResults/`+parser+`';">Просмотреть результаты</a></div>`;
 
 							if ((parser != "sdamsnimu") && (parser != "sdatsnyat") && (parser != "novoselie") && (parser != "rentm") && (parser != "vkfeed")) {
 							var opt = document.createElement('option');
@@ -67,11 +67,6 @@
 
 		window.onload = function(){get_parser_list(); setInterval(get_parser_list, 1500);}
 
-		function restartServ() {
-		var r = new XMLHttpRequest();
-		r.open('GET', "/stop_parsing", true);
-		r.send();
-		}
 
 	</script>
 </head>
@@ -81,21 +76,22 @@
 	<div style="margin-bottom: 10%" id="parserdivs">
 	</div>
 
-	<form action="/start_parse" onsubmit="document.getElementById('stp').disabled = true; await sleep(1000);" method="GET">
+	<form action="/parsers/start_parse" onsubmit="document.getElementById('stp').disabled = true; await sleep(1000);" method="GET">
 	<input type="number" placeholder="Макс цена, руб" name="maxprice" required>
 	<span style="margin-right: 10%;"><input type="submit" id="stp" value="Начать парсинг" disabled></span>
-	<a style="margin-right: 10px;" href="/db">Скачать базу данных</a>
-	<a href="/clear_results">Очистить таблицу</a>
+	<a style="margin-right: 10px;" href="/db/download">Скачать базу данных</a>
+	<a style="margin-right: 10px;" href="/results/clearAll">Очистить таблицу</a>
+	<a style="margin-right: 10px;" href="/db/sync">Upload DB</a>
 	</form>
 </span>
 
 
 <div>
-<form action="/start_social" method="GET">
+<form action="/parsers/start_social" method="GET">
 <input type="number" name="num" placeholder="Записей для каждой группы" min="100" max="800" step="100" style="width: 200px;" required>
 <input type="submit" value="Начать парсинг ВК">
 </form><br><br>
-<form action="/special_parse" method="GET" id="sppForm">
+<form action="/parsers/special_parse" method="GET" id="sppForm">
 <select id="sppSelector" form="sppForm" name="parser_name" required>
 
 </select>

@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from parser_class import Parse
 from datetime import date as datetimedate
 from driveAPI import BackuppedFile, upload_db
-from botApi import alertExc, tgExcCatch, alertBot, tgExcnoargs
+from botAPI import alertExc, tgExcCatch, alertBot, tgExcnoargs
 
 
 

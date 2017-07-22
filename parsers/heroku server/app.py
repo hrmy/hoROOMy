@@ -8,7 +8,7 @@ from parseAPI import parse_it
 from bottle import *
 from parser_class import Parse
 from database import DataBase, DBcon
-from botApi import tgExcCatch, alertExc
+from botAPI import tgExcCatch, alertExc
 from driveAPI import upload_db
 
 
@@ -68,13 +68,13 @@ def ss():
 
 
 # html with version-control cms
-@get("/adm/main")
+@get("/system/edit")
 def main():
     return template("./html/main-adm.html", version=FORMAT_DIC['version'], added=FORMAT_DIC['added'], othertext=FORMAT_DIC['othertext'])
 
 
 # processing to change cms info
-@get("/changemain")
+@get("/system/changemain")
 def change():
     for param in request.query:
         if request.query[param] != "":
@@ -90,9 +90,12 @@ def change():
     
 
 # start parsing social networks
-@get("/start_social")
+@get("/parsers/start_social")
 def st():
-    n = int(request.query.num)
+    if 'num' in request.query:
+        n = int(request.query['num'])
+    else:
+        n = 100
     t = threading.Thread(target=parse_it, args=('vk', n,))
     t.daemon = True
     t.start()
@@ -100,10 +103,13 @@ def st():
 
 
 # start parse (ALL parsers)
-@get("/start_parse")
+@get("/parsers/start_parse")
 #@tgExcCatch
-def st():              
-    maxprice = request.query.maxprice
+def st():
+    if "maxprice" in request.query:
+        maxprice = request.query['maxprice']
+    else:
+        maxprice = 55000
     #DBcon.delete_table('Results')
     for parser_name in PARSER_LIST:
         t = threading.Thread(target = parse_it, args=(parser_name, maxprice,))    	
@@ -113,11 +119,14 @@ def st():
     
 
 # start parse (ONE parser)
-@get("/special_parse")
+@get("/parsers/special_parse")
 def spp():
     #maxprice = int(request.query.maxprice)
-    maxprice = 15000
     parser_name = request.query.parser_name
+    if parser_name == 'vk':
+        maxprice = 100
+    else:
+        maxprice = 15000
     t = threading.Thread(target = parse_it, args=(parser_name, maxprice,))
     t.daemon = True
     t.start()
@@ -128,7 +137,7 @@ def spp():
 
 
 # clear tables with parsing results
-@get("/clear_results")
+@get("/results/clearAll")
 def clear():
     DBcon.delete_table('Results')
     DBcon.delete_table('Snimu')
@@ -137,28 +146,22 @@ def clear():
 
 
 # get parsed results
-@get("/res/<parser>")
+@get("/results/giveMeResults/<parser>")
 def res(parser):
     return Parse(parser).get_results()
 
 
 # get stats for a parser
-@get("/parse_status/<parser>")
+@get("/statuses/giveMeStatus/<parser>")
 def return_status(parser):
     #resp.set_header("Cache-Control", 'no-store, no-cache, must-revalidate, max-age=0')
     return Parse(parser).get_status()
 
 
 # all parsers list
-@get("/plist")
+@get("/statuses/plist")
 def pl():
     return json.dumps(PARSER_LIST)
-
-
-# download db
-@get("/db")
-def db():
-    return static_file("parseRes.db", root='.', download=True)
 
 
 #------------------------------------USER EXPERIENCE---------------------------------
@@ -219,21 +222,31 @@ AND room_num%s""" % room_num
     # offers text
     cmnd = "SELECT prooflink, pics, cost, room_num, area, contacts, loc, adr, date, descr " + cmnd + " LIMIT 20 OFFSET %s;" % offset
 
+    # fetch offers
     res = DBcon.fetch(cmnd)
     count = DBcon.fetch(cmnd_count)[0][0]
     print(count)
 
-    res = json.dumps(res).replace('(', '[').replace(')', ']')
+    res = json.dumps(res)
 
+    if "html" in q:
+        if q['html'] == "off":
+            return res
+        if q['html'] == "count":
+            return count
+        
     # insert all flats json into JS template
     return open('./html/tableRes.html', 'r', encoding='windows-1251').read().replace('{{{cnt}}}', str(count)).replace('{{{offr}}}', res).encode('windows-1251')
 
 
+#-----------------------------------VK POSTS API-----------------------------------------
+
 
 @get("/giveMePosts/<category>")
 def posts(category):
-    if 'num' in request.query and num != "":
-        cmnd = " LIMIT " + str(request.query['num']) + ";"
+    if 'num' in request.query:
+        if request.query['num'] != "":
+            cmnd = " LIMIT " + str(request.query['num']) + ";"
     else:
         cmnd = ";"
         
@@ -250,7 +263,7 @@ def posts(category):
 
 #костыль с записью в текстовый файл. NEEDES TO BE IMPROVED
 
-@get("/geolocate")
+@get("/map/geolocate")
 def geo():
     if request.query['loc'] == "YANDEXLOCERR":
         return '<h2>К сожалению, мы не можем найти что-либо по указанному адресу :( </h2>'
@@ -264,19 +277,32 @@ var get_rad = 80""" % (lat, lng)
     return html("circler")
 
 
-@get("/locvar_storage.js")
+@get("/map/locvar_storage.js")
 def locvar():
     return static_file('/locvar_storage.js', root='.')
 
 
 
-#----------------------------------------------------------------------------------------------------
+#----------------------------------------------DataBASE----------------------------------------------------
 
 
-# get any image
-@get("/pics/<filename>")
-def pics(filename):
-    return static_file(filename, root='./pics')
+# download db
+@get("/db/download")
+def db():
+    return static_file("parseRes.db", root='.', download=True)
+
+
+# upload db to dropbox
+@get("/db/sync")
+def snc():
+    #try:
+    upload_db()
+    redirect('/system')
+    #except:
+     #   alertExc()
+
+
+#---------------------------------------STATISTICS SERVICE-----------------------------------------
 
 
 # get stats for a metro station
@@ -286,7 +312,7 @@ def stats():
 
 
 # retrieve stats from the db
-@get("/giveMeStats")
+@get("/stats/giveMeStats")
 def stats():
     metro = request.query.metro
 
@@ -311,22 +337,23 @@ def stats():
     return template('./html/giveMeStats.html', metro=metro, room=room, cost=cost, area=area)
 
 
-# upload db to dropbox
-@get("/sync_db")
-def snc():
-    #try:
-    upload_db()
-    redirect('/system')
-    #except:
-     #   alertExc()
+
+#----------------------------------------------STUFF--------------------------------------------
+
      
+# get any image
+@get("/pics/<filename>")
+def pics(filename):
+    return static_file(filename, root='./pics')
+
 
 # styles
-@get("/css/style.css")
-def css():
-    return static_file('style.css', root='./css')
+@get("/css/<filename>")
+def css(filename):
+    return static_file(filename, root='./css')
 
 
+#------------------------------------------------------------------------------------------------
 
 # run the server
 run(host="0.0.0.0", port=os.environ.get('PORT', 5000))

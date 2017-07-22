@@ -37,6 +37,7 @@ def tgExcCatch(func):
 
     return wrapper
 
+
 def tgExcnoargs(func):
     def wrapper():
         try:
