@@ -8,11 +8,11 @@
 ### Root
 
 ##### .py файлы
-*app.py* -- сервер на Bottle
-*botAPI.py* -- телеграм-бот (for alerts)
-*database.py* -- методы работы с базой данных
-*driveAPI.py* -- методы Dropbox - костыль
-*parseAPI.py* -- **парсеры тут**
+*app.py* -- сервер на Bottle  
+*botAPI.py* -- телеграм-бот (for alerts)  
+*database.py* -- методы работы с базой данных  
+*driveAPI.py* -- методы Dropbox - костыль  
+*parseAPI.py* -- **парсеры тут**  
 *parser_class.py* -- определение класса **Parse** для оптимизации
 
 ##### Файлы для сервера
