@@ -245,7 +245,7 @@ print(status)   # "133"
 
 ### User Experience  
 <br>
-***
+*********************
 <br>
 #### /search  
 
@@ -481,7 +481,7 @@ class Parse:
     db = None   # each parser has its own db connection to enable multithreading
 ```
 <br>
-***
+*********************
 <br>
 #### .write_status(self, status=<int>)  
 
