@@ -591,6 +591,50 @@ print(p.get_results())
 # close the database connection
 del p
 ```
+<br>
+
+<a name="bot"></a>
+### Bot (BotAPI.py)
+
+API для уведомлений в telegram.
+
+```python
+class Bot:
+    full_link = ""     # link to the chat the bot will write to
+
+    def __init__(self, chat_id):    # recieve chat_id and generate full_link
+        self.full_link = "https://api.telegram.org/bot332143024:AAFXvkc397uXcvN3HgbiKQ0GTaNXKf-H-zs/%s?chat_id="+chat_id
+
+```
+<br>
+*****************************
+<br>
+
+#### .sendMessage(text)
+Отправляет сообщение
+
+<br><br>
+
+## Глобальные переменные и функции
+
+<a name="alertBot"></a>
+#### alertBot
+Глобальная переменная - объект класса [Bot](#bot), который пишет сообщения в чат со мной:D
+
+#### alertExc()
+Функция, которая при вызове отправляет traceback в чат со мной:D
+
+```python
+try:
+    some_lagging_func(arg1, arg2)    # Exception ...
+except:
+    alertExc()    # I recieve exception info in my telegram
+
+# decorator for functions with no arguments
+@tgExcnoargs
+def some_other_func():
+    raise RuntimeError  # an exception occurs => I get a message
+```
 
 ## Логика ДБ
 
@@ -703,4 +747,8 @@ for client in clients:
 
 ## Порядок запуска сервера
 <br>
-1. 
+1. Хероку запускает app.py
+2. БД загружается с Dropbox (parser_class.py, line 13)
+3. Проверяем, не пустая ли БД. Если пустая - создаём таблицы (parser_class.py, line 19)
+4. Создаём переменную **DBcon** - глобальный db connection (database.py, line 85)
+5. Cоздаём **alertBot** - объект класса Bot, который будет
