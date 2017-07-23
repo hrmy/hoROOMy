@@ -400,7 +400,7 @@ print(r.text)   # "<html>...</html>"
 
 #### /db/sync  
 
-[Выгрузка базы данных в dropbox](dropbox)
+[Выгрузка базы данных в dropbox](#dropbox)
 <br><br>
 
 <a name="Stuff"></a>
@@ -455,7 +455,7 @@ Returns the result of a statement execution.
 
 #### .format(self)  
 
-Create [all tables]('db_tables')  
+Create [all tables](#db_tables)  
 <br>
 
 #### .delete_table(self, table)  
@@ -687,7 +687,7 @@ Cловарь для уведомлений от разработчика
 Файл базы данных: `parseRes.db`
 <br>
 
-
+<a name="dropbox"></a>
 ### Использование класса BackuppedFile
 
 <br>  
@@ -742,7 +742,7 @@ for client in clients:
 
 ```
 <br>
-
+<a name="db_tables"></a>
 #### Таблица Results  
 Объявления типа **"сдам"**
 
@@ -789,6 +789,23 @@ for client in clients:
 #### Таблица alerts
 
 Хранит json для уведомлений от разработчика.
+
+<br><br>
+<a name="#hash"></a>
+## Хэширование
+
+Для выявления дубликатов объявлений необходимо получать для каждого уникальный идентификатор, зависящий только от содержания этого объявления.<br>
+Поэтому:<br>
+1. Где возможно:
+ ```python
+ unique_id = str(data['cost']) + str(data['room_num']) + str(data['area']) + str(data['loc'])
+ ```
+ Таким образом, небольшие изменения в описании объявления не влияют на unique_id<br>
+2. В других ситуациях (объявления из ВК и "сниму"):
+```python
+unique_id = hash(data['descr'])
+```
+
 
 
 <br><br>
