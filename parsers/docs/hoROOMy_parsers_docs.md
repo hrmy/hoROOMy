@@ -11,8 +11,15 @@
 * [UX](#UX)
 * [Map](#Map)
 * [DataBase](#DataBase)
-* [Stuff](#Stuff)
-[Классы](#Classes)<br>
+* [Stuff](#Stuff)<br>
+[Классы](#Classes)
+* [DataBase](#DB_class)
+* [BackuppedFile](#back-file)
+* [Parse](#Parse)
+* [Bot](#bot)<br>
+[Глобальные переменные и функции](#alertBot)<br>
+[Логика ДБ](#parseit)<br>
+[Запуск](#run_it)
 
 <a name="structure"></a>
 ## Структура
@@ -416,6 +423,7 @@ print(r.text)   # "<html>...</html>"
 ## Классы  
 <br><br>
 
+<a name="DB_class"></a>
 ### DataBase (database.py)  
 
 ```python
@@ -530,6 +538,7 @@ myFile.upload() # save changes to the file
 ```
 <br><br>
 
+<a name="Parse"></a>
 ### Parse (parser_class.py)  
 
 ```python
@@ -778,6 +787,7 @@ for client in clients:
 
 <br><br>
 
+<a name="run_it"></a>
 ## Порядок запуска сервера
 <br>
 1. Хероку запускает app.py   <br>
