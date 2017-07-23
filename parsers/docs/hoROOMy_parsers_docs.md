@@ -756,13 +756,13 @@ for client in clients:
 
 ## Порядок запуска сервера
 <br>
-1. Хероку запускает app.py  
-2. БД загружается с Dropbox (parser_class.py, line 13)  
-3. Проверяем, не пустая ли БД. Если пустая - создаём таблицы (parser_class.py, line 19)  
-4. Создаём переменную **DBcon** - глобальный db connection (database.py, line 85)  
-5. Cоздаём [**alertBot**](#alertBot) (botAPI.py, line 21)  
-6.    Cоздаём PARSER_LIST (из parser_list.json) (app.py, line 29)
-6. Запускаем Bottle
+1. Хероку запускает app.py   <br>
+2. БД загружается с Dropbox (parser_class.py, line 13)  <br>
+3. Проверяем, не пустая ли БД. Если пустая - создаём таблицы (parser_class.py, line 19)  <br>
+4. Создаём переменную **DBcon** - глобальный db connection (database.py, line 85)  <br>
+5. Cоздаём [**alertBot**](#alertBot) (botAPI.py, line 21)  <br>
+6.    Cоздаём PARSER_LIST (из parser_list.json) (app.py, line 29)<br>
+7. Запускаем Bottle
 
 <br><br>
 ## Порядок запуска парсеров ()
