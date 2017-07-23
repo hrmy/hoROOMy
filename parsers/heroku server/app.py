@@ -266,6 +266,7 @@ def posts(category):
 def geo():
     if request.query['loc'] == "YANDEXLOCERR":
         return '<h2>К сожалению, мы не можем найти что-либо по указанному адресу :( </h2>'
+
     return html("circler")
 
 

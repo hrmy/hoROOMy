@@ -17,14 +17,27 @@
         padding: 0;
       }
     </style>
-    <script src="/map/locvar_storage.js" type="text/javascript"></script>
   </head>
   <body>
     <div id="map"></div>
     <script>
-      // This example creates circles on the map, representing populations in North
-      // America.
-      // First, create an object containing LatLng and population for each city.
+
+    function getQueryParameter(name) {
+    url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return '1';
+    if (!results[2]) return '1';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+
+    var query = getQueryParameter("loc").split(",", 2);
+    var get_lat = query[0];
+    var get_lng = query[1];
+
+
       var citymap = {
         chicago: {
           center: {lat: get_lat, lng: get_lng},
@@ -42,7 +55,6 @@
         });
 
         // Construct the circle for each value in citymap.
-        // Note: We scale the area of the circle based on the population.
 
           // Add the circle for this city to the map.
           var cityCircle = new google.maps.Circle({
