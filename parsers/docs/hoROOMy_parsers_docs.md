@@ -804,5 +804,5 @@ for client in clients:
 ## Порядок запуска парсеров
 <br>
 1. GET на /start_parse<br>
-2.    Для каждого парсера из parser_list вызов [parse_it()](#parseit) в отдельном потоке<br>
+2.    Для каждого парсера из parser_list вызов [parse_it](#parseit) в отдельном потоке<br>
 3. Редирект на "/"
