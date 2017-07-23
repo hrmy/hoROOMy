@@ -11,12 +11,14 @@
 * [UX](#UX)
 * [Map](#Map)
 * [DataBase](#DataBase)
-* [Stuff](#Stuff)<br>
+* [Stuff](#Stuff)<br>  
+
 [Классы](#Classes)
 * [DataBase](#DB_class)
 * [BackuppedFile](#back-file)
 * [Parse](#Parse)
-* [Bot](#bot)<br>
+* [Bot](#bot)<br>  
+
 [Глобальные переменные и функции](#alertBot)<br>
 [Логика ДБ](#parseit)<br>
 [Запуск](#run_it)
