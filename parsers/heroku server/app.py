@@ -351,6 +351,10 @@ def pics(filename):
 def css(filename):
     return static_file(filename, root='./css')
 
+@get("/ptest")
+def t():
+    return "testPassed"
+
 
 #------------------------------------------------------------------------------------------------
 
