@@ -620,7 +620,8 @@ del p
 
 #### Таблица Results  
 
-  
+
     hash    |   cost    |   room_num    |   area    |   phone   |   date    |   places    |   pics    |   contacts    |   descr   |   adr    |    metro   |   prooflink     |   loc     |   fromwhere   
+    -----  |  -----  | -----  |  -----  |  -----  |  -----  |  -----  |  -----  |  -----  |  -----  |  -----  |  -----  |  -----  |  -----  |  -----  |
     TEXT    |   INTEGER     |   INTEGER     |   INTEGER     |   TEXT    |   TEXT    |   TEXT    |   TEXT    |   TEXT    |   TEXT    |   TEXT    |   TEXT    | TEXT    |   TEXT    |   TEXT    |
 
