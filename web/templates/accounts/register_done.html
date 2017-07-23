@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %} Успешная регистрация {% endblock %}
+
+{% block content %}
+    <h1 class="text-center">Успешная регистрация</h1>
+    <p>Аккаунт <b>{{ user.email }}</b> успешно активирован. Теперь вы можете <a href="{% url 'login' %}">войти</a>,
+        используя ваш email-адрес и установленный пароль.</p>
+{% endblock %}

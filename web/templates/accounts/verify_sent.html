@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %} Письмо отправлено {% endblock %}
+
+{% block content %}
+    <h1 class="text-center">Письмо отправлено</h1>
+    <p>На указанный email-адрес отправлено письмо с дальнейшими инструкциями. Эту страницу можно закрыть.</p>
+    <a href="{% url 'home' %}">На главную</a>
+{% endblock %}

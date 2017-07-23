@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %} Успешное восстановление {% endblock %}
+
+{% block content %}
+    <h1 class="text-center">Успешное восстановление аккаунта</h1>
+    <p>Доступ к аккаунту <b>{{ user.email }}</b> успешно восстановлен. Теперь вы можете <a href="{% url 'login' %}">войти</a>,
+        используя ваш email-адрес и установленный пароль.</p>
+{% endblock %}
