@@ -34,8 +34,8 @@
 
 
     var query = getQueryParameter("loc").split(",", 2);
-    var get_lat = query[0];
-    var get_lng = query[1];
+    var get_lat = Number(query[0]);
+    var get_lng = Number(query[1]);
     var get_rad = 50;
 
 
