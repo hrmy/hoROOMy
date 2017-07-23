@@ -410,6 +410,7 @@ class DataBase:
 
 <br>
 
+<a name="fetch_db"></a>
 #### .query(self, query)  
 
 Executes a single SQL statement.  
@@ -620,6 +621,7 @@ del p
 ```  
 
 #### Таблица Results  
+Объявления типа **"сдам"**
 
 |ind|Столбец|Тип данных|Комментарии|
 |-----|----|----|--------|
@@ -639,7 +641,8 @@ del p
 |13|loc|TEXT| Формат: "lo.ngitude,la.titude"|
 |14|fromwhere|TEXT| Атрибут .name того объекта Parse, который внёс эту запись|
 
-#### Таблица Snimu
+#### Таблица Snimu  
+Объявления типа **"сниму"**
 
 |ind|Столбец|Тип данных|Комментарии|
 |-----|----|----|--------|
@@ -663,3 +666,35 @@ del p
 #### Таблица alerts
 
 Хранит json для уведомлений от разработчика.
+
+#### ОБРАЩЕНИЕ К ДАННЫМ БД
+
+sqlite3 возвращает результаты [.fetch](#fetch_db) в виде кортежа, таким образом, обращаться к данным нужно **по индексам (ind в таблицах)**:
+
+```python
+# db connection
+db = DataBase('parseRes.db')
+
+# get first 20 flats from Results
+cmnd = "SELECT * FROM Results LIMIT 20;"
+flats = db.fetch(cmnd)
+
+# print every flat's cost and description
+for flat in flats:
+    cost = flat[1]    # in Results table cost has index=1
+    descr = flat[9]   # in Results table descr has index=9
+    print(cost, descr)
+
+
+# get first 20 clients from Snimu
+cmnd = "SELECT * FROM Results LIMIT 20;"
+flats = db.fetch(cmnd)
+
+# print every client's cost and description
+for client in clients:
+    cost = client[1]    # in Snimu table cost has index=1
+    descr = client[8]   # in Snimu table descr has index=8
+    print(cost, descr)
+
+
+```
