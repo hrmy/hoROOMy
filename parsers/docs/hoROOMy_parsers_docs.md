@@ -213,6 +213,7 @@ print(r1)    # "[]"
 print(r2)    # "[]"
 ```
 <br><br><br><br>
+<a name="Statuses"></a>
 ### Statuses  
 
 Методы проверки состояния парсеров
