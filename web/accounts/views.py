@@ -37,7 +37,7 @@ def restore(request):
             user.save()
 
             subject = 'Восстановление аккаунта'
-            confirm_url = request.scheme + '://' + request.get_host() + reverse('register-confirm', kwargs={'key': key})
+            confirm_url = request.scheme + '://' + request.get_host() + reverse('restore-confirm', kwargs={'key': key})
             message = render_to_string('accounts/restore_mail.html', context={'url': confirm_url})
             user.send_mail(subject, message)
             return render(request, 'accounts/verify_sent.html', locals())
