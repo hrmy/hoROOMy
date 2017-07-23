@@ -266,19 +266,8 @@ def posts(category):
 def geo():
     if request.query['loc'] == "YANDEXLOCERR":
         return '<h2>К сожалению, мы не можем найти что-либо по указанному адресу :( </h2>'
-    lat, lng =  request.query['loc'].split(',')
-    locvar = open("locvar_storage.js", 'w')
-    towrite = """var get_lat = %s
-var get_lng = %s
-var get_rad = 80""" % (lat, lng)
-    locvar.write(towrite)
-    locvar.close()
+
     return html("circler")
-
-
-@get("/map/locvar_storage.js")
-def locvar():
-    return static_file('/locvar_storage.js', root='.')
 
 
 
@@ -350,6 +339,10 @@ def pics(filename):
 @get("/css/<filename>")
 def css(filename):
     return static_file(filename, root='./css')
+
+@get("/ptest")
+def t():
+    return "testPassed"
 
 
 #------------------------------------------------------------------------------------------------
