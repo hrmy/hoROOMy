@@ -359,8 +359,9 @@ r = requests.get(url+params)
 print(r.text)   # "<html>...</html>"
 
 ```
-[Read more about rendering tableRes.html](rendering)
-[Read more about the json](resultsFormat)
+[Read more about the json](#resultsFormat)
+
+>В tableRes.html используется метод рэндеринга шаблонов - мы берём полученный из БД json, вставляем его в tableRes.html (грубо говоря, как .replace() для строки), а далее, уже на компьютере пользователя, этот JSON обрабатывается JS скриптом, тоже упиханным в tableRes.html.
 
 <br><br>
 
@@ -708,6 +709,39 @@ Cловарь для уведомлений от разработчика
                         |------------------ Statuses
                         |------------------ alerts
 ```  
+<br>
+<a name="results_json"></a>
+#### ОБРАЩЕНИЕ К ДАННЫМ БД (!)
+
+sqlite3 возвращает результаты [.fetch](#fetch_db) в виде кортежа, таким образом, обращаться к данным нужно **по индексам (ind в таблицах)**:
+
+```python
+# db connection
+db = DataBase('parseRes.db')
+
+# get first 20 flats from Results
+cmnd = "SELECT * FROM Results LIMIT 20;"
+flats = db.fetch(cmnd)
+
+# print every flat's cost and description
+for flat in flats:
+    cost = flat[1]    # in Results table cost has index=1
+    descr = flat[9]   # in Results table descr has index=9
+    print(cost, descr)
+
+
+# get first 20 clients from Snimu
+cmnd = "SELECT * FROM Results LIMIT 20;"
+flats = db.fetch(cmnd)
+
+# print every client's cost and description
+for client in clients:
+    cost = client[1]    # in Snimu table cost has index=1
+    descr = client[8]   # in Snimu table descr has index=8
+    print(cost, descr)
+
+```
+<br>
 
 #### Таблица Results  
 Объявления типа **"сдам"**
@@ -756,36 +790,6 @@ Cловарь для уведомлений от разработчика
 
 Хранит json для уведомлений от разработчика.
 
-#### ОБРАЩЕНИЕ К ДАННЫМ БД (!)
-
-sqlite3 возвращает результаты [.fetch](#fetch_db) в виде кортежа, таким образом, обращаться к данным нужно **по индексам (ind в таблицах)**:
-
-```python
-# db connection
-db = DataBase('parseRes.db')
-
-# get first 20 flats from Results
-cmnd = "SELECT * FROM Results LIMIT 20;"
-flats = db.fetch(cmnd)
-
-# print every flat's cost and description
-for flat in flats:
-    cost = flat[1]    # in Results table cost has index=1
-    descr = flat[9]   # in Results table descr has index=9
-    print(cost, descr)
-
-
-# get first 20 clients from Snimu
-cmnd = "SELECT * FROM Results LIMIT 20;"
-flats = db.fetch(cmnd)
-
-# print every client's cost and description
-for client in clients:
-    cost = client[1]    # in Snimu table cost has index=1
-    descr = client[8]   # in Snimu table descr has index=8
-    print(cost, descr)
-
-```
 
 <br><br>
 
