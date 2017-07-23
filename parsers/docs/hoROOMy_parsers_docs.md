@@ -800,7 +800,7 @@ for client in clients:
  ```python
  unique_id = str(data['cost']) + str(data['room_num']) + str(data['area']) + str(data['loc'])
  ```
- Таким образом, небольшие изменения в описании объявления не влияют на unique_id<br>
+ Таким образом, небольшие изменения в описании объявления не влияют на unique_id
 2. В других ситуациях (объявления из ВК и "сниму"):
 ```python
 unique_id = hash(data['descr'])
