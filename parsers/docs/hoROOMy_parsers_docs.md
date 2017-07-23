@@ -620,7 +620,23 @@ del p
 
 #### Таблица Results  
 
-|Name|Type|Comments|
+|Столбец|Тип данных|Комментарии|
 |----|----|--------|
-|hash|TEXT| |
+|hash|TEXT|См [хэширование](hash) |
+|cost|INTEGER| |
+|room_num|INTEGER|0 - комната, -1 - койко-место (experimental)|
+|area|INTEGER| |
+|phone|TEXT|Код+телефон без других знаков. *Пример: 9686780217*|
+|date|TEXT|YYYY.MM.DD HH:MM:SS |
+|places|TEXT|всегда NULL, планировалось - список с ближайшими ВУЗами|
+|pics|TEXT|список ссылок на фото |
+|contacts|TEXT| {'phone': <телефон с другими знаками *(например: +7-(968)678-02-17)*>, 'vk': <ссылка на вк>}|
+|descr|TEXT|Описание объявления|
+|adr|TEXT|Адрес|
+|metro|TEXT|Список станций метро|
+|prooflink|TEXT|URL оъявления|
+|loc|TEXT| Формат: "lo.ngitude,la.titude"|
+|fromwhere|TEXT| Атрибут .name того объекта Parse, который внёс эту запись|
+
+
 
