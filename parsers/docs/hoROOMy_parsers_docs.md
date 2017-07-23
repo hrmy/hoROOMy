@@ -636,6 +636,15 @@ def some_other_func():
     raise RuntimeError  # an exception occurs => I get a message
 ```
 
+#### DBcon
+Глобальный DataBase connection (используется там, где не используется multithreading)
+
+#### PARSER_LIST
+Список активных парсеров
+
+#### FORMAT_DIC
+Cловарь для уведомлений от разработчика
+
 ## Логика ДБ
 
 На сервере используется библиотека sqlite3 для управления бд.
@@ -747,8 +756,13 @@ for client in clients:
 
 ## Порядок запуска сервера
 <br>
-1. Хероку запускает app.py
-2. БД загружается с Dropbox (parser_class.py, line 13)
-3. Проверяем, не пустая ли БД. Если пустая - создаём таблицы (parser_class.py, line 19)
-4. Создаём переменную **DBcon** - глобальный db connection (database.py, line 85)
-5. Cоздаём **alertBot** - объект класса Bot, который будет
+1. Хероку запускает app.py  
+2. БД загружается с Dropbox (parser_class.py, line 13)  
+3. Проверяем, не пустая ли БД. Если пустая - создаём таблицы (parser_class.py, line 19)  
+4. Создаём переменную **DBcon** - глобальный db connection (database.py, line 85)  
+5. Cоздаём [**alertBot**](#alertBot) (botAPI.py, line 21)  
+6.    Cоздаём PARSER_LIST (из parser_list.json) (app.py, line 29)
+6. Запускаем Bottle
+
+<br><br>
+## Порядок запуска парсеров ()
