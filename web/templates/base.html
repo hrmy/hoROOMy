@@ -1,0 +1,51 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Horoomy • {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+<div id="header">
+    <a class="logo" href="{% url 'home' %}">Horoomy</a>
+    <ul class="menu">
+        <li {% if section == 'ads' %} class='selected' {% endif %} >
+            <a href="{% url 'ads' %}">Объявления</a>
+        </li>
+        <li {% if section == 'faq' %} class='selected' {% endif %} >
+            <a href="{% url 'faq' %}">FAQ</a>
+        </li>
+        <li {% if section == 'contacts' %} class='selected' {% endif %} >
+            <a href="{% url 'contacts' %}">Контакты</a>
+        </li>
+    </ul>
+
+    <span class="user">
+        {% if request.user.is_authenticated %}
+            Добро пожаловать, <a href="{% url 'account-edit' %}">{{ request.user.name }}</a>
+            (<a href="{% url 'logout' %}">Выйти</a>)
+        {% else %}
+            <a href="{% url 'login' %}">Войти</a> или <a href="{% url 'register' %}">Зарегистрироваться</a>
+        {% endif %}
+      </span>
+</div>
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">
+                {{ message|safe }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<div id="content">
+    {% block content %}
+    {% endblock %}
+</div>
+
+</body>
+</html>
