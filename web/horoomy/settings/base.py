@@ -2,15 +2,12 @@ import os
 from django.core.urlresolvers import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir))))
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = 'qz^8j%)14z6o(spc+&#qq*ec888=rnjc^^$p-v6!w(vq!rwvkq'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
 
 # Overriding default user model
 
@@ -60,21 +57,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'horoomy.wsgi.application'
 
-
-# Database
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
-import dj_database_url
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
-
-
 # Password validation
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -92,25 +74,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 
 LANGUAGE_CODE = 'ru-ru'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
@@ -130,7 +104,3 @@ EMAIL_HOST_USER = 'horoomy2017@gmail.com'
 EMAIL_HOST_PASSWORD = 'moscowestate'
 DEFAULT_EMAIL_FROM = 'horoomy2017@gmail.com'
 EMAIL_USE_TLS = True
-
-# Uncomment for local testing
-
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

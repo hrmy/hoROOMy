@@ -95,4 +95,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # Шорткат для отправки писем
     def send_mail(self, subject, message, from_email=None, **kwargs):
-        send_mail(subject, message, from_email, [self.email], fail_silently=False, **kwargs)
+        send_mail(subject, message, from_email, [self.email], fail_silently=True, **kwargs)
