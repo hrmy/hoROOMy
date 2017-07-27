@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
 from django.utils.html import strip_tags
 from django.contrib import messages
 from django.http import Http404
@@ -52,16 +53,16 @@ def confirm(request, key, vn_action=None, template=None):
     user = Verification.check(key, vn_action)
     if not user: raise Http404
     if request.method == 'POST':
-        form = PasswordSetForm(request.POST)
+        form = PasswordSetForm(request.user, request.POST)
         if form.is_valid():
             Verification.reset(user)
-            user.set_password(form.cleaned_data['password'])
+            user.set_password(form.cleaned_data['new_password1'])
             user.is_active = True
             user.save()
 
             return render(request, template, locals())
     else:
-        form = PasswordSetForm()
+        form = PasswordSetForm(request.user)
     return render(request, 'accounts/password_set.html', locals())
 
 
@@ -84,7 +85,7 @@ def profile(request):
 @login_required
 def edit_password(request):
     if request.method == 'POST':
-        form = PasswordEditForm(request.user, request.POST)
+        form = ChangePasswordForm(request.user, request.POST)
         if form.is_valid():
             form.save()
             # Чтобы не выкидывать пользователя из сессии
@@ -93,5 +94,5 @@ def edit_password(request):
         else:
             messages.error(request, 'Ошибка при обновлении пароля')
     else:
-        form = PasswordEditForm(request.user)
+        form = ChangePasswordForm(request.user)
     return render(request, 'accounts/password_edit.html', locals())
