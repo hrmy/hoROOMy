@@ -20,9 +20,9 @@ def register(request):
 
             #confirm_url = request.scheme + '://' + request.get_host() + reverse('register-confirm', kwargs={'key': key})
             #html_content = render_to_string('accounts/register_html_mail.html', context={'url': confirm_url})
-            
+            template_name = 'register_html_mail'
             #text_content = strip_tags(html_content)
-            user.send_mail(request)
+            user.send_mail(request, template_name)
             return render(request, 'accounts/verify_sent.html', locals())
     else:
         form = UserRegistrationForm()
@@ -38,10 +38,8 @@ def restore(request):
             key = Verification.set(user, Verification.PASS)
             user.save()
 
-            subject = 'Восстановление аккаунта'
-            confirm_url = request.scheme + '://' + request.get_host() + reverse('restore-confirm', kwargs={'key': key})
-            message = render_to_string('accounts/restore_mail.html', context={'url': confirm_url})
-            user.send_mail(subject, message)
+            template_name = 'restore_html_mail'
+            user.send_mail(request, template_name)
             return render(request, 'accounts/verify_sent.html', locals())
     else:
         form = UserRestoreForm()

@@ -95,11 +95,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     get_full_name = get_short_name = lambda self: self.name
 
     # Шорткат для отправки писем
-    def send_mail(self,request, from_email=None, **kwargs):
+    def send_mail(self,request, template_name, from_email=None, **kwargs):
         #send_mail(subject, text_content, from_email, [self.email], fail_silently=True, html_message=html_content, **kwargs)
         send_templated_mail(
                 template_prefix = 'accounts/',
-                template_name = 'register_html_mail',
+                template_name = template_name,
                 template_suffix = 'html',
                 from_email = from_email,
                 recipient_list = [self.email],

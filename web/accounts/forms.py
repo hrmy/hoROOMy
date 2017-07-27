@@ -32,7 +32,7 @@ class UserRestoreForm(forms.Form):
         self.cleaned_data['user'] = user
         return self.cleaned_data['email']
 
-
+   
 # Форма установки пароля (ВЕЛОСИПЕД)
 # TODO: Наследовать auth.forms.SetPasswordForm и переписать сообщения об ошибках
 class PasswordSetForm(forms.Form):
