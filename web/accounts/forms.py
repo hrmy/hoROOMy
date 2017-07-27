@@ -76,7 +76,7 @@ class PasswordEditForm(forms.Form):
 
 
 # Форма личного кабинета (минимальный вариант)
-class UserEditForm(forms.ModelForm):
+class UserProfileForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
         fields = ('name', 'phone')

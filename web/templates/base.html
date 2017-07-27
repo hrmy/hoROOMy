@@ -24,7 +24,7 @@
 
     <span class="user">
         {% if request.user.is_authenticated %}
-            Добро пожаловать, <a href="{% url 'account-edit' %}">{{ request.user.name }}</a>
+            Добро пожаловать, <a href="{% url 'profile' %}">{{ request.user.name }}</a>
             (<a href="{% url 'logout' %}">Выйти</a>)
         {% else %}
             <a href="{% url 'login' %}">Войти</a> или <a href="{% url 'register' %}">Зарегистрироваться</a>

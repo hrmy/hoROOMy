@@ -1,10 +1,11 @@
 from django.db import models
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now, timedelta
+from templated_email import send_templated_mail
 
 
 # Менеджер для кастомной модельки. Аналогичен UserManager'у из django.contrib.auth.models
@@ -94,5 +95,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     get_full_name = get_short_name = lambda self: self.name
 
     # Шорткат для отправки писем
-    def send_mail(self, subject, message, from_email=None, **kwargs):
-        send_mail(subject, message, from_email, [self.email], fail_silently=True, **kwargs)
+    def send_mail(self,request, from_email=None, **kwargs):
+        #send_mail(subject, text_content, from_email, [self.email], fail_silently=True, html_message=html_content, **kwargs)
+        send_templated_mail(
+                template_prefix = 'accounts/',
+                template_name = 'register_html_mail',
+                template_suffix = 'html',
+                from_email = from_email,
+                recipient_list = [self.email],
+                context = {
+                    'name': self.name,
+                    'host': request.get_host(),
+                    'scheme': request.scheme,
+                    'key': self.vn_key,
+                }
+            )

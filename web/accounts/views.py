@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
+from django.utils.html import strip_tags
 from django.contrib import messages
 from django.http import Http404
 from .forms import *
@@ -17,10 +18,11 @@ def register(request):
             key = Verification.set(user, Verification.REG)
             user.save()
 
-            subject = 'Активация аккаунта'
-            confirm_url = request.scheme + '://' + request.get_host() + reverse('register-confirm', kwargs={'key': key})
-            message = render_to_string('accounts/register_mail.html', context={'url': confirm_url})
-            user.send_mail(subject, message)
+            #confirm_url = request.scheme + '://' + request.get_host() + reverse('register-confirm', kwargs={'key': key})
+            #html_content = render_to_string('accounts/register_html_mail.html', context={'url': confirm_url})
+            
+            #text_content = strip_tags(html_content)
+            user.send_mail(request)
             return render(request, 'accounts/verify_sent.html', locals())
     else:
         form = UserRegistrationForm()
@@ -67,17 +69,17 @@ def confirm(request, key, vn_action=None, template=None):
 
 # Вьюха для личного кабинета, в качестве обратной связи - фреймворк messages (при желании можно убрать)
 @login_required
-def edit_account(request):
+def profile(request):
     if request.method == 'POST':
-        form = UserEditForm(request.POST, instance=request.user)
+        form = UserProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, 'Ваш профиль успешно обновлен')
         else:
             messages.error(request, 'Ошибка при обновлении профиля')
     else:
-        form = UserEditForm(instance=request.user)
-    return render(request, 'accounts/edit.html', locals())
+        form = UserProfileForm(instance=request.user)
+    return render(request, 'accounts/profile.html', locals())
 
 
 # Изменение пароля, фреймворк messages

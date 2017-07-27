@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^login/$', auth_views.login, {'template_name': 'accounts/login.html'}, name='login'),
     url(r'^logout/$', auth_views.logout, {'template_name': 'accounts/logout.html'}, name='logout'),
     # Здесь надо бы все переименовать в profile: view, name и название шаблона
-    url(r'^profile/$', views.edit_account, name='account-edit'),
+    url(r'^profile/$', views.profile, name='profile'),
     url(r'^password/$', views.edit_password, name='password-edit'),
 
     url(r'^register/confirm/(?P<key>.+)/$', views.confirm,
