@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.mail import send_mail, EmailMultiAlternatives
+#from django.core.mail import send_mail, EmailMultiAlternatives
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
@@ -86,6 +86,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
+
 
     class Meta:
         verbose_name = 'юзер'

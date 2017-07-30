@@ -4,3 +4,6 @@ whitenoise
 gunicorn
 dj-database-url
 psycopg2
+celery
+flower
+django-celery

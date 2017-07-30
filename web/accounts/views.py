@@ -7,6 +7,7 @@ from django.utils.html import strip_tags
 from django.contrib import messages
 from django.http import Http404
 from .forms import *
+from .tasks import send_mail
 
 
 # Регистрация. Все стандартно, кроме кастомной верификации
@@ -19,11 +20,9 @@ def register(request):
             key = Verification.set(user, Verification.REG)
             user.save()
 
-            #confirm_url = request.scheme + '://' + request.get_host() + reverse('register-confirm', kwargs={'key': key})
-            #html_content = render_to_string('accounts/register_html_mail.html', context={'url': confirm_url})
             template_name = 'register_html_mail'
-            #text_content = strip_tags(html_content)
-            user.send_mail(request, template_name)
+            send_mail.delay(user.id, template_name, request.scheme, request.get_host())
+
             return render(request, 'accounts/verify_sent.html', locals())
     else:
         form = UserRegistrationForm()
@@ -40,7 +39,8 @@ def restore(request):
             user.save()
 
             template_name = 'restore_html_mail'
-            user.send_mail(request, template_name)
+            send_mail.delay(user.id, template_name, request.scheme, request.get_host())
+
             return render(request, 'accounts/verify_sent.html', locals())
     else:
         form = UserRestoreForm()
@@ -69,6 +69,7 @@ def confirm(request, key, vn_action=None, template=None):
 # Вьюха для личного кабинета, в качестве обратной связи - фреймворк messages (при желании можно убрать)
 @login_required
 def profile(request):
+    clean_users()
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=request.user)
         if form.is_valid():

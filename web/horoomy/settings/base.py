@@ -1,5 +1,7 @@
+from __future__ import absolute_import
 import os
 from django.core.urlresolvers import reverse_lazy
+from celery.schedules import crontab
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 
@@ -24,7 +26,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'phonenumber_field',
     'accounts',
-    'core'
+    'core',
+    'djcelery',
 ]
 
 MIDDLEWARE = [
@@ -104,3 +107,9 @@ EMAIL_HOST_USER = 'horoomy2017@gmail.com'
 EMAIL_HOST_PASSWORD = 'moscowestate'
 DEFAULT_EMAIL_FROM = 'horoomy2017@gmail.com'
 EMAIL_USE_TLS = True
+
+#Celery
+# BROKER_URL = 'redis://127.0.0.1:6379/0'
+# BROKER_TRANSPORT = 'redis'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
