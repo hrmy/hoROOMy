@@ -80,7 +80,7 @@
 	<input type="number" placeholder="Макс цена, руб" name="maxprice" required>
 	<span style="margin-right: 10%;"><input type="submit" id="stp" value="Начать парсинг" disabled></span>
 	<a style="margin-right: 10px;" href="/db/download">Скачать базу данных</a>
-	<a style="margin-right: 10px;" href="/results/clearAll">Очистить таблицу</a>
+	<a style="margin-right: 10px;" onclick="if (confirm('Вы уверены, что хотите очистить данные?')) window.location = '/results/clearAll';">Очистить таблицу</a>
 	<a style="margin-right: 10px;" href="/db/sync">Upload DB</a>
 	</form>
 </span>
