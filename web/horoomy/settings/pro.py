@@ -29,5 +29,5 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # Celery
 
-BROKER_URL = 'redis://'
+BROKER_URL = os.environ['REDIS_URL']
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'

@@ -1,10 +1,11 @@
 django
 django-phonenumber-field
+django-templated-email
+django-annoying
+django-celery
+dj-database-url
 whitenoise
 gunicorn
-dj-database-url
 psycopg2
-celery
-django-celery
-django-annoying
+celery==3.1.17
 redis

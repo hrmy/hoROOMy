@@ -77,7 +77,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField('role', choices=USER_ROLE_CHOICES, default='0', blank=False, max_length=10)
     email = models.EmailField('email', unique=True)
     name = models.CharField('name', max_length=128, blank=False)
-    second_name = models.CharField('second_name', max_length=128, blank=False, default=None, null=True)
+    second_name = models.CharField('second_name', max_length=128, blank=False)
     # Флажки, нужные для django-admin, ну или просто полезные
     is_active = models.BooleanField('active', default=True)
     is_staff = models.BooleanField('staff', default=False)
