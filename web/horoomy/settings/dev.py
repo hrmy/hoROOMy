@@ -14,15 +14,12 @@ DATABASES = {
     }
 }
 
+# Console email backend
 
-CSRF_COOKIE_SECURE = True
-X_FRAME_OPTIONS = 'DENY'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# django-templated-email
-TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django.TemplateBackend'
-TEMPLATED_EMAIL_AUTO_PLAIN = False
+# Celery
 
-# console backend
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-
+INSTALLED_APPS += ('kombu.transport.django',)
+BROKER_URL = 'django://'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'

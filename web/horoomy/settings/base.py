@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'accounts',
     'core',
     'djcelery',
+    'annoying'
 ]
 
 MIDDLEWARE = [
@@ -108,8 +109,7 @@ EMAIL_HOST_PASSWORD = 'moscowestate'
 DEFAULT_EMAIL_FROM = 'horoomy2017@gmail.com'
 EMAIL_USE_TLS = True
 
-#Celery
-# BROKER_URL = 'redis://127.0.0.1:6379/0'
-# BROKER_TRANSPORT = 'redis'
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+# Templated email
 
+TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django.TemplateBackend'
+TEMPLATED_EMAIL_AUTO_PLAIN = False

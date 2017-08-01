@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Horoomy • {% block title %}{% endblock %}</title>
+    <title>Horoomy · {% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
@@ -25,7 +25,7 @@
     <span class="user">
         {% if request.user.is_authenticated %}
             Добро пожаловать, <a href="{% url 'profile' %}">{{ request.user.name }}</a>
-            (<a href="{% url 'logout' %}">Выйти</a>)
+            (<a href="{% url 'logout' %}?next={{ request.path }}">Выйти</a>)
         {% else %}
             <a href="{% url 'login' %}">Войти</a> или <a href="{% url 'register' %}">Зарегистрироваться</a>
         {% endif %}

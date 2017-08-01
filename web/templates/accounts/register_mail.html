@@ -1,2 +1,39 @@
-Вы только что создали аккаунт в системе Horoomy. Перейдите по ссылке ниже, чтобы активировать его.
-{{ url }}
+{% block subject %} Активация аккаунта {% endblock %}
+{% block html %}
+
+{% load static %}
+
+<table align="center" width="60%" bgcolor="#F4F4F4" style="border: none;">
+	<tr>
+		<td width="100%" height="40" bgcolor="#12c064">
+			<a href="{{ scheme }}://{{ host }}/" style="text-decoration: none;"><h2 style="color: #F4F4F4; margin-left: 20px;">Horoomy</h2></a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<table align="center" width="40%">
+				<tr> 
+					<td width="50%">
+						<h2  style="color: #333333;">Здравствуйте, {{ name }}!</h2>
+						<hr style="background-color: #333333; border: none; height: 1px; width: 560px; margin-bottom: 0;">
+					</td>
+				</tr>
+				<tr>
+					<td width="100%">
+						<p style="color: #333333">Регистрация почти завершенна, единственное что осталось - верифицировать ваш аккаунт. Кнопочка снизу способна сделать это, так что, будьте добры, нажмите на неё.</p>
+					</td>
+				</tr>
+				<tr>
+					<td width="100%" height="80">
+						<a href="{{ scheme }}://{{ host }}/accounts/register/confirm/{{ key }}" target="_blank"><button style="height: 50px; background-color: #12c064; font-size: 18px; color: #F4F4F4; border: none; border-radius: 0;">Активировать аккаунт</button></a>
+					</td>	
+				</tr>
+				<tr>
+					<td width="100%" align="center" height="20">
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>		
+{% endblock %}

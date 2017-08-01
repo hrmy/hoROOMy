@@ -2,13 +2,23 @@
 {% block title %}Профиль{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Ваш профиль</h1>
-    <form action="." method="post" class="form-inline">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Сохранить</button>
-    </form>
-    <p>Также вы можете <a href="{% url 'password-edit' %}">изменить пароль</a></p>
-</div>
+    <div class="container">
+        <h1>Ваш профиль</h1>
+
+        <form action="." method="post" class="form-inline">
+            {% csrf_token %}
+            <div class="flex">
+                <div class="flex-item">
+                    <h2>Основное</h2>
+                    {{ user_form.as_p }}
+                </div>
+                <div class="flex-item">
+                    <h2>Социальные сети</h2>
+                    {{ sn_form.as_p }}
+                </div>
+            </div>
+            <button type="submit" class="btn">Сохранить</button>
+        </form>
+        <p>Также вы можете <a href="{% url 'password-edit' %}">изменить пароль</a></p>
+    </div>
 {% endblock %}

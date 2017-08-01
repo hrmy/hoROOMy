@@ -1,17 +1,18 @@
 from django import forms
-from django.contrib.auth import get_user_model
-from django.db import models
-from .models import Verification
 from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
+from .models import *
+
 
 # Форма регистрации
 class UserRegistrationForm(forms.ModelForm):
     class Meta:
-        model = get_user_model()
-        fields = ('email', 'name')
+        model = User
+        fields = ('email', 'name', 'second_name', 'role')
         labels = {
             'email': 'Email',
-            'name': 'Имя'
+            'name': 'Имя',
+            'second_name': 'Фамилия',
+            'role': 'Кто вы?'
         }
 
 
@@ -22,7 +23,7 @@ class UserRestoreForm(forms.Form):
     # Различные проверки
     def clean_email(self):
         try:
-            user = get_user_model().objects.get(email=self.cleaned_data['email'])
+            user = User.objects.get(email=self.cleaned_data['email'])
         except models.ObjectDoesNotExist:
             raise forms.ValidationError('Пользователя с таким email\'ом не существует')
         if user.vn_action == Verification.REG:
@@ -32,25 +33,38 @@ class UserRestoreForm(forms.Form):
         self.cleaned_data['user'] = user
         return self.cleaned_data['email']
 
-   
 
 class PasswordSetForm(SetPasswordForm):
     new_password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput)
     new_password2 = forms.CharField(label='Повтор пароля', widget=forms.PasswordInput)
 
+
 class ChangePasswordForm(PasswordChangeForm):
     old_password = forms.CharField(label='Старый пароль', widget=forms.PasswordInput)
-    new_password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+    new_password1 = forms.CharField(label='Новый пароль', widget=forms.PasswordInput)
     new_password2 = forms.CharField(label='Повтор пароля', widget=forms.PasswordInput)
-
 
 
 # Форма личного кабинета (минимальный вариант)
 class UserProfileForm(forms.ModelForm):
     class Meta:
-        model = get_user_model()
-        fields = ('name', 'phone')
+        model = User
+        fields = ('name', 'second_name', 'phone')
         labels = {
             'name': 'Имя',
+            'second_name': 'Фамилия',
             'phone': 'Телефон'
+        }
+
+
+# Форма социальных сетей
+class SocialNetworksForm(forms.ModelForm):
+    class Meta:
+        model = SocialNetworks
+        fields = ('vk', 'fb', 'tw', 'go')
+        labels = {
+            'vk': 'Вконтакте',
+            'fb': 'FaceBook',
+            'tw': 'Twitter',
+            'go': 'Google'
         }

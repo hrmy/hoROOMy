@@ -1,9 +1,6 @@
 from django.shortcuts import render, redirect, reverse
-from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
-from django.utils.html import strip_tags
 from django.contrib import messages
 from django.http import Http404
 from .forms import *
@@ -17,13 +14,11 @@ def register(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
-            key = Verification.set(user, Verification.REG)
+            Verification.set(user, Verification.REG)
             user.save()
+            send_mail.delay(user.id, 'register_mail', request.scheme, request.get_host())
 
-            template_name = 'register_html_mail'
-            send_mail.delay(user.id, template_name, request.scheme, request.get_host())
-
-            return render(request, 'accounts/verify_sent.html', locals())
+            return render(request, 'accounts/mail_sent.html', locals())
     else:
         form = UserRegistrationForm()
     return render(request, 'accounts/register.html', locals())
@@ -34,14 +29,12 @@ def restore(request):
     if request.method == 'POST':
         form = UserRestoreForm(request.POST)
         if form.is_valid():
-            user = form.cleaned_data['user']
-            key = Verification.set(user, Verification.PASS)
+            user = form.cleaned_data.get('user')
+            Verification.set(user, Verification.PASS)
             user.save()
+            send_mail.delay(user.id, 'restore_mail', request.scheme, request.get_host())
 
-            template_name = 'restore_html_mail'
-            send_mail.delay(user.id, template_name, request.scheme, request.get_host())
-
-            return render(request, 'accounts/verify_sent.html', locals())
+            return render(request, 'accounts/mail_sent.html', locals())
     else:
         form = UserRestoreForm()
     return render(request, 'accounts/restore.html', locals())
@@ -49,40 +42,42 @@ def restore(request):
 
 # Универсальная (почти) вьюха подтверждения/восстановления
 # Проверяет ключик, в случае неудачи кидает на 404, в удачном - на установку пароля
-def confirm(request, key, vn_action=None, template=None):
+def confirm(request, key, vn_action=None, template_name=None):
     user = Verification.check(key, vn_action)
     if not user: raise Http404
     if request.method == 'POST':
         form = PasswordSetForm(request.user, request.POST)
         if form.is_valid():
             Verification.reset(user)
-            user.set_password(form.cleaned_data['new_password1'])
+            user.set_password(form.cleaned_data.get('new_password1'))
             user.is_active = True
             user.save()
 
-            return render(request, template, locals())
+            return render(request, template_name, locals())
     else:
         form = PasswordSetForm(request.user)
     return render(request, 'accounts/password_set.html', locals())
 
 
-# Вьюха для личного кабинета, в качестве обратной связи - фреймворк messages (при желании можно убрать)
+# Вьюха личного кабинета
 @login_required
 def profile(request):
-    clean_users()
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
+        user_form = UserProfileForm(request.POST, instance=request.user)
+        sn_form = SocialNetworksForm(request.POST, instance=request.user.social_networks)
+        if sn_form.is_valid() and user_form.is_valid():
+            user_form.save()
+            sn_form.save()
             messages.success(request, 'Ваш профиль успешно обновлен')
         else:
             messages.error(request, 'Ошибка при обновлении профиля')
     else:
-        form = UserProfileForm(instance=request.user)
+        user_form = UserProfileForm(instance=request.user)
+        sn_form = SocialNetworksForm(instance=request.user.social_networks)
     return render(request, 'accounts/profile.html', locals())
 
 
-# Изменение пароля, фреймворк messages
+# Изменение пароля
 @login_required
 def edit_password(request):
     if request.method == 'POST':

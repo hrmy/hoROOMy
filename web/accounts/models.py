@@ -1,11 +1,11 @@
 from django.db import models
-#from django.core.mail import send_mail, EmailMultiAlternatives
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now, timedelta
-from templated_email import send_templated_mail
+from django.core.validators import URLValidator
+from annoying.fields import AutoOneToOneField
 
 
 # Менеджер для кастомной модельки. Аналогичен UserManager'у из django.contrib.auth.models
@@ -28,7 +28,7 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, password, **extra_fields):
         # Теоретически тут должны быть проверки на is_superuser=True и is_staff=True в extra_fields
-        return self._create_user(email, password, is_superuser=True, is_staff=True, **extra_fields)
+        return self._create_user(email, password, is_superuser=True, is_staff=True, name='Admin', **extra_fields)
 
 
 # Класс для управления верификацией
@@ -64,12 +64,20 @@ class Verification:
         user.vn_action = Verification.NONE
 
 
+USER_ROLE_CHOICES = [
+    ('0', 'Владелец'),
+    ('1', 'Арендатор'),
+]
+
+
 # Кастомная моделька пользователя. Аналогична AbstractUser'у из django.contrib.auth.models
 # См: https://github.com/django/django/blob/master/django/contrib/auth/models.py#L288
 class User(AbstractBaseUser, PermissionsMixin):
     # Стандартные поля (password уже наследован)
+    role = models.CharField('role', choices=USER_ROLE_CHOICES, default='0', blank=False, max_length=10)
     email = models.EmailField('email', unique=True)
     name = models.CharField('name', max_length=128, blank=False)
+    second_name = models.CharField('second_name', max_length=128, blank=False, default=None, null=True)
     # Флажки, нужные для django-admin, ну или просто полезные
     is_active = models.BooleanField('active', default=True)
     is_staff = models.BooleanField('staff', default=False)
@@ -87,27 +95,28 @@ class User(AbstractBaseUser, PermissionsMixin):
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-
     class Meta:
-        verbose_name = 'юзер'
-        verbose_name_plural = 'юзеры'
+        verbose_name = 'Юзер'
+        verbose_name_plural = 'Юзеры'
+
+    def __str__(self):
+        return self.email
 
     # Где-то вызываются админом или чем-нибудь еще. Короче нужны
     get_full_name = get_short_name = lambda self: self.name
 
-    # Шорткат для отправки писем
-    def send_mail(self,request, template_name, from_email=None, **kwargs):
-        #send_mail(subject, text_content, from_email, [self.email], fail_silently=True, html_message=html_content, **kwargs)
-        send_templated_mail(
-                template_prefix = 'accounts/',
-                template_name = template_name,
-                template_suffix = 'html',
-                from_email = from_email,
-                recipient_list = [self.email],
-                context = {
-                    'name': self.name,
-                    'host': request.get_host(),
-                    'scheme': request.scheme,
-                    'key': self.vn_key,
-                }
-            )
+
+# Модель соц сетей
+class SocialNetworks(models.Model):
+    user = AutoOneToOneField(User, blank=True, default=None, null=True, related_name='social_networks')
+    vk = models.CharField(validators=[URLValidator()], max_length=128, blank=True, default=None, null=True)
+    fb = models.CharField(validators=[URLValidator()], max_length=128, blank=True, default=None, null=True)
+    tw = models.CharField(validators=[URLValidator()], max_length=128, blank=True, default=None, null=True)
+    go = models.CharField(validators=[URLValidator()], max_length=128, blank=True, default=None, null=True)
+
+    class Meta:
+        verbose_name = 'Cоцcети юзера'
+        verbose_name_plural = 'Cоцcети юзеров'
+
+    def __str__(self):
+        return str(self.user) + '\'s Social Networks'

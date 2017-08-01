@@ -1,1 +1,2 @@
 web: gunicorn horoomy.wsgi --log-file -
+worker: celery worker --app=horoomy

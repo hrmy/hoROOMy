@@ -106,7 +106,7 @@ label {
     margin-bottom: 4px;
 }
 
-input, textarea {
+input, textarea, select {
     clear: both;
     float: left;
     background: #efefef;
@@ -351,4 +351,13 @@ img.user-detail {
 .action .date {
     font-style: italic;
     color: #ccc;
+}
+
+/* profile */
+.flex {
+    display: flex;
+}
+
+.flex-item {
+    margin-right: 50px;
 }
