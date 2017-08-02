@@ -1,3 +1,6 @@
+from celery import shared_task
+
+@shared_task
 def realestate(maxprice=55000, **kwargs):
 
     def get_html(url):
