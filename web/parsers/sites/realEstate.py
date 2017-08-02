@@ -171,7 +171,7 @@ def realestate(maxprice=55000, **kwargs):
 
             data = {'date': date, 'cost': cost, 'descr': descr, 'pics': pics, 'room_num': room_num, 'area': area,
                     'adr': adr, 'metro': metro, 'url': url, 'contacts': contacts}
-            p.append(data)
+            yield data
 
             p.write_status(currentPage)
 
