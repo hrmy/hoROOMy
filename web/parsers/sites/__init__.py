@@ -1,6 +1,18 @@
 ﻿# Подготавливаем здесь все, что будет нужно парсерам...
 import requests
-
+import re
+import json
+import time
+import base64
+import datetime
+import threading
+from bs4 import BeautifulSoup
+from time import gmtime, strftime
+from datetime import datetime, timedelta
+# from parser_class import Parse
+from datetime import date as datetimedate
+# from driveAPI import BackuppedFile, upload_db
+from botAPI import alertExc, tgExcCatch, alertBot, tgExcnoargs
 
 __all__ = ['requests']  # ... и прописываем в __all__
 
