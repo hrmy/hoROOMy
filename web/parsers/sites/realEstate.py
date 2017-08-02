@@ -1,7 +1,7 @@
 from celery import shared_task
 
 @shared_task
-def realestate(maxprice=55000, **kwargs):
+def parse(maxprice=55000, **kwargs):
 
     def get_html(url):
         r = requests.get(url)
@@ -67,9 +67,7 @@ def realestate(maxprice=55000, **kwargs):
 
 
                 # Rooms
-        room_num = info.find('div', class_='object-params').find('div', class_='params-block').find_all('div',
-                                                                                                        class_='params-item')[
-            room_num_i].find('div', class_='float-right').text
+        room_num = info.find('div', class_='object-params').find('div', class_='params-block').find_all('div', class_='params-item')[room_num_i].find('div', class_='float-right').text
         if room_num == 'комната':
             room_num = 0
         else:
