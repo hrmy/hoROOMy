@@ -8,12 +8,6 @@ class Sdam(models.Model):
     area = models.PositiveSmallIntegerField()
     phone = models.BigIntegerField()
     date = models.DateField()
-
-    # these fields will be used to store JSON
-    pics = models.TextField()
-    contacts = models.TextField()
-    metro = models.CharField()
-
     prooflink = models.URLField()
     loc = models.CharField()
     adr = models.CharField()
@@ -21,3 +15,15 @@ class Sdam(models.Model):
     descr = models.TextField()
 
 
+class Snimu(models.Model):
+    uid = models.CharField()
+    price = models.IntegerField()
+    room_num = models.PositiveSmallIntegerField()
+    phone = models.BigIntegerField()
+    prooflink = models.URLField()
+    descr = models.TextField()
+
+    # these fields will be used to store JSON
+    pics = models.TextField()
+    contacts = models.TextField()
+    metro = models.CharField()
