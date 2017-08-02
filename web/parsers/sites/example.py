@@ -2,6 +2,5 @@
 from . import *
 
 def parse(**kwargs):
-    # ...
-    
-    return {'key': 'value'}
+    print('Example parser started with kwargs:', kwargs)
+    yield {'cost': 1234}
