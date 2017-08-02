@@ -1,4 +1,5 @@
 from . import *
+from before_yield import evolve
 from celery import shared_task
 
 @shared_task
@@ -170,6 +171,7 @@ def parse(maxprice=55000, **kwargs):
 
             data = {'date': date, 'cost': cost, 'descr': descr, 'pics': pics, 'room_num': room_num, 'area': area,
                     'adr': adr, 'metro': metro, 'url': url, 'contacts': contacts}
+            data = evolve(data)
             yield data
 
             #p.write_status(currentPage)
