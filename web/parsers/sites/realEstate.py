@@ -141,7 +141,7 @@ def realestate(maxprice=55000, **kwargs):
 
 
     maxprice = int(maxprice)
-    p = Parse('realEstate')
+    #p = Parse('realEstate')
     currentPage = 1
 
     template = 'http://www.realestate.ru'
@@ -173,6 +173,7 @@ def realestate(maxprice=55000, **kwargs):
                     'adr': adr, 'metro': metro, 'url': url, 'contacts': contacts}
             yield data
 
-            p.write_status(currentPage)
+            #p.write_status(currentPage)
 
-    p.add_date()
+    #p.add_date()
+    # todo: signal that parsing is over
