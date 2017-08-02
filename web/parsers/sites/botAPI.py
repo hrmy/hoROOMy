@@ -26,25 +26,3 @@ def alertExc():
     exc_type, exc_value, exc_traceback = sys.exc_info()
     Bot(ERROR_CHAT_ID).sendMessage(str(format_tb(exc_traceback)) + str(exc_value) + str(exc_type))
             
-
-# a decorator to catch&alert exceptions
-def tgExcCatch(func):
-    def wrapper(arg1=None, arg2=None):
-        try:
-            func(arg1=None, arg2=None)
-        except:
-            alertExc()
-
-    return wrapper
-
-
-def tgExcnoargs(func):
-    def wrapper():
-        try:
-            func()
-        except:
-            alertExc()
-
-    return wrapper
-
-#there has to be @tgExcCatch with no args - this works only for two args

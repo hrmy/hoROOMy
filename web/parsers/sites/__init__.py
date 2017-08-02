@@ -13,11 +13,11 @@ from datetime import date as datetimedate
 # from driveAPI import BackuppedFile, upload_db
 
 # дикий костыль, думаю сегодня исправить
-from botAPI import alertExc, tgExcCatch, alertBot, tgExcnoargs
+# Вроде, поправил. Теперь нет декораторов для бездумного (и неоптимального) отлова ошибок
+from botAPI import alertExc
 
 __all__ = ['requests', 'json', 'time', 'base64', 'datetime', 'BeautifulSoup', 'gmtime',
-           'strftime', 'datetimedate', 'timedelta', 'alertExc', 'tgExcCatch', 'alertBot',
-           'tgExcnoargs', 're']  # ... и прописываем в __all__
+           'strftime', 'datetimedate', 'timedelta', 'alertExc', 're']  # ... и прописываем в __all__
 
 # Обертка на парсеры
 def wrap(func, name):
