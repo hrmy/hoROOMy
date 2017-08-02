@@ -160,19 +160,22 @@ def parse(maxprice=55000, **kwargs):
             'div', class_='list-panel').find_all('div', class_='obj')
 
         for ad in ads:
-            url = template + ad.find('div', class_='obj-item').find('a').get('href')
-            # lat = ad.find('div', class_='obj-item').find('a', class_='obj-name house-Geoposition').get('lat') # Получаем широту и долготу
-            # lng = ad.find('div', class_='obj-item').find('a', class_='obj-name house-Geoposition').get('lng') # скрытые в названии объявления
-            adr = ad.find('div', class_='obj-item').find('a', class_='obj-name house-Geoposition').text
+            try:
+                url = template + ad.find('div', class_='obj-item').find('a').get('href')
+                # lat = ad.find('div', class_='obj-item').find('a', class_='obj-name house-Geoposition').get('lat') # Получаем широту и долготу
+                # lng = ad.find('div', class_='obj-item').find('a', class_='obj-name house-Geoposition').get('lng') # скрытые в названии объявления
+                adr = ad.find('div', class_='obj-item').find('a', class_='obj-name house-Geoposition').text
 
-            html = get_html(url)
-            print(url)
-            date, cost, descr, pics, room_num, area, metro, contacts = get_page_data(html)
+                html = get_html(url)
+                print(url)
+                date, cost, descr, pics, room_num, area, metro, contacts = get_page_data(html)
 
-            data = {'date': date, 'cost': cost, 'descr': descr, 'pics': pics, 'room_num': room_num, 'area': area,
-                    'adr': adr, 'metro': metro, 'url': url, 'contacts': contacts}
-            data = evolve(data)
-            yield data
+                data = {'date': date, 'cost': cost, 'descr': descr, 'pics': pics, 'room_num': room_num, 'area': area,
+                        'adr': adr, 'metro': metro, 'url': url, 'contacts': contacts}
+                data = evolve(data)
+                yield data
+            except:
+                alertExc()
 
             #p.write_status(currentPage)
 
