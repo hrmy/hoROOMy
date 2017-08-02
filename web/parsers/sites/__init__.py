@@ -5,16 +5,19 @@ import json
 import time
 import base64
 import datetime
-import threading
 from bs4 import BeautifulSoup
 from time import gmtime, strftime
 from datetime import datetime, timedelta
 # from parser_class import Parse
 from datetime import date as datetimedate
 # from driveAPI import BackuppedFile, upload_db
+
+# дикий костыль, думаю сегодня исправить
 from botAPI import alertExc, tgExcCatch, alertBot, tgExcnoargs
 
-__all__ = ['requests']  # ... и прописываем в __all__
+__all__ = ['requests', 'json', 'time', 'base64', 'datetime', 'BeautifulSoup', 'gmtime',
+           'strftime', 'datetimedate', 'timedelta', 'alertExc', 'tgExcCatch', 'alertBot',
+           'tgExcnoargs', 're']  # ... и прописываем в __all__
 
 # Обертка на парсеры
 def wrap(func, name):
