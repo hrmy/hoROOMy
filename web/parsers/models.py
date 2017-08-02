@@ -14,8 +14,28 @@ class Parser(models.Model):
     def get_config(self):
         return {'max_price': self.max_price}
 
-class Flat(models.Model):
-    cost = models.FloatField('cost')
+
+class Renter(models.Model):
+    uid = models.CharField()
+    cost = models.IntegerField()
+    room_num = models.PositiveSmallIntegerField()
+    phone = models.BigIntegerField()
+    prooflink = models.URLField()
+    descr = models.TextField()
+    date = models.DateField()
+    fromwhere = models.CharField()
+
+    # these fields will be used to store JSON
+    pics = models.TextField()
+    contacts = models.TextField()
+    metro = models.CharField()
+
+
+# по идее, Flat должен наследовать Renter и добавлять к уже объявленным ещё несколько полей
+class Flat(Renter):
+    area = models.PositiveSmallIntegerField()
+    loc = models.CharField()
+    adr = models.CharField()
 
     class Meta:
         verbose_name = 'Flat'
