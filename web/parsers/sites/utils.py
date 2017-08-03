@@ -4,6 +4,9 @@ import hashlib
 from . import *
 from traceback import format_tb
 
+from annoying.functions import get_object_or_None
+from ..models import *
+
 
 # ---------------------------------------TELEGRAM BOT UTIL----------------------------------------------
 class Bot:
@@ -88,3 +91,21 @@ def json_check(function):
         yield data
     return wrap
 
+# ------------------------------------------- WRAPPERS -------------------------------------------
+
+# Обертка на парсеры
+def wrap(func, name):
+    # Конкретно *эта* функция будет вызываться в качестве Celery-таска
+    def deco():
+        # Получаем конфиг для парсера
+        config = Parser.objects.get(name=name).get_config()
+        # Запускаем саму функцию, она должна вернуть итератор по словарям
+        raw_data = func(**config)
+        # Создаем объекты БД из полученных словарей (пока не пушим)
+        objects = [Flat(**i) for i in raw_data]
+        # Разом запихиваем все объекты в БД (спасибо bulk_create)
+        Flat.objects.bulk_create(objects)
+
+    deco.__name__ = 'parse_' + name
+
+    return deco
