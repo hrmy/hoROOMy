@@ -1,8 +1,8 @@
 from . import *
-from before_yield import evolve
 from celery import shared_task
 
 @shared_task
+@json_check
 def parse(maxprice=55000, **kwargs):
 
     def get_html(url):
@@ -172,7 +172,6 @@ def parse(maxprice=55000, **kwargs):
 
                 data = {'date': date, 'cost': cost, 'descr': descr, 'pics': pics, 'room_num': room_num, 'area': area,
                         'adr': adr, 'metro': metro, 'url': url, 'contacts': contacts}
-                data = evolve(data)
                 yield data
             except:
                 alertExc()

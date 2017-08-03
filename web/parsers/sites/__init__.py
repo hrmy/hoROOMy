@@ -11,10 +11,10 @@ from datetime import datetime, timedelta
 # from parser_class import Parse
 from datetime import date as datetimedate
 # from driveAPI import BackuppedFile, upload_db
-from utils import alertExc
+from utils import alertExc, json_check
 
 __all__ = ['requests', 'json', 'time', 'base64', 'datetime', 'BeautifulSoup', 'gmtime',
-           'strftime', 'datetimedate', 'timedelta', 'alertExc', 're']  # ... и прописываем в __all__
+           'strftime', 'datetimedate', 'timedelta', 'alertExc', 're', 'json_check']  # ... и прописываем в __all__
 
 # Обертка на парсеры
 def wrap(func, name):

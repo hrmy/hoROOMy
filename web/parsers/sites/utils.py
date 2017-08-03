@@ -1,6 +1,7 @@
+import re
 import sys
-import json
-import requests
+import hashlib
+from . import *
 from traceback import format_tb
 
 
@@ -24,4 +25,66 @@ def alertExc():
     exc_type, exc_value, exc_traceback = sys.exc_info()
     Bot(ERROR_CHAT_ID).sendMessage(str(format_tb(exc_traceback)) + str(exc_value) + str(exc_type))
 
-#------------------------------------------------------------------------------------------------------
+# -------------------------------------------PROCESSING JSON-------------------------------------------
+
+def evolve(data):
+
+    # get coordinates if we know address
+    def get_loc(adr):
+        api_adr = adr.replace(' ', '+')
+        url = "https://geocode-maps.yandex.ru/1.x/?geocode=%s&format=json&results=1" % api_adr
+        loc = requests.get(url).text
+        loc = json.loads(loc)
+        loc = loc['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']["Point"]['pos']
+        loc = list(loc.split(" "))
+        loc = loc[1] + "," + loc[0]
+        print("!!!GET_LOC USED!!!")
+        return loc
+
+    # get address if we know coordinates
+    def get_adr(loc):
+        url = "https://geocode-maps.yandex.ru/1.x/?geocode=%s&format=json&results=1" % loc
+        adr = requests.get(url).text
+        adr = json.loads(adr)
+        print("!!!GET_ADR USED!!!")
+        return adr['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['Address']['formatted']
+
+
+    # Filter flats -- phone and address should be given
+    if data['adr'] is None:
+        print("""-----REMOVED FOR NO ADR GIVEN -----""")
+        return {'error': 'adress not given'}
+
+    if data['contacts']['phone'] is None:
+        print("""-----REMOVED FOR NO ADR GIVEN -----""")
+        return {'error': 'phone not given'}
+    else:   # turn the phone into an integer
+        data['contacts']['phone'] = int(re.sub("\+7|\s|-|\(|\)|^8|^7", "", data['contacts']['phone']))
+
+
+    # getting loc and adr
+    if (data['loc'] == []) or (data['loc'] == "") or (data['loc'] is None):
+        try:
+            data["loc"] = get_loc(data["adr"])
+        except:
+            data['loc'] = "YANDEXLOCERR"
+            print('YANDEXLOCERR')
+
+    elif (data['adr'] == "") or (data['adr'] is None):
+        try:
+            data["adr"] = get_adr(data["loc"])
+        except:
+            data['adr'] = 'YANDEXADRERR'
+            print("YANDEXADRERR")
+
+    data['uid'] = str(hashlib.md5(data['descr'].encode('utf-8')).hexdigest())
+
+
+# check the json each parser returns, add some info or detect errors
+# see evolve() definition for more info
+def json_check(function):
+    def wrap(maxprice, **kwargs):
+        data = evolve(function(maxprice))
+        yield data
+    return wrap
+
