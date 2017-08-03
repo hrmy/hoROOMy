@@ -11,10 +11,7 @@ from datetime import datetime, timedelta
 # from parser_class import Parse
 from datetime import date as datetimedate
 # from driveAPI import BackuppedFile, upload_db
-
-# дикий костыль, думаю сегодня исправить
-# Вроде, поправил. Теперь нет декораторов для бездумного (и неоптимального) отлова ошибок
-from botAPI import alertExc
+from utils import alertExc
 
 __all__ = ['requests', 'json', 'time', 'base64', 'datetime', 'BeautifulSoup', 'gmtime',
            'strftime', 'datetimedate', 'timedelta', 'alertExc', 're']  # ... и прописываем в __all__
