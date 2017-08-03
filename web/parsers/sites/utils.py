@@ -110,13 +110,15 @@ def create(data):
             created = data['date']
             )
 
+    # flat cost
     flat = Flat(cost = data['cost'])
 
     if 'loc' in data:   # объявление "сдам"
         ad.type = '0'
-
+        # flat area
         flat.area = data['area']
 
+        # flat type & rooms
         if data['room_num'] == 0:
             flat.type = '1'
         elif data['room_num'] == -1:
@@ -125,7 +127,7 @@ def create(data):
             flat.type='0'
             flat.rooms = data['room_num']
 
-
+        # flat location
         if data['loc'] != 'YANDEXLOCERR':
             location = Location(address = data['adr'],
                                 lat = data['loc'][1],
@@ -136,10 +138,12 @@ def create(data):
     else:   # объявление "сниму"
         ad.type = '1'
 
+        # flat cost
         cost = data.get('cost', None)
         if cost is not None:
             flat.cost = cost
 
+    # flat
     ad.flat = flat
 
     return {Flat: flat, Location: location, Ad: ad}
