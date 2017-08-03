@@ -22,14 +22,12 @@ def parse(**kwargs):
             'div', class_='object-info')
 
         # price
-        # try:
         cost = soup.find('section', class_='clear-fix').find('div', class_='object-block').find('div',
                                                                                                 class_="object-info-block").find(
             'div', class_='object-price').text.split('/')[0][:-2]
         cost = cost.split()
         cost = int(''.join(cost))
-        # except:
-        # cost = '-'
+
 
         # metro
         try:
@@ -37,17 +35,6 @@ def parse(**kwargs):
             metro.append(info.find('div', class_='object-info-link_l1').find('a').text)
         except:
             metro = []
-
-            # Address
-            # try:
-            # adr = ''
-            # elms = info.find('div', class_='object-info-link_l2')#.find_all('a')
-            # # for elm in elms:
-            # #     print(elm)
-            # #     adr += elm.text + ' '
-            # print(elms)
-            # except:
-            #   adr = '-'
 
         # Created date
         date = media.find('div', class_='obj-info-dop').text.split()[1][:-1]
@@ -108,24 +95,6 @@ def parse(**kwargs):
         # print(phone)
         contacts['phone'] = phone
 
-        # loc
-        # loc = []
-        # if not adr:
-        #   headers = {
-        #       'Referer': 'http://www.realestate.ru/flatrent/4320916/',
-        #       'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
-        #   }
-
-        #   response = requests.get('http://www.realestate.ru/scripts/common/ymaps.js', headers=headers).text
-        #   start = response.find("center:") + 9
-        #   ch = ''
-        #   i = 0
-        #   while ch != ']':
-        #       ch = response[start+i]
-        #       i += 1
-        #   end = start + i -1
-        #   loc = response[start:end].split(',')
-
 
         # print(date, cost, room_num, area, contacts, sep = '\n')
         return date, cost, descr, pics, room_num, area, metro, contacts
@@ -142,11 +111,9 @@ def parse(**kwargs):
 
 
     maxprice = int(kwargs.get('maxprice', 55000))
-    #p = Parse('realEstate')
     currentPage = 1
 
     template = 'http://www.realestate.ru'
-    # http://www.realestate.ru/flatrent/s/rcs10.1.2.3-rgs1.2.3.4.5.6.7.8.9.10-prt30/
     page_url_template = 'http://www.realestate.ru/flatrent/s/rcs10.1.2.3--rgs1.2.3.4.5.6.7.8.9.10-prt{0}/pg'.format(maxprice // 1000)  # 'http://www.realestate.ru/flatrent/pg'
     page_url = page_url_template + str(currentPage) + '/'
     total_pages = get_total_pages(page_url) + 1
@@ -163,8 +130,6 @@ def parse(**kwargs):
         for ad in ads:
             try:
                 url = template + ad.find('div', class_='obj-item').find('a').get('href')
-                # lat = ad.find('div', class_='obj-item').find('a', class_='obj-name house-Geoposition').get('lat') # Получаем широту и долготу
-                # lng = ad.find('div', class_='obj-item').find('a', class_='obj-name house-Geoposition').get('lng') # скрытые в названии объявления
                 adr = ad.find('div', class_='obj-item').find('a', class_='obj-name house-Geoposition').text
 
                 html = get_html(url)
@@ -177,7 +142,4 @@ def parse(**kwargs):
             except:
                 alertExc()
 
-            #p.write_status(currentPage)
-
-    #p.add_date()
     # todo: signal that parsing is over
