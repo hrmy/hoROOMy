@@ -54,6 +54,7 @@ def parse(**kwargs):
         date = date.split('.')
         date[2] = '20' + str(date[2])
         date = '.'.join(date)
+        date = datetime.strptime(date, '%d.%m.%Y')
         # date = '-'
 
 

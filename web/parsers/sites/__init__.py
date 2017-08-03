@@ -6,7 +6,7 @@ import time
 import base64
 #import datetime
 from bs4 import BeautifulSoup
-from time import gmtime, strftime
+from time import gmtime, strftime, strptime
 from datetime import datetime, timedelta
 from datetime import date as datetimedate
 from utils import alertExc, json_check
