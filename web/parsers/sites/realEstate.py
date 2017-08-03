@@ -3,7 +3,7 @@ from celery import shared_task
 
 @shared_task
 @json_check
-def parse(maxprice=55000, **kwargs):
+def parse(**kwargs):
 
     def get_html(url):
         r = requests.get(url)
@@ -140,7 +140,7 @@ def parse(maxprice=55000, **kwargs):
         return int(total_pages)
 
 
-    maxprice = int(maxprice)
+    maxprice = int(kwargs.get('maxprice', 55000))
     #p = Parse('realEstate')
     currentPage = 1
 

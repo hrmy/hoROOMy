@@ -83,8 +83,8 @@ def evolve(data):
 # check the json each parser returns, add some info or detect errors
 # see evolve() definition for more info
 def json_check(function):
-    def wrap(maxprice, **kwargs):
-        data = evolve(function(maxprice))
+    def wrap(**kwargs):
+        data = evolve(function(**kwargs))
         yield data
     return wrap
 
