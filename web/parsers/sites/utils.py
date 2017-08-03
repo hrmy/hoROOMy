@@ -102,10 +102,15 @@ def create(data):
     # Ad
     ad = Ad(link = data['url'],
             description = data['descr'],
-            contacts = contacts,)
+            contacts = contacts,
+            created = data['date']
+            )
 
+    flat = Flat(cost = data['cost'])
 
     if 'loc' in data:   # объявление "сдам"
+        ad.type = '0'
+
         if data['room_num'] == 0:
             flat = Flat(type='1')
         elif data['room_num'] == -1:
@@ -116,11 +121,12 @@ def create(data):
         if data['loc'] != 'YANDEXLOCERR':
             location = Location(address = data['adr'],
                                 lat = data['loc'][1],
-                                long = data['loc'][0])
-
-
+                                long = data['loc'][0]
+                                )
+            flat.location = location
 
     else:   # объявление "сниму"
+        ad.type = '1'
 
 
 # ------------------------------------------- WRAPPERS -------------------------------------------
