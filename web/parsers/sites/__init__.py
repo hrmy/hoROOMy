@@ -8,9 +8,7 @@ import datetime
 from bs4 import BeautifulSoup
 from time import gmtime, strftime
 from datetime import datetime, timedelta
-# from parser_class import Parse
 from datetime import date as datetimedate
-# from driveAPI import BackuppedFile, upload_db
 from utils import alertExc, json_check
 
 __all__ = ['requests', 'json', 'time', 'base64', 'datetime', 'BeautifulSoup', 'gmtime',
