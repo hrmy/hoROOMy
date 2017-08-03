@@ -171,7 +171,7 @@ def parse(**kwargs):
                 date, cost, descr, pics, room_num, area, metro, contacts = get_page_data(html)
 
                 data = {'date': date, 'cost': cost, 'descr': descr, 'pics': pics, 'room_num': room_num, 'area': area,
-                        'adr': adr, 'metro': metro, 'url': url, 'contacts': contacts}
+                        'adr': adr, 'metro': metro, 'url': url, 'contacts': contacts, 'loc': None, 'fromwhere': }
                 yield data
             except:
                 alertExc()

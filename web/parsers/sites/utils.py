@@ -2,6 +2,7 @@ import re
 import sys
 import hashlib
 from . import *
+from models import *
 from traceback import format_tb
 
 
@@ -37,17 +38,19 @@ def evolve(data):
         loc = json.loads(loc)
         loc = loc['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']["Point"]['pos']
         loc = list(loc.split(" "))
-        loc = loc[1] + "," + loc[0]
+        #loc = loc[1] + "," + loc[0]
         print("!!!GET_LOC USED!!!")
         return loc
 
     # get address if we know coordinates
     def get_adr(loc):
-        url = "https://geocode-maps.yandex.ru/1.x/?geocode=%s&format=json&results=1" % loc
-        adr = requests.get(url).text
-        adr = json.loads(adr)
-        print("!!!GET_ADR USED!!!")
-        return adr['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['Address']['formatted']
+        if loc is not None:
+            loc_str = loc[1] + "," + loc[0]
+            url = "https://geocode-maps.yandex.ru/1.x/?geocode=%s&format=json&results=1" % loc
+            adr = requests.get(url).text
+            adr = json.loads(adr)
+            print("!!!GET_ADR USED!!!")
+            return adr['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['Address']['formatted']
 
 
     # Filter flats -- phone and address should be given
@@ -63,7 +66,7 @@ def evolve(data):
 
 
     # getting loc and adr
-    if (data['loc'] == []) or (data['loc'] == "") or (data['loc'] is None):
+    if (data['loc'] is None):
         try:
             data["loc"] = get_loc(data["adr"])
         except:
@@ -79,6 +82,8 @@ def evolve(data):
 
     data['uid'] = str(hashlib.md5(data['descr'].encode('utf-8')).hexdigest())
 
+    data['fromwhere'] = 
+
 
 # check the json each parser returns, add some info or detect errors
 # see evolve() definition for more info
@@ -87,4 +92,41 @@ def json_check(function):
         data = evolve(function(**kwargs))
         yield data
     return wrap
+
+# --------------------------SPLITTING THE JSON INTO MODELS-----------------------------
+
+def create(data):
+
+    # contacts
+    contacts_dic = data['contacts']
+    contacts = Contacts(
+        phone = contacts_dic['phone'],
+        vk = contacts_dic.get('vk', None),
+        fb = contacts_dic.get('fb', None)
+    )
+
+    # Ad
+    ad = Ad(link = data['url'],
+            description = data['descr'],
+            contacts = contacts,
+            data)
+
+
+    if 'loc' in data:   # объявление "сдам"
+        if data['room_num'] == 0:
+            flat = Flat(type='1')
+        elif data['room_num'] == -1:
+            flat = Flat(type='2')
+        else:
+            flat = Flat(type='0', room_num = data['room_num'])
+
+        if data['loc'] != 'YANDEXLOCERR':
+            location = Location(address = data['adr'],
+                                lat = data['loc'][1],
+                                long = data['loc'][0])
+
+
+
+    else:   # объявление "сниму"
+
 
