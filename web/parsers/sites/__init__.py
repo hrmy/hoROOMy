@@ -4,15 +4,14 @@ import re
 import json
 import time
 import base64
-#import datetime
 from bs4 import BeautifulSoup
 from time import gmtime, strftime, strptime
 from datetime import datetime, timedelta
 from datetime import date as datetimedate
-from utils import alertExc, json_check
+from utils import wrap
 
 __all__ = ['requests', 'json', 'time', 'base64', 'datetime', 'BeautifulSoup', 'gmtime',
-           'strftime', 'datetimedate', 'timedelta', 'alertExc', 're', 'json_check']  # ... и прописываем в __all__
+           'strftime', 'strptime', 'datetimedate', 'timedelta', 'alertExc', 're', 'wrap']  # ... и прописываем в __all__
 
 # Подготавливаем таски, заодно создавая несуществующие конфиги
 from pkgutil import iter_modules
