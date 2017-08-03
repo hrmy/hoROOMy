@@ -5,6 +5,9 @@ from . import *
 from models import *
 from traceback import format_tb
 
+from annoying.functions import get_object_or_None
+from ..models import *
+
 
 # ---------------------------------------TELEGRAM BOT UTIL----------------------------------------------
 class Bot:
@@ -82,16 +85,7 @@ def evolve(data):
 
     data['uid'] = str(hashlib.md5(data['descr'].encode('utf-8')).hexdigest())
 
-    data['fromwhere'] = 
-
-
-# check the json each parser returns, add some info or detect errors
-# see evolve() definition for more info
-def json_check(function):
-    def wrap(**kwargs):
-        data = evolve(function(**kwargs))
-        yield data
-    return wrap
+    data['fromwhere'] =
 
 # --------------------------SPLITTING THE JSON INTO MODELS-----------------------------
 
@@ -108,8 +102,7 @@ def create(data):
     # Ad
     ad = Ad(link = data['url'],
             description = data['descr'],
-            contacts = contacts,
-            data)
+            contacts = contacts,)
 
 
     if 'loc' in data:   # объявление "сдам"
@@ -130,3 +123,21 @@ def create(data):
     else:   # объявление "сниму"
 
 
+# ------------------------------------------- WRAPPERS -------------------------------------------
+
+# Обертка на парсеры
+def wrap(func, name):
+    # Конкретно *эта* функция будет вызываться в качестве Celery-таска
+    def deco():
+        # Получаем конфиг для парсера
+        config = Parser.objects.get(name=name).get_config()
+        # Запускаем саму функцию, она должна вернуть итератор по словарям
+        raw_data = func(**config)
+        # Создаем объекты БД из полученных словарей (пока не пушим)
+        objects = [Flat(**i) for i in raw_data]
+        # Разом запихиваем все объекты в БД (спасибо bulk_create)
+        Flat.objects.bulk_create(objects)
+
+    deco.__name__ = 'parse_' + name
+
+    return deco
