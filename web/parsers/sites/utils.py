@@ -85,8 +85,6 @@ def evolve(data):
 
     data['uid'] = str(hashlib.md5(data['descr'].encode('utf-8')).hexdigest())
 
-    data['fromwhere'] =
-
 # --------------------------SPLITTING THE JSON INTO MODELS-----------------------------
 
 def create(data):
@@ -95,9 +93,15 @@ def create(data):
     contacts_dic = data['contacts']
     contacts = Contacts(
         phone = contacts_dic['phone'],
-        vk = contacts_dic.get('vk', None),
-        fb = contacts_dic.get('fb', None)
+        vk = contacts_dic.get('vk', ""),
+        fb = contacts_dic.get('fb', "")
     )
+
+    # metros
+    metros = data['metro']
+
+    #todo: тут надо прописать добавление станций метро
+
 
     # Ad
     ad = Ad(link = data['url'],
@@ -111,12 +115,16 @@ def create(data):
     if 'loc' in data:   # объявление "сдам"
         ad.type = '0'
 
+        flat.area = data['area']
+
         if data['room_num'] == 0:
-            flat = Flat(type='1')
+            flat.type = '1'
         elif data['room_num'] == -1:
-            flat = Flat(type='2')
+            flat.type = '2'
         else:
-            flat = Flat(type='0', room_num = data['room_num'])
+            flat.type='0'
+            flat.rooms = data['room_num']
+
 
         if data['loc'] != 'YANDEXLOCERR':
             location = Location(address = data['adr'],
@@ -127,6 +135,14 @@ def create(data):
 
     else:   # объявление "сниму"
         ad.type = '1'
+
+        cost = data.get('cost', None)
+        if cost is not None:
+            flat.cost = cost
+
+    ad.flat = flat
+
+    return {Flat: flat, Location: location, Ad: ad}
 
 
 # ------------------------------------------- WRAPPERS -------------------------------------------
