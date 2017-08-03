@@ -103,12 +103,10 @@ def get_total_pages(url):
 
 # ----------------------------------------------------------------------------------------------------------------
 
-@shared_task
-@wrap
 def parse(**kwargs):
     logger = kwargs['logger']
 
-    maxprice = int(kwargs.get('maxprice', 55000))
+    maxprice = int(kwargs.get('max_price', 55000))
     currentPage = 1
 
     template = 'http://www.realestate.ru'
@@ -139,5 +137,4 @@ def parse(**kwargs):
             except:
                 logger.error("Some error, no traceback yet")
 
-    logger.warning("RealEstate parser finished working!")
-    # todo: signal that parsing is over
+    # todo: signal that parsing is over [DONE]
