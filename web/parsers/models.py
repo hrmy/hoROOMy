@@ -1,6 +1,5 @@
 from django.db import models
 from annoying.fields import AutoOneToOneField
-from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Parser(models.Model):
@@ -44,10 +43,12 @@ class Metro(models.Model):
 
 
 class Flat(models.Model):
-    TYPE_CHOICES = {'0': 'Flat', '1': 'Room', '2': 'Bed'}
-    type = models.CharField('type', max_length=1, choices=TYPE_CHOICES.items(), default='0')  # Rename?
+    FLAT, ROOM, BED = map(str, range(3))
+    TYPE_CHOICES = {FLAT: 'Flat', ROOM: 'Room', BED: 'Bed'}
+    type = models.CharField('type', max_length=1, choices=TYPE_CHOICES.items(), default=FLAT)
+
     location = AutoOneToOneField(Location, null=True)
-    area = models.FloatField('square', null=True, blank=True)  # Rename?
+    area = models.FloatField('area', null=True, blank=True)
     cost = models.FloatField('cost', null=True, blank=True)
     rooms = models.PositiveSmallIntegerField('rooms', null=True, blank=True)
     metros = models.ManyToManyField(Metro, related_name='flats', blank=True)
@@ -62,7 +63,7 @@ class Flat(models.Model):
 
 # TODO: Перенести в accounts и замержить с SocialNetworks
 class Contacts(models.Model):
-    phone = PhoneNumberField('phone', default='', blank=True)
+    phone = models.CharField('phone', max_length=50, default='', blank=True)
     email = models.EmailField('email', default='', blank=True)
     vk = models.URLField('vkontakte link', default='', blank=True)
     fb = models.URLField('facebook link', default='', blank=True)
@@ -75,8 +76,10 @@ class Contacts(models.Model):
 
 
 class Ad(models.Model):
-    TYPE_CHOICES = {'0': 'Owner Ad', '1': 'Renter Ad'}
+    OWNER, RENTER = map(str, range(2))
+    TYPE_CHOICES = {OWNER: 'Owner Ad', RENTER: 'Renter Ad'}
     type = models.CharField('type', max_length=1, choices=TYPE_CHOICES.items(), default='0')
+
     created = models.DateTimeField('date created', null=True, blank=True)
     received = models.DateTimeField('date received', auto_now_add=True)
     parser = models.OneToOneField(Parser, null=True, blank=True)

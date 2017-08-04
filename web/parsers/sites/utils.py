@@ -87,66 +87,133 @@ def evolve(data):
 
 # --------------------------SPLITTING THE JSON INTO MODELS-----------------------------
 
-def create(data):
+# ------------------------------------- LOGGER ----------------------------------------
 
-    # contacts
-    contacts_dic = data['contacts']
-    contacts = Contacts(
-        phone = contacts_dic['phone'],
-        vk = contacts_dic.get('vk', ""),
-        fb = contacts_dic.get('fb', "")
+from io import StringIO
+from sys import stdout
+from django.utils.timezone import now
+
+
+class Logger:
+    FORMAT = '{time} [{name:^10}] {level}: {message}'
+    TIME_FORMAT = '%H:%M:%S'
+    INFO, WARNING, ERROR = range(3)
+    LEVEL_NAMES = {
+        INFO: 'INFO',
+        WARNING: 'WARNING',
+        ERROR: 'ERROR',
+    }
+    DEFAULT_NAME = 'Logger'
+    CHECK_MESSAGE = 'Check "{name}" failed'
+    CHECK_KEY_MESSAGE = 'Key "{key}" not found in "{name}"'
+    EXTRA_STREAMS = (stdout,)
+
+    def __init__(self, *streams):
+        self.streams = [StringIO()]
+        self.streams.extend(self.EXTRA_STREAMS)
+        self.streams.extend(streams)
+        self.name = self.DEFAULT_NAME
+        self.log('Log session started on {}'.format(now().strftime('%d.%m.%Y')))
+
+    def log(self, *objects, name=None, level=INFO):
+        name = name or self.name
+        time = now().strftime(self.TIME_FORMAT)
+        level = self.LEVEL_NAMES[level]
+        message = ' '.join(map(str, objects))
+        if '\n' in message:
+            test_string = self.FORMAT.format(time=time, name=name, level=level, message='')
+            shift = len(test_string) - 3
+            message = ('\n...' + ' ' * shift).join(message.split('\n'))
+        string = self.FORMAT.format(time=time, name=name, level=level, message=message)
+        for s in self.streams: print(string, file=s)
+
+    def check(self, expression, level=WARNING, name='unnamed check'):
+        if expression:
+            self.log(self.CHECK_MESSAGE.format(name=name), level=level)
+        return expression
+
+    def check_keys(self, dict, *keys, level=WARNING, name='unnamed dict'):
+        for key in keys:
+            test = key in dict
+            if not test:
+                self.log(self.CHECK_KEY_MESSAGE.format(key=key, name=name), level=level)
+            yield test
+
+    get_text = lambda self: self.streams[0].getvalue()
+    close = lambda self: self.streams[0].close()
+    info = lambda self, *objects, name=None: self.log(*objects, name=name, level=self.INFO)
+    warning = lambda self, *objects, name=None: self.log(*objects, name=name, level=self.WARNING)
+    error = lambda self, *objects, name=None: self.log(*objects, name=name, level=self.ERROR)
+
+
+# --------------------------SPLITTING THE JSON INTO MODELS-----------------------------
+
+def create(data, logger):
+    logger.info('Creating object...')
+    start_time = now()
+
+    # Metros
+    logger.check_keys(data, 'metro', name='data')
+    raw_metros = data.get('metro', [])
+    metros = [Metro.objects.get_or_create(name=i.lower())[0] for i in raw_metros]
+    logger.check(not metros, name='no metros')
+
+    # Flat location
+    logger.check_keys(data, 'loc', 'adr', name='data')
+    raw_loc = data.get('loc', (None, None))
+    flat_location = Location(
+        address=data.get('adr', ''),
+        lat=raw_loc[1],
+        long=raw_loc[0]
     )
+    logger.check_keys(data, 'adr', name='data')
+    flat_location.save()
 
-    # metros
-    metros = data['metro']
+    # Flat
+    logger.check_keys(data, 'cost', 'area', 'room_num', name='data')
+    flat = Flat(
+        cost=data.get('cost', None),
+        area=data.get('area', None)
+    )
+    raw_rooms = data.get('room_num', None)
+    if raw_rooms == -1:
+        flat.type = Flat.BED
+    elif raw_rooms == 0:
+        flat.type = Flat.ROOM
+    else:
+        flat.type = Flat.FLAT
+        flat.rooms = raw_rooms
+    flat.location = flat_location
+    flat.save()
+    flat.metros.add(*metros)
 
-    #todo: тут надо прописать добавление станций метро
-
+    # Contacts
+    logger.check_keys(data, 'contacts', name='data')
+    raw_contacts = data.get('contacts', {})
+    if raw_contacts:
+        logger.check_keys(raw_contacts, 'phone', 'vk', 'fb', name='contacts')
+    contacts = Contacts(
+        phone=raw_contacts.get('phone', ''),
+        vk=raw_contacts.get('vk', ''),
+        fb=raw_contacts.get('fb', '')
+    )
+    contacts.save()
 
     # Ad
-    ad = Ad(link = data['url'],
-            description = data['descr'],
-            contacts = contacts,
-            created = data['date']
-            )
+    logger.check_keys(data, 'url', 'descr', 'date', 'type', name='data')
+    ad = Ad(
+        link=data.get('url', ''),
+        description=data.get('descr', ''),
+        created=data.get('date', None),
+        contacts=contacts,
+        flat=flat
+    )
+    ad.type = Ad.OWNER if data.get('type', 'owner') == 'owner' else Ad.RENTER
+    ad.save()
 
-    # flat cost
-    flat = Flat(cost = data['cost'])
-
-    if 'loc' in data:   # объявление "сдам"
-        ad.type = '0'
-        # flat area
-        flat.area = data['area']
-
-        # flat type & rooms
-        if data['room_num'] == 0:
-            flat.type = '1'
-        elif data['room_num'] == -1:
-            flat.type = '2'
-        else:
-            flat.type='0'
-            flat.rooms = data['room_num']
-
-        # flat location
-        if data['loc'] != 'YANDEXLOCERR':
-            location = Location(address = data['adr'],
-                                lat = data['loc'][1],
-                                long = data['loc'][0]
-                                )
-            flat.location = location
-
-    else:   # объявление "сниму"
-        ad.type = '1'
-
-        # flat cost
-        cost = data.get('cost', None)
-        if cost is not None:
-            flat.cost = cost
-
-    # flat
-    ad.flat = flat
-
-    return {Flat: flat, Location: location, Ad: ad}
+    delta = now() - start_time
+    logger.info('Succeed in {} seconds'.format(delta.seconds))
+    return ad
 
 
 # ------------------------------------------- WRAPPERS -------------------------------------------
@@ -155,14 +222,28 @@ def create(data):
 def wrap(func, name):
     # Конкретно *эта* функция будет вызываться в качестве Celery-таска
     def deco():
-        # Получаем конфиг для парсера
+        # Заводим логгер
+        logger = Logger()
+        logger.name = 'Wrapper'
+        logger.info('Parser "{}" task initializing...'.format(name))
         config = Parser.objects.get(name=name).get_config()
-        # Запускаем саму функцию, она должна вернуть итератор по словарям
-        raw_data = func(**config)
-        # Создаем объекты БД из полученных словарей (пока не пушим)
-        objects = [Flat(**i) for i in raw_data]
-        # Разом запихиваем все объекты в БД (спасибо bulk_create)
-        Flat.objects.bulk_create(objects)
+        logger.info('Got config: {}'.format(config))
+
+        logger.info('Parsing...')
+        logger.name = name
+        start_time = now()
+        raw_data = list(func(logger=logger, **config))  # Да да да, оптимищация будет потом
+        logger.name = 'Wrapper'
+        delta = now() - start_time
+        logger.info('Parser succeed in {} seconds'.format(delta.seconds))
+
+        logger.info('Creating objects...')
+        logger.name = 'Create'
+        start_time = now()
+        objects = [create(i, logger) for i in raw_data]
+        delta = now() - start_time
+        logger.name = 'Wrapper'
+        logger.info('{} objects created in {} seconds. Task done!'.format(len(objects), delta.seconds))
 
     deco.__name__ = 'parse_' + name
 

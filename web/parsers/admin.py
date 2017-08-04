@@ -1,7 +1,21 @@
 from django.contrib import admin
+from .tasks import parser_tasks
 from .models import *
 
-admin.site.register(Parser)
+
+def start_parser(modeladmin, request, queryset):
+    for parser in queryset:
+        task_name = 'parsers.' + parser.name
+        parser_tasks[task_name].delay()
+
+start_parser.short_description = 'Force start parsers'
+
+
+class ParserAdmin(admin.ModelAdmin):
+    actions = [start_parser]
+
+
+admin.site.register(Parser, ParserAdmin)
 admin.site.register(Location)
 admin.site.register(Metro)
 admin.site.register(Flat)
