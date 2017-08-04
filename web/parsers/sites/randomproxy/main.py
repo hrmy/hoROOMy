@@ -1,7 +1,7 @@
 import requests
 from random import choice
 
-from randomproxy.log import log
+from .log import log
 
 
 def get_proxy():

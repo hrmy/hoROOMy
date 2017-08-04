@@ -1,5 +1,4 @@
 ﻿# Подготавливаем здесь все, что будет нужно парсерам...
-from . import randomproxy as requests
 import re
 import json
 import time
@@ -8,6 +7,7 @@ from bs4 import BeautifulSoup
 from time import gmtime, strftime, strptime
 from datetime import datetime, timedelta
 from datetime import date as datetimedate
+from .randomproxy import main as requests
 
 __all__ = ['requests', 'json', 'time', 'base64', 'datetime', 'BeautifulSoup', 'gmtime',
            'strftime', 'strptime', 'datetimedate', 'timedelta', 're']  # ... и прописываем в __all__
@@ -30,5 +30,5 @@ for _, name, _ in iter_modules(__path__):
     # Проверяем наличие конфига и создаем таск
     task_name = 'parsers.' + name
     tasks[task_name] = shared_task(name=task_name)(wrap(module.parse, name))
-    #if get_object_or_None(Parser, name=name) is None:
-    #    Parser.objects.create(name=name)
+    if get_object_or_None(Parser, name=name) is None:
+        Parser.objects.create(name=name)
