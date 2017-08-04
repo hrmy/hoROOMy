@@ -135,6 +135,5 @@ def parse(**kwargs):
                 yield data
                 logger.info("One more owner with RealEstate")
             except:
-                logger.error("Some error, no traceback yet")
+                logger.error("Some error in realEstate, no traceback yet")
 
-    # todo: signal that parsing is over [DONE]
