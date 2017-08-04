@@ -30,5 +30,5 @@ for _, name, _ in iter_modules(__path__):
     # Проверяем наличие конфига и создаем таск
     task_name = 'parsers.' + name
     tasks[task_name] = shared_task(name=task_name)(wrap(module.parse, name))
-    if get_object_or_None(Parser, name=name) is None:
-        Parser.objects.create(name=name)
+    #if get_object_or_None(Parser, name=name) is None:
+    #    Parser.objects.create(name=name)
