@@ -1,5 +1,5 @@
 ﻿# Подготавливаем здесь все, что будет нужно парсерам...
-import requests
+import randomproxy as requests
 import re
 import json
 import time
