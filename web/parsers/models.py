@@ -1,10 +1,11 @@
 from django.db import models
 from annoying.fields import AutoOneToOneField
+from json import dumps, loads
 
 
 class Parser(models.Model):
     name = models.CharField('name', max_length=50, primary_key=True)
-    max_price = models.PositiveIntegerField('max_price', null=True, blank=True)
+    config = models.TextField('config', max_length=255, default='{}', blank=True)
 
     class Meta:
         verbose_name = 'Parser'
@@ -14,8 +15,11 @@ class Parser(models.Model):
         return '{} parser'.format(self.name.title())
 
     def get_config(self):
-        return {'max_price': self.max_price}
-
+        try:
+            config = loads(self.config)
+        except:
+            return {}
+        return config
 
 class Location(models.Model):
     lat = models.FloatField('latitude', null=True, blank=True)
@@ -63,10 +67,11 @@ class Flat(models.Model):
 
 # TODO: Перенести в accounts и замержить с SocialNetworks
 class Contacts(models.Model):
+    name = models.CharField('name', max_length=50, default='', blank=True)
     phone = models.CharField('phone', max_length=50, default='', blank=True)
     email = models.EmailField('email', default='', blank=True)
-    vk = models.URLField('vkontakte link', default='', blank=True)
-    fb = models.URLField('facebook link', default='', blank=True)
+    vk = models.URLField('vkontakte url', default='', blank=True)
+    fb = models.URLField('facebook url', default='', blank=True)
 
     class Meta:
         verbose_name = verbose_name_plural = 'Contacts'
@@ -82,12 +87,12 @@ class Ad(models.Model):
 
     created = models.DateTimeField('date created', null=True, blank=True)
     received = models.DateTimeField('date received', auto_now_add=True)
-    parser = models.OneToOneField(Parser, null=True, blank=True)
+    parser = models.ForeignKey(Parser, null=True, blank=True, related_name='ads')
     raw = models.BooleanField('raw', default=True, blank=True)
 
     flat = AutoOneToOneField(Flat, null=True, related_name='ad')
-    link = models.URLField('link', default='', blank=True)
-    description = models.CharField('description', max_length=1024, default='', blank=True)
+    url = models.URLField('url', default='', blank=True)
+    description = models.TextField('description', max_length=1024, default='', blank=True)
     contacts = AutoOneToOneField(Contacts, null=True, related_name='ad')
 
     class Meta:
@@ -96,3 +101,19 @@ class Ad(models.Model):
 
     def __str__(self):
         return self.TYPE_CHOICES[self.type] + ' #{}'.format(self.pk)
+
+
+class Image(models.Model):
+    LOCAL, REMOTE = map(str, range(2))
+    TYPE_CHOICES = {LOCAL: 'Local image', REMOTE: 'Remote image'}
+    type = models.CharField('type', max_length=1, choices=TYPE_CHOICES.items(), default='0')
+    url = models.URLField('remote url', default='', blank=True)
+    image = models.ImageField('local image', upload_to='images/')
+    ad = models.ForeignKey(Ad, related_name='images')
+
+    class Meta:
+        verbose_name = 'Image'
+        verbose_name_plural = 'Images'
+
+    def __str__(self):
+        return self.TYPE_CHOICES[self.type]
