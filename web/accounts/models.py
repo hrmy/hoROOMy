@@ -28,7 +28,9 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, password, **extra_fields):
         # Теоретически тут должны быть проверки на is_superuser=True и is_staff=True в extra_fields
-        return self._create_user(email, password, is_superuser=True, is_staff=True, name='Admin', **extra_fields)
+        data = {'is_superuser': True, 'is_staff': True, 'name': 'Admin', 'second_name': 'Admin'}
+        extra_fields.update(data)
+        return self._create_user(email, password, **extra_fields)
 
 
 # Класс для управления верификацией

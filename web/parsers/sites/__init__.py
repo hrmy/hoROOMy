@@ -1,5 +1,5 @@
 ﻿# Подготавливаем здесь все, что будет нужно парсерам...
-import randomproxy as requests
+from . import randomproxy as requests
 import re
 import json
 import time
@@ -8,10 +8,9 @@ from bs4 import BeautifulSoup
 from time import gmtime, strftime, strptime
 from datetime import datetime, timedelta
 from datetime import date as datetimedate
-from utils import wrap
 
 __all__ = ['requests', 'json', 'time', 'base64', 'datetime', 'BeautifulSoup', 'gmtime',
-           'strftime', 'strptime', 'datetimedate', 'timedelta', 'alertExc', 're', 'wrap']  # ... и прописываем в __all__
+           'strftime', 'strptime', 'datetimedate', 'timedelta', 're']  # ... и прописываем в __all__
 
 # Подготавливаем таски, заодно создавая несуществующие конфиги
 from pkgutil import iter_modules
