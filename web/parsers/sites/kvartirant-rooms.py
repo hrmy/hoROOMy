@@ -9,8 +9,6 @@ def get_html(url):
 def get_page_data(html, url):
     print(url)
 
-    # max_price = 30000
-
     soup = BeautifulSoup(html, 'lxml')
     base = soup.find('div', class_='boxed-container').find_all('div', class_='bg_lightgray')[0].find('div',
                                                                                                      class_='container').find(
@@ -35,8 +33,6 @@ def get_page_data(html, url):
             adr = temp[i].text.split()[1:]
             adr = ' '.join(adr)
 
-    # print(area, metro, adr)
-
     # Определяем, посуточная аренда или нет
     try:
         isDaily = base.find('div', class_='col-xs-12 obj-info').find_all('span', class_='red')[1].text
@@ -45,36 +41,14 @@ def get_page_data(html, url):
     except:
         pass
 
-    # prepay
-    # prepay = base.find('div', class_='col-xs-12 obj-info').find_all('span')[1].text
-    # if 'Предоплата' in prepay or 'Новостройка' in prepay:
-    #   offset = 1
-    #   temp = base.find('div', class_='col-xs-12 obj-info').find_all('span')[2].text
-    #   if 'Предоплата' in temp or 'Новостройка' in temp:
-    #       offset = 2
-    # else:
-    #   offset = 0
-
-    # Metro
-    # if metro_i:
-    #   metro = base.find('div', class_='col-xs-12 obj-info').find_all('span')[metro_i].text.split('\u2022')#.replace('\u2022','').split()[1:]
-    #   metro[0] = ' '.join(metro[0].split()[1:])
-    # else:
-    #   metro = []
-
 
     # Room number
     room_num = 0
-    # if room_num > 3:
-    #   return False
-
 
     # Cost
     cost = base.find('div', class_='col-xs-12 obj-info').find('h3').find('span', class_='text-nowrap red').text
     cost = cost.split()[1:]
     cost = int(''.join(cost))
-    # if cost > max_price:
-    #   return False
 
     # Date
     date = \
@@ -90,27 +64,6 @@ def get_page_data(html, url):
     phone = base.find('div', class_='col-xs-12 col-sm-8 padding_t10 obj-contact').find('span', class_='red').find(
         'b').text.split("write('")[-1][:-2]  # Вот такой-вот костыль
     contacts["phone"] = phone
-
-    # Area
-    # if area_i:
-    #   area = base.find('div', class_='col-xs-12 obj-info').find_all('span')[area_i].text.split()[1]
-    #   if area != '-':
-    #       area = float(area)
-    #       print(area)
-    #   else:
-    #       area = '-'
-    # else:
-    #   area = '-'
-
-
-    # Adr
-    # if adr_i:
-    #   adr = base.find('div', class_='col-xs-12 obj-info').find_all('span')[adr_i].text.split()[1:]
-    #   adr = ' '.join(adr)
-    # else:
-    #   adr = '-'
-    # print(adr)
-
 
     # Descr
     descr = base.find('div', class_='col-xs-12 obj-info').find('p').text
@@ -148,12 +101,6 @@ def get_page_data(html, url):
 
 def get_total_pages(html):
     soup = BeautifulSoup(html, 'lxml')
-
-    # try:
-    #   total_pages = soup.find('div', class_ = 'boxed-container').find('div',class_='base-pagination').find('div', class_='container').find('ul').find_all('li')[-1].find('a').text
-    # except Exception as err:
-    #   print(err)
-    #   exit()
     total_pages = soup.find('div', class_='boxed-container').find('div', class_='base-pagination').find('ul',
                                                                                                         class_='pagination').find(
         'li', class_='last').find('a').get('data-page')
@@ -201,6 +148,5 @@ def realestate():
         p.add_date()
         del p
     print('Done!')
-        # return out
 
     realestate()
