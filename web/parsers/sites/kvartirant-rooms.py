@@ -58,6 +58,7 @@ def get_page_data(html, url):
         date = '.'.join(list(reversed(date)))
     else:
         date = date.replace('/', '.')
+    date = datetime.strptime(date, '%d.%m.%Y')
 
     # Contacts
     contacts = {'vk': "", 'fb': "", 'email': "", 'phone': ""}
@@ -142,4 +143,4 @@ def parse(**kwargs):
                 else:
                     logger.info('Kvartirant-rooms: Daily')  # | room_num more than 3 rooms | cost more than maxprice')
 
-    print('Done!')
+    logger.info('Done!')
