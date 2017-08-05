@@ -129,7 +129,6 @@ def getposttime(soup):
 def parse(**kwargs):
     logger = kwargs['logger']
 
-    # all_infa = []
     link_template = 'https://cian.ru/rent/flat/'
     url = [
         "https://map.cian.ru/ajax/map/roundabout/?currency=2&deal_type=rent&engine_version=2&type=-2&maxprice=35000&offer_type=flat&region=1&wp=1&room1=1&p=",
@@ -139,15 +138,11 @@ def parse(**kwargs):
         for num in range(1, 6):
             url = mainurl + str(num)
 
-            # { 'room_num': "", 'metro': [список с ближайшими станциями метро], 'pics': [список с фото квартиры],
-            #  cost: "цена квартиры", floor: "этаж", phone: "телефон хозяина", furn: True/False, loc: [координаты],
-            #  long: True/False, agent: True/False}
-
             html = requests.get(url).text
             try:
                 json_text = json.loads(html)
             except json.decoder.JSONDecodeError:
-                print("json error")
+                logger.error("Cian: json error")
                 break
             if "data" in json_text:
                 infa = json_text["data"]
@@ -165,10 +160,6 @@ def parse(**kwargs):
                         url = link_template + flat_id
                         loc = i.replace(" ", ",")
 
-                        # print(url)
-                        # print(loc)
-
-                        # ======
                         soup = getsoup(url)
                         all_pics = getpics(soup)
                         all_metro = getmetro(soup)
@@ -178,15 +169,10 @@ def parse(**kwargs):
                         descr = getdescr(soup)
                         person_name = getpersonname(soup)
                         date = getposttime(soup)
-                        # print(date)
-                        # ======
 
-                        x = {'room_num': room_num, 'metro': all_metro, 'pics': all_pics,
+                        x = {'type': "owner", 'room_num': room_num, 'metro': all_metro, 'pics': all_pics,
                              "cost": price, "floor": floor,
                              "contacts": {"phone": phone, "person_name": person_name}, "loc": loc,
                              "url": url, "area": area, "adr": adr, "descr": descr, "date": date}
 
                         yield x
-
-
-inffromapi()
