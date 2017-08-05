@@ -1,3 +1,4 @@
+from . import *
 
 def get_html(url):
     r = requests.get(url)
@@ -84,7 +85,6 @@ def parse(**kwargs):
     maxprice = kwargs.get('maxprice', 55000) // 1000
     logger = kwargs['logger']
 
-    p = Parse('irr')
     template = r"http://irr.ru/real-estate/rent/moskva-region/moskva-gorod/search/boundary_in_rooms=2,1,3/price=%20%D0%B4%D0%BE%20" + str(maxprice) + "%20000/rent_period=3674653711/page"
     base_url = r"http://irr.ru/real-estate/rent/moskva-region/moskva-gorod/search/boundary_in_rooms=2,1,3/price=%20%D0%B4%D0%BE%20" + str(maxprice) + "%20000/rent_period=3674653711/"
     #url = 'http://irr.ru/real-estate/apartments-sale/secondary/3-komn-kvartira-kovrovyy-mkr-advert642695870.html'
@@ -100,8 +100,7 @@ def parse(**kwargs):
             try:
                 page_url = ad.find("div", class_="listing__itemTitleWrapper").find("a", class_="listing__itemTitle").get("href")
                 data = get_page_data(get_html(page_url), page_url)
-                p.append(data)
-                p.write_status(page)
+                yield data
                 print("Current_page: " + str(page))
             except:
                 alertExc()
