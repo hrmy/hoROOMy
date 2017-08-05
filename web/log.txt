@@ -1,0 +1,52 @@
+Sat Aug  5 13:16:28 2017	main.get:	GET http://rentooki.ru/moscow/?page=1
+Sat Aug  5 13:16:28 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:16:28 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:16:28 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:16:28 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:16:28 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:16:28 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:16:28 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:16:28 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:16:28 2017	main.get:	proxie did not work 7 times, returning request made only with headers
+Sat Aug  5 13:16:28 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/headers.txt'
+Sat Aug  5 13:16:28 2017	main.get:	request caused an error, returning None
+Sat Aug  5 13:32:20 2017	main.get:	GET http://www.realestate.ru/flatrent/s/rcs10.1.2.3--rgs1.2.3.4.5.6.7.8.9.10-prt55/pg1/
+Sat Aug  5 13:32:20 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:32:20 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:32:20 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:32:20 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:32:20 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:32:20 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:32:20 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:32:20 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/http_proxies.txt'
+Sat Aug  5 13:32:20 2017	main.get:	proxie did not work 7 times, returning request made only with headers
+Sat Aug  5 13:32:20 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/headers.txt'
+Sat Aug  5 13:32:20 2017	main.get:	request caused an error, returning None
+Sat Aug  5 13:33:51 2017	main.get:	GET http://www.realestate.ru/flatrent/s/rcs10.1.2.3--rgs1.2.3.4.5.6.7.8.9.10-prt55/pg1/
+Sat Aug  5 13:33:51 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:33:51 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:33:51 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:33:51 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:33:51 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:33:51 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:33:51 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:33:51 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:33:51 2017	main.get:	proxie did not work 7 times, returning request made only with headers
+Sat Aug  5 13:33:51 2017	main.get:	[Errno 2] No such file or directory: 'headers.txt'
+Sat Aug  5 13:33:51 2017	main.get:	request caused an error, returning None
+Sat Aug  5 13:42:49 2017	main.get:	GET https://google.com/
+Sat Aug  5 13:42:49 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:42:49 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:42:49 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:42:49 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:42:49 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:42:49 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:42:49 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:42:49 2017	main.get:	[Errno 2] No such file or directory: 'http_proxies.txt'
+Sat Aug  5 13:42:49 2017	main.get:	proxie did not work 7 times, returning request made only with headers
+Sat Aug  5 13:42:49 2017	main.get:	[Errno 2] No such file or directory: 'headers.txt'
+Sat Aug  5 13:42:49 2017	main.get:	request caused an error, returning None
+Sat Aug  5 13:45:49 2017	main.get:	GET https://google.com/
+Sat Aug  5 13:46:26 2017	main.get:	GET https://google.com/
+Sat Aug  5 13:50:18 2017	main.get:	GET https://google.com/
+Sat Aug  5 13:52:18 2017	main.get:	GET https://google.com/

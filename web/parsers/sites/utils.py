@@ -78,6 +78,7 @@ class Logger:
 
 
 def trim(s):
+    if not s or not isinstance(s, str): return ''
     words = filter(None, re.split('\s', s))
     return ' '.join(words)
 
@@ -97,15 +98,16 @@ def clean(data, logger):
 
     # Metros
     logger.check_keys(data, 'metro', name='data')
-    clean_data['metros'] = [trim(i).lower() for i in data.get('metro', [])]
+    raw_metros = [trim(i).lower() for i in data.get('metro', [])]
+    clean_data['metros'] = list(filter(None, raw_metros))
 
     # Flat location
     logger.check_keys(data, 'loc', 'adr', name='data')
     clean_data['address'] = trim(data.get('adr', ''))
     clean_data['lat'] = None
     clean_data['long'] = None
-    raw_loc = trim(data.get('loc', None))
-    if isinstance(raw_loc, str): raw_loc = raw_loc.split(',')
+    raw_loc = data.get('loc', None)
+    if isinstance(raw_loc, str): raw_loc = trim(raw_loc.split(','))
     if isinstance(raw_loc, list) or isinstance(raw_loc, tuple):
         try:
             lat = try_default(float, raw_loc[1])
@@ -132,19 +134,19 @@ def clean(data, logger):
 
     # Contacts
     logger.check_keys(data, 'contacts', name='data')
-    clean_data['contacts'] = {}
-    raw_contacts = data.get('contacts', {})
+    clean_data['contacts'] = dict.fromkeys(('name', 'phone', 'vk', 'fb'), '')
+    raw_contacts = data.get('contacts', None)
     if raw_contacts:
-        logger.check_keys(raw_contacts, 'person_name', 'phone', 'vk', 'fb', name='contacts')
-        clean_data['contacts']['name'] = raw_contacts.get('person_name', '')
-        clean_data['contacts']['phone'] = raw_contacts.get('phone', '')
-        clean_data['contacts']['vk'] = raw_contacts.get('vk', '')
-        clean_data['contacts']['fb'] = raw_contacts.get('fb', '')
+        logger.check_keys(raw_contacts, 'person_name', 'phone', name='contacts')
+        clean_data['contacts']['name'] = trim(raw_contacts.get('person_name'))
+        clean_data['contacts']['phone'] = trim(raw_contacts.get('phone'))
+        clean_data['contacts']['vk'] = trim(raw_contacts.get('vk'))
+        clean_data['contacts']['fb'] = trim(raw_contacts.get('fb'))
 
     # Ad
     logger.check_keys(data, 'url', 'descr', 'date', 'parser', 'type', name='data')
-    clean_data['link'] = data.get('url', '')
-    clean_data['description'] = data.get('descr', '')
+    clean_data['url'] = trim(data.get('url'))
+    clean_data['description'] = trim(data.get('descr'))
     clean_data['parser'] = data.get('parser')
     clean_data['type'] = Ad.OWNER if data.get('type', 'owner') == 'owner' else Ad.RENTER
     clean_data['created'] = None
@@ -160,7 +162,7 @@ def clean(data, logger):
     raw_pics = data.get('pics')
     if isinstance(raw_pics, list) or isinstance(raw_pics, tuple):
         if all(map(lambda x: isinstance(x, str), raw_pics)):
-            clean_data['images'].extend(raw_pics)
+            clean_data['images'].extend(map(trim, raw_pics))
 
     delta = logger.timestamp('clean')
     logger.info('Succeed in {:.3f} seconds'.format(delta.total_seconds()))
@@ -170,7 +172,7 @@ def clean(data, logger):
 def create(data, logger):
     logger.name = 'Create'
     logger.info('Creating objects...')
-    logger.info('Raw data: {}'.format(data))
+    # logger.info('Raw data: {}'.format(data))
     logger.timestamp('create')
 
     # Metros
@@ -178,7 +180,7 @@ def create(data, logger):
 
     # Flat location
     flat_location = Location(
-        address=data['adr'],
+        address=data['address'],
         lat=data['lat'],
         long=data['long']
     )
@@ -190,10 +192,10 @@ def create(data, logger):
         cost=data['cost'],
         area=data['area'],
         rooms=data['rooms'],
-        location=flat_location,
-        metros=metros
+        location=flat_location
     )
     flat.save()
+    flat.metros.add(*metros)
 
     # Contacts
     contacts = Contacts(
@@ -207,7 +209,7 @@ def create(data, logger):
     # Ad
     ad = Ad(
         type=data['type'],
-        link=data['link'],
+        url=data['url'],
         description=data['description'],
         created=data['created'],
         parser=data['parser'],
