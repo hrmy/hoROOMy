@@ -1,6 +1,6 @@
 def bez_posrednikov(maxprice):
     url = dict()
-    # maxprice = '15000'
+
     p = Parse('bezPosrednikov')
 
     url['owners table'] = 'http://snimi-bez-posrednikov.ru/' \
@@ -133,10 +133,6 @@ def bez_posrednikov(maxprice):
                 kitchen_square = kitchen_square.text.split()
                 kitchen_square = int(kitchen_square[0])
 
-            # print('FINISH; PRICE = %d' % price)
-            # print(full_square)
-            # print(rooms_amount, to_subway, subway)
-
             flat = dict()
             flat['room_num'] = rooms_amount
             flat['metro'] = subway
@@ -157,54 +153,10 @@ def bez_posrednikov(maxprice):
         except:
             alertExc()
 
-    # Здесь я начал переписывать по красоте parseOwnerList, но так и не закончил; вроде как здесь есть какая-то бага:
-
-    # def parseOwnerList(rooms_amount, max_price):
-    #     current_url = '%s%d%s%d' % (url['home'] + url['buy'] + url['price'], max_price, '&' + url['flat'] + '&' + url['rooms_amount'], rooms_amount)
-    #     print(current_url)
-    #
-    #     try:
-    #         html = requests.get(current_url).text
-    #     except:
-    #         print('Whoops! Somethind went wrong. Error 1')
-    #         return None
-    #
-    #     soup = BeautifulSoup(html, 'html5lib')
-    #
-    #     pages = soup.find('li', {'class': 'pager-current odd'})
-    #     pages = pages.text.split()
-    #     pages = int(pages[2])
-    #
-    #     for page in range(pages + 1):
-    #
-    #         try:
-    #             full_url = '%s%d' % (current_url + '&' + url['page'], page)
-    #             print(full_url)
-    #             html = requests.get(full_url).text
-    #         except:
-    #             print('Whoops! Somethind went wrong. Error 2')
-    #             return None
-    #
-    #         soup = BeautifulSoup(html, 'html5lib')
-    #         advert_table = soup.find('table', {'class': 'views-table cols-0'}).tbody
-    #
-    #         if (advert_table is None):
-    #             print('Whoops! Somethind went wrong. Error 3')
-    #             return None
-    #
-    #         for tr in advert_table:
-    #             advert_url = tr.a['href']
-    #
-    #             if not (url['daiy'] in advert_url):
-    #                 flat = parseOwner(advert_url)
-    #                 print('price = %d, rooms = %d' % (flat['price'], flat['rooms_amount']))
-
-
 
     def parseOwnerList(b_url):
         try:
             html_pages = requests.get(b_url + '0').text
-            # print(html_pages)
         except:
             print('Whoops! Somethind went wrong. Error 1')
             return None
@@ -218,12 +170,9 @@ def bez_posrednikov(maxprice):
 
             print(' Page %d:' % page)
             p.write_status(page)
-            # print(url['owners table'] + str(page))
 
             try:
-                # html = requests.get(url_start + str('page') + url_end).text
                 full_url = '%s%d' % (b_url, page)
-                # full_url = url['owners table'] + str(page)
                 print(full_url)
                 html = requests.get(full_url).text
             except:
@@ -259,13 +208,10 @@ def bez_posrednikov(maxprice):
                     except:
                         alertExc()
                         pass
-                        # print(flat['price'])
-                        # print('price = %d, rooms = %d' % (flat['price'], flat['rooms_amount']))
-                        # print(str(flat))
+
 
     for b_url in [url['renters table'], url['owners table']]:  # url['room table']]:
         parseOwnerList(b_url)
-        # print("!!!!!finished one!!!!!")
 
     p.add_date()
     del p
