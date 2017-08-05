@@ -123,8 +123,6 @@ def realestate():
     params = '&cost_limit={0}'.format(maxprice)
     template = 'http://www.kvartirant.ru'
     html = get_html(base_url)
-    # out = []
-    p = Parse('kvartirant')
     total_pages = get_total_pages(html)
     for page in range(total_pages)[1:]:
         url = base_url + '?page=' + str(page) + params
@@ -139,14 +137,11 @@ def realestate():
                 print('Page ' + str(page), end=' - ')
                 page_data = get_page_data(temp_html, template + url)
                 if page_data:
-                    p.append(page_data)
+                    yield page_data
                     print('Success')
                 else:
                     print('Daily')  # | room_num more than 3 rooms | cost more than maxprice')
-                p.write_status(counter)
 
-        p.add_date()
-        del p
     print('Done!')
 
     realestate()
