@@ -80,10 +80,11 @@ def get_total_pages(html):
     return int(total_pages)
 
 
-def parse(maxprice):
-    maxprice = int(maxprice) // 1000
+def parse(**kwargs):
+    maxprice = kwargs.get('maxprice', 55000) // 1000
+    logger = kwargs['logger']
+
     p = Parse('irr')
-    maxprice = 30 # Указывать в тясячах
     template = r"http://irr.ru/real-estate/rent/moskva-region/moskva-gorod/search/boundary_in_rooms=2,1,3/price=%20%D0%B4%D0%BE%20" + str(maxprice) + "%20000/rent_period=3674653711/page"
     base_url = r"http://irr.ru/real-estate/rent/moskva-region/moskva-gorod/search/boundary_in_rooms=2,1,3/price=%20%D0%B4%D0%BE%20" + str(maxprice) + "%20000/rent_period=3674653711/"
     #url = 'http://irr.ru/real-estate/apartments-sale/secondary/3-komn-kvartira-kovrovyy-mkr-advert642695870.html'
