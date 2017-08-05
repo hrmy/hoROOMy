@@ -42,6 +42,7 @@ def get_page_data(html, url):
     descr = data["description"].replace(r'\n', '')
 
     # area
+    area = None
     try:
         temp = soup.find_all("div", class_="siteBody__inner")[1].find("div", class_="productPage__infoColumns").find(
             "ul").find_all("li", class_="productPage__infoColumnBlockText")
@@ -50,7 +51,7 @@ def get_page_data(html, url):
                 area = i.text.split(":")[1].strip().split()[0]
                 break
     except:
-        area = None
+        logger.error("Irr-rooms area error!")
 
     # cost
     try:
