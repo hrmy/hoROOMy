@@ -117,7 +117,6 @@ def get_objects_group(html):
 
 
 def realestate():
-    counter = 0
     maxprice = 30000
     base_url = 'http://www.kvartirant.ru/bez_posrednikov/Moskva/sniat-komnatu/'
     params = '&cost_limit={0}'.format(maxprice)
@@ -131,7 +130,6 @@ def realestate():
         for group in groups:
             ads = group.find('div', class_='row').find_all('div', class_='obj-contact')
             for ad in ads:
-                counter += 1
                 url = ad.find('span', class_='red').find('b').find('a').get('href')
                 temp_html = get_html(template + url)
                 print('Page ' + str(page), end=' - ')

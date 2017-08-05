@@ -123,7 +123,6 @@ def parse(**kwargs):
     params = '&cost_limit={0}&komnat[]=1&komnat[]=2&komnat[]=3'.format(maxprice)
     template = 'http://www.kvartirant.ru'
     html = get_html(base_url)
-    counter = 0
     total_pages = get_total_pages(html)
 
     for page in range(total_pages)[1:]:
@@ -138,7 +137,6 @@ def parse(**kwargs):
                     temp_html = get_html(template + url)
                     print('Page ' + str(page), end=' - ')
                     page_data = get_page_data(temp_html, template + url)
-                    counter += 1
                     if page_data:
                         yield page_data
                         logger.info('Kvartirant -- Success')
