@@ -16,7 +16,7 @@ def delliter(stri):
     return stri
 
 
-def posrednikovnetSnimu(**kwargs):
+def parse(**kwargs):
     logger = kwargs['logger']
 
     u = 'http://msk.posrednikovzdes.net/adv.php?city=73&oper=4'
