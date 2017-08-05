@@ -10,8 +10,7 @@ def getsoup(url):
 def getarea(soup):
     area_info = soup.find("table", {"class": "object_descr_props"})
     if area_info is None:
-        area = "No info"
-        return area
+        area = None
     else:
         area_tr = area_info.findAll("tr")
         area = area_tr[2].text
@@ -175,4 +174,5 @@ def parse(**kwargs):
                              "contacts": {"phone": phone, "person_name": person_name}, "loc": loc,
                              "url": url, "area": area, "adr": adr, "descr": descr, "date": date}
 
+                        logger.info("One more owner with Cian!")
                         yield x
