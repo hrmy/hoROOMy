@@ -158,7 +158,7 @@ def parse(**kwargs):
                             floor = floor[floor.find(" ") + 1:]
                             flat_id = j["id"]
                         url = link_template + flat_id
-                        loc = i.replace(" ", ",")
+                        loc = i.split()
 
                         soup = getsoup(url)
                         all_pics = getpics(soup)
