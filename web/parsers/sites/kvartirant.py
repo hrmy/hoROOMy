@@ -10,14 +10,11 @@ def get_html(url):
 def get_page_data(html, url):
     print(url)
 
-    # max_price = 30000
-
     soup = BeautifulSoup(html, 'lxml')
     base = soup.find('div', class_='boxed-container').find_all('div', class_='bg_lightgray')[0].find('div',
                                                                                                      class_='container').find(
         'div', class_='col-md-8 col-obj').find('div', class_='row')
 
-    # f
     area = ''
     metro = ''
     adr = ''
@@ -46,39 +43,17 @@ def get_page_data(html, url):
     except:
         pass
 
-    # prepay
-    # prepay = base.find('div', class_='col-xs-12 obj-info').find_all('span')[1].text
-    # if 'Предоплата' in prepay or 'Новостройка' in prepay:
-    #   offset = 1
-    #   temp = base.find('div', class_='col-xs-12 obj-info').find_all('span')[2].text
-    #   if 'Предоплата' in temp or 'Новостройка' in temp:
-    #       offset = 2
-    # else:
-    #   offset = 0
-
-    # Metro
-    # if metro_i:
-    #   metro = base.find('div', class_='col-xs-12 obj-info').find_all('span')[metro_i].text.split('\u2022')#.replace('\u2022','').split()[1:]
-    #   metro[0] = ' '.join(metro[0].split()[1:])
-    # else:
-    #   metro = []
-
-
     # Room number
     room_num = int(base.find('div', class_='col-xs-12 obj-info').find('h3').text.split()[2].split('-')[0])
-    # if room_num > 3:
-    #   return False
 
 
     # Cost
     cost = base.find('div', class_='col-xs-12 obj-info').find('h3').find('span', class_='text-nowrap red').text
     cost = cost.split()[1:]
     cost = int(''.join(cost))
-    # if cost > max_price:
-    #   return False
+
 
     # Date
-
     date = \
         base.find('div', class_='col-xs-12 col-sm-4 text-center padding_t10 obj-data').text.split()[0].split(':')[1]
     if (date == 'Сегодня'):
@@ -106,7 +81,6 @@ def get_page_data(html, url):
     # loc
     loc = None
     if not adr or adr == '-':
-        loc = []
         temp = str(soup.find_all('script', type='text/javascript')[-1])
         sr = temp.find("ymaps.geocode('")
         start = sr + 15
