@@ -130,7 +130,9 @@ def posrednikovnetSdam(**kwargs):
 
 # ---------------------------------------------SNIMU------------------------------------------------
 
-def posrednikovnetSnimu():
+def posrednikovnetSnimu(**kwargs):
+    logger = kwargs['logger']
+
     u = 'http://msk.posrednikovzdes.net/adv.php?city=73&oper=4'
     text = requests.get(u).text
     pages = str(text)[str(text).find('Страницы'):]
@@ -154,12 +156,13 @@ def posrednikovnetSnimu():
 
                 dat = dat[:dat.find('№')]
                 dat = re.sub(r'\d\d:\d\d:\d\d', '', dat)
+
                 if "Сегодня" in dat:
                     dat = datetimedate.today().strftime("%d.%m.%Y")
                 elif "Вчера" in dat:
                     yesterday = datetimedate.today() - timedelta(1)
                     dat = yesterday.strftime("%d.%m.%Y")
-                # print(dat)
+                dat = datetime.strptime(dat, '%d.%m.%Y')
 
                 obj = delliter(str(td[2]))
                 obj = obj.split('\n')
