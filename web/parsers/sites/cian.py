@@ -128,11 +128,11 @@ def getposttime(soup):
             return posttime
 
 
-def parse(maxprice):
+def parse():
 
-    def inffromapi():
-        p = Parse('cian')
-        counter = 0
+    def parse(**kwargs):
+        logger = kwargs['logger']
+
         # all_infa = []
         link_template = 'https://cian.ru/rent/flat/'
         url = [
@@ -190,13 +190,7 @@ def parse(maxprice):
                                  "contacts": {"phone": phone, "person_name": person_name}, "loc": loc,
                                  "url": url, "area": area, "adr": adr, "descr": descr, "date": date}
 
-                            p.append(x)
-                            # print(x)
-                            counter += 1
-                            p.write_status(counter)
-                            # print(x)
-                p.add_date()
-                del p
-                # return all_infa
+                            yield x
+
 
     inffromapi()
