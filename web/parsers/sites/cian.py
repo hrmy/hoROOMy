@@ -40,8 +40,7 @@ def getarea(soup):
 def getadr(soup):
     adr_info = soup.find("h1", {"class": "object_descr_addr"})
     if adr_info is None:
-        adr = "Error"
-        return adr
+        return None
     else:
         adr = adr_info.text
         return adr
@@ -157,7 +156,7 @@ def parse(**kwargs):
                             floor = floor[floor.find(" ") + 1:]
                             flat_id = j["id"]
                         url = link_template + flat_id
-                        loc = i.split()
+                        loc = i.split().reverse()
 
                         soup = getsoup(url)
                         all_pics = getpics(soup)
