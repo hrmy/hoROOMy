@@ -101,6 +101,6 @@ def parse(**kwargs):
                 page_url = ad.find("div", class_="listing__itemTitleWrapper").find("a", class_="listing__itemTitle").get("href")
                 data = get_page_data(get_html(page_url), page_url)
                 yield data
-                print("Current_page: " + str(page))
+                logger.info("Irr-flats current_page: " + str(page))
             except:
                 logger.error("irr-flats Error")
