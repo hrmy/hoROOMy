@@ -13,11 +13,11 @@ def log(message, head = '', _print = False):
 
     message = ctime(time()) + tab + head + ':' + tab + message + '\n'
 
-    with open('log.txt', 'a') as logfile:
+    with open('logs.log', 'a') as logfile:
         logfile.write(message)
 
 
 def clearlog():
-    with open('log.txt', 'w') as logfile:
+    with open('logs.log', 'w') as logfile:
         a = 1
     log('logfile cleared')
