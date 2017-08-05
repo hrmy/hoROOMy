@@ -127,70 +127,68 @@ def getposttime(soup):
             posttime = ""
             return posttime
 
+        
+def parse(**kwargs):
+    logger = kwargs['logger']
 
-def parse():
+    # all_infa = []
+    link_template = 'https://cian.ru/rent/flat/'
+    url = [
+        "https://map.cian.ru/ajax/map/roundabout/?currency=2&deal_type=rent&engine_version=2&type=-2&maxprice=35000&offer_type=flat&region=1&wp=1&room1=1&p=",
+        "https://map.cian.ru/ajax/map/roundabout/?currency=2&deal_type=rent&engine_version=2&type=-2&maxprice=45000&offer_type=flat&region=1&wp=1&room2=1&p=",
+        "https://map.cian.ru/ajax/map/roundabout/?currency=2&deal_type=rent&engine_version=2&type=-2&maxprice=55000&offer_type=flat&region=1&wp=1&room3=1&p="]
+    for mainurl in url:
+        for num in range(1, 6):
+            url = mainurl + str(num)
 
-    def parse(**kwargs):
-        logger = kwargs['logger']
+            # { 'room_num': "", 'metro': [список с ближайшими станциями метро], 'pics': [список с фото квартиры],
+            #  cost: "цена квартиры", floor: "этаж", phone: "телефон хозяина", furn: True/False, loc: [координаты],
+            #  long: True/False, agent: True/False}
 
-        # all_infa = []
-        link_template = 'https://cian.ru/rent/flat/'
-        url = [
-            "https://map.cian.ru/ajax/map/roundabout/?currency=2&deal_type=rent&engine_version=2&type=-2&maxprice=35000&offer_type=flat&region=1&wp=1&room1=1&p=",
-            "https://map.cian.ru/ajax/map/roundabout/?currency=2&deal_type=rent&engine_version=2&type=-2&maxprice=45000&offer_type=flat&region=1&wp=1&room2=1&p=",
-            "https://map.cian.ru/ajax/map/roundabout/?currency=2&deal_type=rent&engine_version=2&type=-2&maxprice=55000&offer_type=flat&region=1&wp=1&room3=1&p="]
-        for mainurl in url:
-            for num in range(1, 6):
-                url = mainurl + str(num)
+            html = requests.get(url).text
+            try:
+                json_text = json.loads(html)
+            except json.decoder.JSONDecodeError:
+                print("json error")
+                break
+            if "data" in json_text:
+                infa = json_text["data"]
+                if "points" in infa:
+                    infa = infa["points"]
+                    for i in infa:
+                        main = infa[i]
+                        offers = main["offers"]
+                        for j in offers:
+                            room_num = j['property_type']
+                            price = int(j['price_rur'][:-2])
+                            floor = j["link_text"][3]
+                            floor = floor[floor.find(" ") + 1:]
+                            flat_id = j["id"]
+                        url = link_template + flat_id
+                        loc = i.replace(" ", ",")
 
-                # { 'room_num': "", 'metro': [список с ближайшими станциями метро], 'pics': [список с фото квартиры],
-                #  cost: "цена квартиры", floor: "этаж", phone: "телефон хозяина", furn: True/False, loc: [координаты],
-                #  long: True/False, agent: True/False}
+                        # print(url)
+                        # print(loc)
 
-                html = requests.get(url).text
-                try:
-                    json_text = json.loads(html)
-                except json.decoder.JSONDecodeError:
-                    print("json error")
-                    break
-                if "data" in json_text:
-                    infa = json_text["data"]
-                    if "points" in infa:
-                        infa = infa["points"]
-                        for i in infa:
-                            main = infa[i]
-                            offers = main["offers"]
-                            for j in offers:
-                                room_num = j['property_type']
-                                price = int(j['price_rur'][:-2])
-                                floor = j["link_text"][3]
-                                floor = floor[floor.find(" ") + 1:]
-                                flat_id = j["id"]
-                            url = link_template + flat_id
-                            loc = i.replace(" ", ",")
+                        # ======
+                        soup = getsoup(url)
+                        all_pics = getpics(soup)
+                        all_metro = getmetro(soup)
+                        phone = getphone(soup)
+                        adr = getadr(soup)
+                        area = getarea(soup)
+                        descr = getdescr(soup)
+                        person_name = getpersonname(soup)
+                        date = getposttime(soup)
+                        # print(date)
+                        # ======
 
-                            # print(url)
-                            # print(loc)
+                        x = {'room_num': room_num, 'metro': all_metro, 'pics': all_pics,
+                             "cost": price, "floor": floor,
+                             "contacts": {"phone": phone, "person_name": person_name}, "loc": loc,
+                             "url": url, "area": area, "adr": adr, "descr": descr, "date": date}
 
-                            # ======
-                            soup = getsoup(url)
-                            all_pics = getpics(soup)
-                            all_metro = getmetro(soup)
-                            phone = getphone(soup)
-                            adr = getadr(soup)
-                            area = getarea(soup)
-                            descr = getdescr(soup)
-                            person_name = getpersonname(soup)
-                            date = getposttime(soup)
-                            # print(date)
-                            # ======
-
-                            x = {'room_num': room_num, 'metro': all_metro, 'pics': all_pics,
-                                 "cost": price, "floor": floor,
-                                 "contacts": {"phone": phone, "person_name": person_name}, "loc": loc,
-                                 "url": url, "area": area, "adr": adr, "descr": descr, "date": date}
-
-                            yield x
+                        yield x
 
 
-    inffromapi()
+inffromapi()
