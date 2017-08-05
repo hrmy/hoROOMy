@@ -104,8 +104,9 @@ def get_page_data(html, url):
         pics.append(li.find('a').get('href'))
 
     # loc
-    loc = []
+    loc = None
     if not adr or adr == '-':
+        loc = []
         temp = str(soup.find_all('script', type='text/javascript')[-1])
         sr = temp.find("ymaps.geocode('")
         start = sr + 15
