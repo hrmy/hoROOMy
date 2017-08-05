@@ -95,8 +95,6 @@ def get_total_pages(html):
 def parse(**kwargs):
     logger = kwargs['logger']
 
-    p = Parse('irr')
-    counter = 0
     template = r"http://irr.ru/real-estate/rooms-rent/moskva-region/moskva-gorod/search/price=%20%D0%B4%D0%BE%2030%20000/page"
     base_url = r"http://irr.ru/real-estate/rooms-rent/moskva-region/moskva-gorod/search/price=%20%D0%B4%D0%BE%2030%20000/"
     #url = 'http://irr.ru/real-estate/apartments-sale/secondary/3-komn-kvartira-kovrovyy-mkr-advert642695870.html'
@@ -113,14 +111,7 @@ def parse(**kwargs):
                 page_url = ad.find("div", class_="listing__itemTitleWrapper").find("a", class_="listing__itemTitle").get("href")
                 data = get_page_data(get_html(page_url), page_url)
                 if data:
-                    #print(data)
-                    counter += 1
-                    p.append(data)
-                    p.write_status(counter)
-                    #print(data)
-                    #print("Current_page: " + str(page))
+                    yield data
+
             except:
                 alertExc()
-
-    p.add_date()
-    del p
