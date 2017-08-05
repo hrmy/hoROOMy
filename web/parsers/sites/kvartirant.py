@@ -3,7 +3,6 @@ from . import *
 
 def get_html(url):
     r = requests.get(url)
-    print(r, end=' ')
     return r.text
 
 
@@ -33,7 +32,6 @@ def get_page_data(html, url):
             adr = temp[i].text.split()[1:]
             adr = ' '.join(adr)
 
-    # print(area, metro, adr)
 
     # Определяем, посуточная аренда или нет
     try:
@@ -144,11 +142,11 @@ def parse(**kwargs):
                         p.write_status(counter)
                         if page_data:
                             p.append(page_data)
-                            print('Success')
+                            logger.info('Kvartirant -- Success')
                         else:
-                            print('Daily')  # | room_num more than 3 rooms | cost more than maxprice')
+                            logger.info('Kvartirant -- Daily')  # | room_num more than 3 rooms | cost more than maxprice')
                     except Exception as e:
-                        alertExc()
+                        logger.error("Some error in kvartirant")
 
         print('Done!')
         # p = Parse('kvartirant')
