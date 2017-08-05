@@ -23,9 +23,7 @@ def posrednikovnetSdam():
     s = BeautifulSoup(pages, 'lxml')
     a = str(s.find_all('a')[-1].get('href'))
     a = int(a[a.find('page=') + 5:a.rfind('&')])
-    ALL_OFFERS = []
     for al in range(1, a + 1):
-        # print(al)
         u = 'http://msk.posrednikovzdes.net/adv.php?city=73&oper=3&metro=0&realty=0&oplt=0&price1=0&price2=11&page=%s&paiin=0' % al
         text = requests.get(u).text
         soup = BeautifulSoup(text, "lxml")
@@ -37,9 +35,7 @@ def posrednikovnetSdam():
                 dat = delliter(str(td[1]))
                 idd = dat[dat.find('№') + 1:]
                 idd = re.sub(r" |\n", '', idd)
-                # print(idd)
                 url = 'http://msk.posrednikovzdes.net/offer.php?id=%s' % idd
-                # print(url)
 
                 dat = dat[:dat.find('№')]
                 dat = re.sub(r'\d\d:\d\d:\d\d', '', dat)
@@ -102,10 +98,8 @@ def posrednikovnetSdam():
                 else:
                     area = area.split('\n')
                     area = float(re.sub(r'м2| ', '', area[1]))
-                # print(area)
 
                 descript = td[7].find('span', {'style': "color:#CC0000; "}).text
-                # print(descript)
 
                 phone = delliter(str(td[7]))
                 phone = re.sub(r'\xa0|\t|\r', '', phone).split('\n')
@@ -113,7 +107,6 @@ def posrednikovnetSdam():
                     if "Контакты" in z:
                         ph = z[z.find('+'):]
                         ph = ph[:17]
-                # print(ph)
 
                 photo = str(td[7])
                 allPhoto = []
@@ -126,7 +119,7 @@ def posrednikovnetSdam():
                     for a in range(1, photo + 1):
                         uu = 'http://www.posrednikovzdes.net/foto/files2/%s_b_%s.jpeg' % (idd, a)
                         allPhoto.append(uu)
-                # print(allPhoto)
+
                 x = {'room_num': room, 'metro': metro, 'pics': allPhoto,
                      "cost": payment, "floor": floor, "contacts": dict(phone=ph, person_name=None), "loc": "",
                      "url": url, "date": dat, "area": area, "adr": str(distr) + " " + str(street), "descr": descript}
@@ -135,7 +128,6 @@ def posrednikovnetSdam():
                 except:
                     alertExc()
 
-                # print('[+]')
 
 
 # ---------------------------------------------SNIMU------------------------------------------------
@@ -162,9 +154,7 @@ def posrednikovnetSnimu():
     s = BeautifulSoup(pages, 'lxml')
     a = str(s.find_all('a')[-1].get('href'))
     a = int(a[a.find('page=') + 5:a.rfind('&')])
-    ALL_OFFERS = []
     for al in range(1, a + 1):
-        # print(al)
         u = 'http://msk.posrednikovzdes.net/adv.php?city=73&oper=4&metro=0&realty=0&oplt=0&price1=0&price2=0&page=%s&paiin=0' % al
         text = requests.get(u).text
         soup = BeautifulSoup(text, "lxml")
@@ -176,9 +166,7 @@ def posrednikovnetSnimu():
                 dat = delliter(str(td[1]))
                 idd = dat[dat.find('№') + 1:]
                 idd = re.sub(r' ', '', idd)
-                # print(idd)
                 url = 'http://msk.posrednikovzdes.net/offer.php?id=%s' % idd
-                # print(url)
 
                 dat = dat[:dat.find('№')]
                 dat = re.sub(r'\d\d:\d\d:\d\d', '', dat)
@@ -206,7 +194,6 @@ def posrednikovnetSnimu():
                     room = -1
                 elif "Комната" in room:
                     room = 0
-                # print(room, distr, metro, sep='||')
 
                 pay = delliter(str(td[3]))
                 pay = re.sub(r'\xa0|\t|\r', '', pay).split('\n')
@@ -214,7 +201,7 @@ def posrednikovnetSnimu():
                     payment = 0
                 else:
                     payment = pay[0] + pay[1] + pay[2]
-                # print(payment)
+
                 if str(payment) != '0':
                     payment = re.sub(r'Помесячно| |Предоплата|Посуточно', '', payment)
                 else:
@@ -229,10 +216,8 @@ def posrednikovnetSnimu():
                         payment += '000'
                 elif 'руб.' in payment:
                     payment = re.sub(r'руб\.', '', payment)
-                # print(payment)
 
                 descript = td[7].find('span', {'style': "color:#CC0000; "}).text
-                # print(descript)
 
                 phone = delliter(str(td[7]))
                 phone = re.sub(r'\xa0|\t|\r', '', phone).split('\n')
@@ -240,7 +225,6 @@ def posrednikovnetSnimu():
                     if "Контакты" in z:
                         ph = z[z.find('+'):]
                         ph = ph[:17]
-                # print(ph)
 
                 x = {'room_num': room, 'metro': metro,
                      "cost": payment, "contacts": dict(phone=ph, person_name=None), "loc": "",
