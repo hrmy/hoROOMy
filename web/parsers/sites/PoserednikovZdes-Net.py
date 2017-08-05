@@ -1,20 +1,22 @@
 from . import *
 
+
+def delliter(stri):
+    while True:
+        l = stri.find('<')
+        g = stri.find('>')
+        delit = stri[l:g + 1]
+        if delit == '<br/>':
+            stri = stri.replace(delit, '\n')
+        else:
+            stri = stri.replace(delit, '')
+
+        if l == -1:
+            break
+    return stri
+
+
 def posrednikovnetSdam():
-
-    def delliter(stri):
-        while True:
-            l = stri.find('<')
-            g = stri.find('>')
-            delit = stri[l:g + 1]
-            if delit == '<br/>':
-                stri = stri.replace(delit, '\n')
-            else:
-                stri = stri.replace(delit, '')
-
-            if l == -1:
-                break
-        return stri
 
     u = 'http://msk.posrednikovzdes.net/adv.php?city=73&oper=3'
     text = requests.get(u).text
@@ -133,20 +135,6 @@ def posrednikovnetSdam():
 # ---------------------------------------------SNIMU------------------------------------------------
 
 def posrednikovnetSnimu():
-    def delliter(stri):
-        while True:
-            l = stri.find('<')
-            g = stri.find('>')
-            delit = stri[l:g + 1]
-            if delit == '<br/>':
-                stri = stri.replace(delit, '\n')
-            else:
-                stri = stri.replace(delit, '')
-
-            if l == -1:
-                break
-        return stri
-
     u = 'http://msk.posrednikovzdes.net/adv.php?city=73&oper=4'
     text = requests.get(u).text
     pages = str(text)[str(text).find('Страницы'):]
