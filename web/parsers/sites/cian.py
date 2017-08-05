@@ -1,121 +1,134 @@
-def cian(maxprice):
-    def getsoup(url):
-        html = requests.get(url).text
-        soup = BeautifulSoup(html, "html5lib")
-        return soup
+from . import *
 
-    def getarea(soup):
-        area_info = soup.find("table", {"class": "object_descr_props"})
-        if area_info is None:
+
+def getsoup(url):
+    html = requests.get(url).text
+    soup = BeautifulSoup(html, "html5lib")
+    return soup
+
+
+def getarea(soup):
+    area_info = soup.find("table", {"class": "object_descr_props"})
+    if area_info is None:
+        area = "No info"
+        return area
+    else:
+        area_tr = area_info.findAll("tr")
+        area = area_tr[2].text
+        integ = []
+        i = 0
+        while i < len(area):
+            area_int = ''
+            a = area[i]
+            while '0' <= a <= '9':
+                area_int += a
+                i += 1
+                if i < len(area):
+                    a = area[i]
+                else:
+                    break
+            i += 1
+            if area_int != '':
+                integ.append(int(area_int))
+        try:
+            area = integ[0]
+            return area
+        except IndexError:
             area = "No info"
             return area
-        else:
-            area_tr = area_info.findAll("tr")
-            area = area_tr[2].text
-            integ = []
-            i = 0
-            while i < len(area):
-                area_int = ''
-                a = area[i]
-                while '0' <= a <= '9':
-                    area_int += a
-                    i += 1
-                    if i < len(area):
-                        a = area[i]
-                    else:
-                        break
-                i += 1
-                if area_int != '':
-                    integ.append(int(area_int))
-            try:
-                area = integ[0]
-                return area
-            except IndexError:
-                area = "No info"
-                return area
 
-    def getadr(soup):
-        adr_info = soup.find("h1", {"class": "object_descr_addr"})
-        if adr_info is None:
-            adr = "Error"
-            return adr
-        else:
-            adr = adr_info.text
-            return adr
 
-    def getpics(soup):
-        all_images = []
-        infa = soup.find("div", {"class": "fotorama"})
-        if infa == None:
-            all_images = ["No Images"]
-            return all_images
-        else:
-            images = infa.findAll("img")
-            for i in images:
-                x = i.get("src")
-                all_images.append(x)
-            return all_images
+def getadr(soup):
+    adr_info = soup.find("h1", {"class": "object_descr_addr"})
+    if adr_info is None:
+        adr = "Error"
+        return adr
+    else:
+        adr = adr_info.text
+        return adr
 
-    def getmetro(soup):
-        all_metro = []
-        metro_infa = soup.findAll("a", {"class": "object_item_metro_name"})
-        if metro_infa is None:
-            all_metro = ["No metro near"]
+
+def getpics(soup):
+    all_images = []
+    infa = soup.find("div", {"class": "fotorama"})
+    if infa == None:
+        all_images = ["No Images"]
+        return all_images
+    else:
+        images = infa.findAll("img")
+        for i in images:
+            x = i.get("src")
+            all_images.append(x)
+        return all_images
+
+
+def getmetro(soup):
+    all_metro = []
+    metro_infa = soup.findAll("a", {"class": "object_item_metro_name"})
+    if metro_infa is None:
+        all_metro = ["No metro near"]
+        return all_metro
+    else:
+        for i in metro_infa:
+            metro = i.text[:-1]
+            all_metro.append(metro)
             return all_metro
-        else:
-            for i in metro_infa:
-                metro = i.text[:-1]
-                all_metro.append(metro)
-                return all_metro
 
-    def getphone(soup):
-        ph_infa = soup.find("div", {"class": "cf_offer_show_phone-number cf_offer_show_phone-number--under_price"})
-        if ph_infa is None:
-            phone = "No Phone"
-            return phone
-        else:
-            phone = ph_infa.find("a").text
-            return phone
 
-    def getdescr(soup):
-        descr_info = soup.find("div", {"class": "object_descr_text"})
-        if descr_info is None:
-            descr = "No descr"
-            return descr
-        else:
-            descr_info = str(descr_info)[1:]
-            bord_r = descr_info.find("<")
-            bord_l = descr_info.find(">")
-            descr = descr_info[bord_l + 1:bord_r]
-            return descr
+def getphone(soup):
+    ph_infa = soup.find("div", {"class": "cf_offer_show_phone-number cf_offer_show_phone-number--under_price"})
+    if ph_infa is None:
+        phone = "No Phone"
+        return phone
+    else:
+        phone = ph_infa.find("a").text
+        return phone
 
-    def getpersonname(soup):
-        person_name_info = soup.find("h3", {"class": "realtor-card__title"})
-        if person_name_info is None:
-            person_name = "no name"
+
+def getdescr(soup):
+    descr_info = soup.find("div", {"class": "object_descr_text"})
+    if descr_info is None:
+        descr = "No descr"
+        return descr
+    else:
+        descr_info = str(descr_info)[1:]
+        bord_r = descr_info.find("<")
+        bord_l = descr_info.find(">")
+        descr = descr_info[bord_l + 1:bord_r]
+        return descr
+
+
+def getpersonname(soup):
+    person_name_info = soup.find("h3", {"class": "realtor-card__title"})
+    if person_name_info is None:
+        person_name = "no name"
+        return person_name
+    else:
+        try:
+            person_name = person_name_info.find("a").text
             return person_name
-        else:
-            try:
-                person_name = person_name_info.find("a").text
-                return person_name
-            except AttributeError:
-                person_name = soup.find("h3", {"class": "realtor-card__title"}).text
-                return person_name
+        except AttributeError:
+            person_name = soup.find("h3", {"class": "realtor-card__title"}).text
+            return person_name
 
-    def getposttime(soup):
-        infa = soup.find("div", {"class": "object_descr_dt_row"})
-        if infa is None:
+
+def getposttime(soup):
+    infa = soup.find("div", {"class": "object_descr_dt_row"})
+    if infa is None:
+        posttime = ""
+        return posttime
+    else:
+        try:
+            posttime = str(infa.find("span", {"class": "object_descr_dt_added"}).a)
+            posttime = json.loads(posttime[posttime.find('{'):posttime.rfind('}') + 1])['publication_date']
+            posttime = strftime("%Y-%m-%d %H:%M:%S", gmtime(posttime))
+            return posttime
+        except AttributeError:
             posttime = ""
             return posttime
-        else:
-            try:
-                posttime = str(infa.find("span", {"class": "object_descr_dt_added"}).a)
-                posttime = json.loads(posttime[posttime.find('{'):posttime.rfind('}') + 1])['publication_date']
-                posttime = strftime("%Y-%m-%d %H:%M:%S", gmtime(posttime))
-                return posttime
-            except AttributeError:
-                posttime = ""
-                return posttime
+
+
+def parse(maxprice):
 
     def inffromapi():
         p = Parse('cian')
