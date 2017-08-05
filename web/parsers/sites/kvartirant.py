@@ -111,50 +111,39 @@ def get_objects_group(html):
         'div', class_='col-md-8 col-obj')
     return groups
 
-def parse(**kwargs):
 
+def kvartir(maxprice):
     maxprice = int(kwargs.get('maxprice', 55000))
     logger = kwargs['logger']
 
+    p = Parse('kvartirant')
+    base_url = 'http://www.kvartirant.ru/bez_posrednikov/Moskva/sniat-kvartiru/'
+    params = '&cost_limit={0}&komnat[]=1&komnat[]=2&komnat[]=3'.format(maxprice)
+    template = 'http://www.kvartirant.ru'
+    html = get_html(base_url)
+    counter = 0
+    # out = []
+    total_pages = get_total_pages(html)
+    for page in range(total_pages)[1:]:
+        url = base_url + '?page=' + str(page) + params
+        html = get_html(url)
+        groups = get_objects_group(html)
+        for group in groups:
+            ads = group.find('div', class_='row').find_all('div', class_='obj-contact')
+            for ad in ads:
+                try:
+                    url = ad.find('span', class_='red').find('b').find('a').get('href')
+                    temp_html = get_html(template + url)
+                    print('Page ' + str(page), end=' - ')
+                    page_data = get_page_data(temp_html, template + url)
+                    counter += 1
+                    p.write_status(counter)
+                    if page_data:
+                        p.append(page_data)
+                        logger.info('Kvartirant -- Success')
+                    else:
+                        logger.info('Kvartirant -- Daily')  # | room_num more than 3 rooms | cost more than maxprice')
+                except Exception as e:
+                    logger.error("Some error in kvartirant")
 
-    def kvartir(maxprice):
-        p = Parse('kvartirant')
-        base_url = 'http://www.kvartirant.ru/bez_posrednikov/Moskva/sniat-kvartiru/'
-        params = '&cost_limit={0}&komnat[]=1&komnat[]=2&komnat[]=3'.format(maxprice)
-        template = 'http://www.kvartirant.ru'
-        html = get_html(base_url)
-        counter = 0
-        # out = []
-        total_pages = get_total_pages(html)
-        for page in range(total_pages)[1:]:
-            url = base_url + '?page=' + str(page) + params
-            html = get_html(url)
-            groups = get_objects_group(html)
-            for group in groups:
-                ads = group.find('div', class_='row').find_all('div', class_='obj-contact')
-                for ad in ads:
-                    try:
-                        url = ad.find('span', class_='red').find('b').find('a').get('href')
-                        temp_html = get_html(template + url)
-                        print('Page ' + str(page), end=' - ')
-                        page_data = get_page_data(temp_html, template + url)
-                        counter += 1
-                        p.write_status(counter)
-                        if page_data:
-                            p.append(page_data)
-                            logger.info('Kvartirant -- Success')
-                        else:
-                            logger.info('Kvartirant -- Daily')  # | room_num more than 3 rooms | cost more than maxprice')
-                    except Exception as e:
-                        logger.error("Some error in kvartirant")
-
-        print('Done!')
-        # p = Parse('kvartirant')
-        p.add_date()
-        # return out
-        del p
-
-
-        # run
-
-    kvartir(int(maxprice))
+    logger.info('KVARTIRANT Done!')
