@@ -157,8 +157,7 @@ def parse(**kwargs):
                             flat_id = j["id"]
                         url = link_template + flat_id
                         logger.info("Current loc %s" % i)
-                        loc = i.split()
-                        loc = loc.reverse()
+                        loc = i.split()[::-1]
 
                         soup = getsoup(url)
                         all_pics = getpics(soup)
