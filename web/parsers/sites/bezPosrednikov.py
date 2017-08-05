@@ -53,11 +53,8 @@ def parse(**kwargs):
 
             html = requests.get(url['home'] + advert_url).text
             soup = BeautifulSoup(html, 'html5lib')
-            # print(soup, '------------------------')
             content = soup.find('div', {'class': 'node-content'})
-            # print(content, '-----------------------')
             content = content.find('div', {'id': 'node-obyavlenie-full-group-content'})
-            # print(content, '----------------------')
 
             rooms_amount = content.find('section', {
                 'class': 'field field-name-field-komnat field-type-list-text field-label-inline clearfix view-mode-full'})
@@ -66,8 +63,6 @@ def parse(**kwargs):
                 rooms_amount = int(rooms_amount.text)
             else:
                 rooms_amount = 'NULL'
-
-            print(rooms_amount)
 
             photos_ = content.find('div', {
                 'class': 'field field-name-field-foto field-type-image field-label-hidden view-mode-full'})
@@ -153,19 +148,19 @@ def parse(**kwargs):
             flat['contacts'] = {'phone': contacts}
             flat['pics'] = photos
             flat['url'] = url['home'] + advert_url
-            flat['loc'] = ""
+            flat['loc'] = []
 
             return flat
 
         except:
-            alertExc()
+            logger.error("BezPosrednikov: an error occured while parsing one flat")
 
 
     def parseOwnerList(b_url):
         try:
             html_pages = requests.get(b_url + '0').text
         except:
-            print('Whoops! Somethind went wrong. Error 1')
+            logger.error('bezPosrednikov says: Whoops! Somethind went wrong. Error 1')
             return None
 
         soup_pages = BeautifulSoup(html_pages, 'html5lib')
@@ -175,7 +170,7 @@ def parse(**kwargs):
 
         for page in range(pages + 1):
 
-            print(' Page %d:' % page)
+            logger.info('bezPosrednikov is on page %d:' % page)
             p.write_status(page)
 
             try:
@@ -183,7 +178,7 @@ def parse(**kwargs):
                 print(full_url)
                 html = requests.get(full_url).text
             except:
-                print('Whoops! Somethind went wrong. Error 2')
+                logger.error('bezPosrednikov says: Whoops! Somethind went wrong. Error 2')
                 return None
 
             soup = BeautifulSoup(html, 'html5lib')
@@ -191,14 +186,14 @@ def parse(**kwargs):
             # ===========--------------
             pages2 = soup.find('li', {'class': 'pager-current odd'})
             pages2 = pages2.text.split()
-            print(pages2)
+            #logger.info("bezPosrednikov: pages")
             pages2 = int(pages2[0])
             # ===========---------------
 
             advert_table = soup.find('table', {'class': 'views-table cols-0'}).tbody
 
             if (advert_table is None):
-                print('Whoops! Somethind went wrong. Error 3')
+                logger.error('bezPosrednikov says: Whoops! Somethind went wrong. Error 3')
                 return None
 
             for tr in advert_table:
@@ -213,7 +208,7 @@ def parse(**kwargs):
                         else:
                             p.append_snimu(flat)
                     except:
-                        alertExc()
+                        logger.error('Error in bezPosrednikov -- writing to db!')
                         pass
 
 
