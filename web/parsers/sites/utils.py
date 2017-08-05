@@ -98,8 +98,11 @@ def clean(data, logger):
 
     # Metros
     logger.check_keys(data, 'metro', name='data')
-    raw_metros = [trim(i).lower() for i in data.get('metro', [])]
-    clean_data['metros'] = list(filter(None, raw_metros))
+    clean_data['metros'] = []
+    raw_metros = data.get('metro', [])
+    if isinstance(raw_metros, list) or isinstance(raw_metros, tuple):
+        raw_metros = [trim(i).lower() for i in raw_metros]
+        clean_data['metros'] = list(filter(None, raw_metros))
 
     # Flat location
     logger.check_keys(data, 'loc', 'adr', name='data')
