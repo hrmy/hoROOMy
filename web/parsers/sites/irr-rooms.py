@@ -51,7 +51,7 @@ def get_page_data(html, url):
                 area = i.text.split(":")[1].strip().split()[0]
                 break
     except:
-        logger.error("Irr-rooms area error!")
+        print("Irr-rooms area error!")
 
     # cost
     try:
@@ -115,5 +115,5 @@ def parse(**kwargs):
                 if data:
                     yield data
 
-            except Exception as e:
-                logger.error("irr-rooms Error: %s" %str(e))
+            except:
+                logger.error("irr-rooms Error")

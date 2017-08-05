@@ -106,4 +106,4 @@ def parse(**kwargs):
                 yield data
                 logger.info("Irr-flats current_page: " + str(page))
             except:
-                logger.error("irr-flats Error %s" %str(e))
+                logger.error("irr-flats Error")
