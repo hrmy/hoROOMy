@@ -121,10 +121,9 @@ def posrednikovnetSdam():
                 x = {"type": "owner", 'room_num': room, 'metro': metro, 'pics': allPhoto,
                      "cost": payment, "floor": floor, "contacts": dict(phone=ph, person_name=None), "loc": "",
                      "url": url, "date": dat, "area": area, "adr": str(distr) + " " + str(street), "descr": descript}
-                try:
-                    yield x
-                except:
-                    alertExc()
+
+                logger.info("One more renter with PosrednikovNet")
+                yield x
 
 
 
@@ -213,8 +212,6 @@ def posrednikovnetSnimu():
                 x = {'type': "renter", 'room_num': room, 'metro': metro,
                      "cost": payment, "contacts": dict(phone=ph, person_name=None), "loc": "",
                      "url": url, "date": dat, "adr": str(distr), "descr": descript, "pics": None}
-                try:
-                    yield x
-                except:
-                    alertExc()
-                print('[+]')
+
+                logger.info("One more renter with PosrednikovNet")
+                yield x
