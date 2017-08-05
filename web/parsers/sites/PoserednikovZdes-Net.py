@@ -1,4 +1,7 @@
+from . import *
+
 def posrednikovnetSdam():
+
     def delliter(stri):
         while True:
             l = stri.find('<')
@@ -13,8 +16,6 @@ def posrednikovnetSdam():
                 break
         return stri
 
-    p = Parse('posrednikovNet')
-    counter = 0
     u = 'http://msk.posrednikovzdes.net/adv.php?city=73&oper=3'
     text = requests.get(u).text
     pages = str(text)[str(text).find('Страницы'):]
@@ -130,21 +131,15 @@ def posrednikovnetSdam():
                      "cost": payment, "floor": floor, "contacts": dict(phone=ph, person_name=None), "loc": "",
                      "url": url, "date": dat, "area": area, "adr": str(distr) + " " + str(street), "descr": descript}
                 try:
-                    p.append(x)
+                    yield x
                 except:
                     alertExc()
 
-                counter += 1
-                p.write_status(counter)
                 # print('[+]')
-        time.sleep(1)
-    p.add_date()
-    del p
 
 
 # ---------------------------------------------SNIMU------------------------------------------------
 
-@tgExcnoargs
 def posrednikovnetSnimu():
     def delliter(stri):
         while True:
@@ -160,8 +155,6 @@ def posrednikovnetSnimu():
                 break
         return stri
 
-    p = Parse('posrednikovNet')
-    counter = 0
     u = 'http://msk.posrednikovzdes.net/adv.php?city=73&oper=4'
     text = requests.get(u).text
     pages = str(text)[str(text).find('Страницы'):]
@@ -253,12 +246,7 @@ def posrednikovnetSnimu():
                      "cost": payment, "contacts": dict(phone=ph, person_name=None), "loc": "",
                      "url": url, "date": dat, "adr": str(distr), "descr": descript, "pics": None}
                 try:
-                    p.append_snimu(x)
+                    yield x
                 except:
                     alertExc()
-                counter += 1
-                p.write_status(counter)
                 print('[+]')
-                # time.sleep(1)
-    p.add_date()
-    del p
