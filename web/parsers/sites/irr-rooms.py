@@ -81,7 +81,7 @@ def get_page_data(html, url):
     # room_num
     room_num = 0
 
-    out = {"metro": metro, "descr": descr, "area": area, "cost": cost, "date": date, "adr": adr, "contacts": contacts,
+    out = {"type": "owner", "metro": metro, "descr": descr, "area": area, "cost": cost, "date": date, "adr": adr, "contacts": contacts,
            "room_num": room_num, "pics": pics, "url": url}
     return out
 

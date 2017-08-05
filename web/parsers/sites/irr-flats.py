@@ -47,6 +47,7 @@ def get_page_data(html, url):
     #date
     date = data["params"]["date_create"].split()[0].split('-')
     date = '.'.join(list(reversed(date)))
+    date = datetime.strptime(date, '%d.%m.%Y')
 
     #id
     id = data["id"]
@@ -71,7 +72,7 @@ def get_page_data(html, url):
             break
 
 
-    out = {"metro": metro, "descr": descr, "area": area, "cost": cost, "date": date, "adr": adr, "contacts": contacts, "room_num": room_num, "pics": pics, "url": url}
+    out = {"type": "owner", "metro": metro, "descr": descr, "area": area, "cost": cost, "date": date, "adr": adr, "contacts": contacts, "room_num": room_num, "pics": pics, "url": url}
     return out
 
 
