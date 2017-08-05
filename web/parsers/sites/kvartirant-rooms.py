@@ -41,7 +41,6 @@ def get_page_data(html, url):
     except:
         pass
 
-
     # Room number
     room_num = 0
 
@@ -77,7 +76,7 @@ def get_page_data(html, url):
         pics.append('http://www.kvartirant.ru' + li.find('a').get('href'))
 
     # loc
-    loc = []
+    loc = None
     if not adr or adr == '-':
         temp = str(soup.find_all('script', type='text/javascript')[-1])
         sr = temp.find("ymaps.geocode('")
