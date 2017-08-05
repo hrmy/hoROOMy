@@ -8,8 +8,6 @@ def parse(**kwargs):
 
     url = dict()
 
-    p = Parse('bezPosrednikov')
-
     url['owners table'] = 'http://snimi-bez-posrednikov.ru/' \
                           'snyat-kvartiru?' \
                           'price=%s&' \
@@ -171,8 +169,7 @@ def parse(**kwargs):
         for page in range(pages + 1):
 
             logger.info('bezPosrednikov is on page %d:' % page)
-            p.write_status(page)
-
+            
             try:
                 full_url = '%s%d' % (b_url, page)
                 print(full_url)
@@ -216,8 +213,3 @@ def parse(**kwargs):
 
     for b_url in [url['renters table'], url['owners table']]:  # url['room table']]:
         yield parseOwnerList(b_url)
-
-    p.add_date()
-    del p
-
-
