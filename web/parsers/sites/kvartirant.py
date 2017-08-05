@@ -112,7 +112,7 @@ def get_objects_group(html):
     return groups
 
 
-def kvartir(maxprice):
+def kvartir(**kwargs):
     maxprice = int(kwargs.get('maxprice', 55000))
     logger = kwargs['logger']
 
