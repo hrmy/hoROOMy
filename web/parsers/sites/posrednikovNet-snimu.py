@@ -44,11 +44,16 @@ def parse(**kwargs):
                 dat = re.sub(r'\d\d:\d\d:\d\d', '', dat)
 
                 if "Сегодня" in dat:
-                    dat = datetimedate.today().strftime("%d.%m.%Y")
+                    dat = datetimedate.today()
                 elif "Вчера" in dat:
                     yesterday = datetimedate.today() - timedelta(1)
-                    dat = yesterday.strftime("%d.%m.%Y")
-                dat = datetime.strptime(dat, '%d.%m.%Y')
+                    dat = yesterday
+                else:
+                    try:
+                        dat = datetime.strptime(dat, '%d.%m.%Y')
+                    except:
+                        logger.error("posrednikovNet-snimu: WRONG DATETIME")
+                        dat = datetime.today()
 
                 obj = delliter(str(td[2]))
                 obj = obj.split('\n')
