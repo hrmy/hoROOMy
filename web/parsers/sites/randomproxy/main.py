@@ -1,14 +1,15 @@
 import requests
 from random import choice
-
+import os
 from .log import log
 
+os.chdir(os.path.dirname(__file__))
 
 def get_proxy():
 
-    with open('randomproxy/http_proxies.txt', 'r') as f:
+    with open('http_proxies.txt', 'r') as f:
         http_proxies = f.read().split('\n')
-    with open('randomproxy/https_proxies.txt', 'r') as f:
+    with open('https_proxies.txt', 'r') as f:
         https_proxies = f.read().split('\n')
 
     proxy = {'http': 'http://' + choice(http_proxies),
@@ -18,7 +19,7 @@ def get_proxy():
 
 def get_useragent():
 
-    with open('randomproxy/headers.txt', 'r') as f:
+    with open('headers.txt', 'r') as f:
         useragents = f.read().split('\n')
 
     useragent = {'User-Agent': choice(useragents)}

@@ -1,7 +1,9 @@
+import os
 from time import time, ctime
 
-tab = chr(9)
+os.chdir(os.path.dirname(__file__))
 
+tab = chr(9)
 
 def log(message, head = '', _print = False):
     message = str(message)
@@ -11,11 +13,11 @@ def log(message, head = '', _print = False):
 
     message = ctime(time()) + tab + head + ':' + tab + message + '\n'
 
-    with open('randomproxy/log.txt', 'a') as logfile:
+    with open('log.txt', 'a') as logfile:
         logfile.write(message)
 
 
 def clearlog():
-    with open('randomproxy/log.txt', 'w') as logfile:
+    with open('log.txt', 'w') as logfile:
         a = 1
     log('logfile cleared')

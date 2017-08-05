@@ -363,3 +363,136 @@ Fri Aug  4 14:39:19 2017	proxyparser:	http://sitespy.ru: 403
 Fri Aug  4 14:39:20 2017	proxyparser:	https://pythonworld.ru: HTTPSConnectionPool(host='pythonworld.ru', port=443): Max retries exceeded with url: / (Caused by ProxyError('Cannot connect to proxy.', OSError('Tunnel connection failed: 403 Forbidden',)))
 Fri Aug  4 14:39:20 2017	:	
 Fri Aug  4 14:39:20 2017	proxyparser:	Checking 7/49 proxy: 45.77.26.58:3128
+Sat Aug  5 14:00:37 2017	main.get:	GET http://rentooki.ru/moscow/?page=1
+Sat Aug  5 14:00:37 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/headers.txt'
+Sat Aug  5 14:00:37 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/headers.txt'
+Sat Aug  5 14:00:37 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/headers.txt'
+Sat Aug  5 14:00:37 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/headers.txt'
+Sat Aug  5 14:00:37 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/headers.txt'
+Sat Aug  5 14:00:37 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/headers.txt'
+Sat Aug  5 14:00:37 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/headers.txt'
+Sat Aug  5 14:00:37 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/headers.txt'
+Sat Aug  5 14:00:37 2017	main.get:	proxie did not work 7 times, returning request made only with headers
+Sat Aug  5 14:00:37 2017	main.get:	[Errno 2] No such file or directory: 'randomproxy/headers.txt'
+Sat Aug  5 14:00:37 2017	main.get:	request caused an error, returning None
+Sat Aug  5 14:07:18 2017	main.get:	GET http://rentooki.ru/moscow/?page=1
+Sat Aug  5 14:07:18 2017	main.get:	proxy = {'http': 'http://83.64.253.168:80', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:07:18 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET CLR 2.0.50727; Media Center PC 6.0)'}
+Sat Aug  5 14:07:30 2017	main.get:	success
+Sat Aug  5 14:07:30 2017	main.get:	GET http://rentooki.ru/moscow/room/2128707
+Sat Aug  5 14:07:30 2017	main.get:	proxy = {'http': 'http://118.193.142.61:3128', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:07:30 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0; .NET CLR 2.0.50727; SLCC2; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Zune 4.0; Tablet PC 2.0; InfoPath.3; .NET4.0C; .NET4.0E)'}
+Sat Aug  5 14:08:12 2017	main.get:	HTTPConnectionPool(host='118.193.142.61', port=3128): Read timed out.
+Sat Aug  5 14:08:12 2017	main.get:	unsuccess
+Sat Aug  5 14:08:12 2017	:	
+Sat Aug  5 14:08:12 2017	main.get:	proxy = {'http': 'http://83.64.253.168:80', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:08:12 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; chromeframe/11.0.696.57)'}
+Sat Aug  5 14:08:27 2017	main.get:	HTTPConnectionPool(host='83.64.253.168', port=80): Max retries exceeded with url: http://rentooki.ru/moscow/room/2128707 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000001D1D48FA630>, 'Connection to 83.64.253.168 timed out. (connect timeout=15)'))
+Sat Aug  5 14:08:27 2017	main.get:	unsuccess
+Sat Aug  5 14:08:27 2017	:	
+Sat Aug  5 14:08:27 2017	main.get:	proxy = {'http': 'http://163.121.188.2:8080', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:08:27 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)'}
+Sat Aug  5 14:08:29 2017	main.get:	success
+Sat Aug  5 14:08:29 2017	main.get:	GET http://rentooki.ru/moscow/room/2128696
+Sat Aug  5 14:08:29 2017	main.get:	proxy = {'http': 'http://83.64.253.168:80', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:08:29 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; chromeframe/11.0.696.57)'}
+Sat Aug  5 14:08:44 2017	main.get:	HTTPConnectionPool(host='83.64.253.168', port=80): Max retries exceeded with url: http://rentooki.ru/moscow/room/2128696 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000001D1D4972EB8>, 'Connection to 83.64.253.168 timed out. (connect timeout=15)'))
+Sat Aug  5 14:08:44 2017	main.get:	unsuccess
+Sat Aug  5 14:08:44 2017	:	
+Sat Aug  5 14:08:44 2017	main.get:	proxy = {'http': 'http://83.64.253.168:80', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:08:44 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (Windows; U; MSIE 9.0; WIndows NT 9.0; en-US))'}
+Sat Aug  5 14:08:59 2017	main.get:	HTTPConnectionPool(host='83.64.253.168', port=80): Max retries exceeded with url: http://rentooki.ru/moscow/room/2128696 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000001D1D498B630>, 'Connection to 83.64.253.168 timed out. (connect timeout=15)'))
+Sat Aug  5 14:08:59 2017	main.get:	unsuccess
+Sat Aug  5 14:08:59 2017	:	
+Sat Aug  5 14:08:59 2017	main.get:	proxy = {'http': 'http://12.216.122.7:8080', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:08:59 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727) 3gpp-gba UNTRUSTED/1.0'}
+Sat Aug  5 14:09:00 2017	main.get:	HTTPConnectionPool(host='12.216.122.7', port=8080): Max retries exceeded with url: http://rentooki.ru/moscow/room/2128696 (Caused by ProxyError('Cannot connect to proxy.', ConnectionResetError(10054, 'Удаленный хост принудительно разорвал существующее подключение', None, 10054, None)))
+Sat Aug  5 14:09:00 2017	main.get:	unsuccess
+Sat Aug  5 14:09:00 2017	:	
+Sat Aug  5 14:09:00 2017	main.get:	proxy = {'http': 'http://12.216.122.7:8080', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:09:00 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0; .NET CLR 2.0.50727; SLCC2; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Zune 4.0; Tablet PC 2.0; InfoPath.3; .NET4.0C; .NET4.0E)'}
+Sat Aug  5 14:09:00 2017	main.get:	HTTPConnectionPool(host='12.216.122.7', port=8080): Max retries exceeded with url: http://rentooki.ru/moscow/room/2128696 (Caused by ProxyError('Cannot connect to proxy.', ConnectionResetError(10054, 'Удаленный хост принудительно разорвал существующее подключение', None, 10054, None)))
+Sat Aug  5 14:09:00 2017	main.get:	unsuccess
+Sat Aug  5 14:09:00 2017	:	
+Sat Aug  5 14:09:00 2017	main.get:	proxy = {'http': 'http://163.121.188.2:8080', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:09:00 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; chromeframe/11.0.696.57)'}
+Sat Aug  5 14:09:06 2017	main.get:	success
+Sat Aug  5 14:09:06 2017	main.get:	GET http://rentooki.ru/moscow/room/2128699
+Sat Aug  5 14:09:06 2017	main.get:	proxy = {'http': 'http://163.121.188.2:8080', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:09:06 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0)'}
+Sat Aug  5 14:09:09 2017	main.get:	success
+Sat Aug  5 14:09:10 2017	main.get:	GET http://rentooki.ru/moscow/room/2128701
+Sat Aug  5 14:09:10 2017	main.get:	proxy = {'http': 'http://118.193.142.61:3128', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:09:10 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; chromeframe/12.0.742.112)'}
+Sat Aug  5 14:09:28 2017	main.get:	HTTPConnectionPool(host='118.193.142.61', port=3128): Read timed out. (read timeout=15)
+Sat Aug  5 14:09:28 2017	main.get:	unsuccess
+Sat Aug  5 14:09:28 2017	:	
+Sat Aug  5 14:09:28 2017	main.get:	proxy = {'http': 'http://163.121.188.2:8080', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:09:28 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; yie8)'}
+Sat Aug  5 14:09:29 2017	main.get:	success
+Sat Aug  5 14:09:29 2017	main.get:	GET http://rentooki.ru/moscow/1flat/2128685
+Sat Aug  5 14:09:29 2017	main.get:	proxy = {'http': 'http://12.216.122.7:8080', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:09:29 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; Media Center PC 6.0; InfoPath.3; MS-RTC LM 8; Zune 4.7)'}
+Sat Aug  5 14:09:45 2017	main.get:	HTTPConnectionPool(host='12.216.122.7', port=8080): Read timed out. (read timeout=15)
+Sat Aug  5 14:09:45 2017	main.get:	unsuccess
+Sat Aug  5 14:09:45 2017	:	
+Sat Aug  5 14:09:45 2017	main.get:	proxy = {'http': 'http://83.64.253.168:80', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:09:45 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)'}
+Sat Aug  5 14:09:59 2017	main.get:	success
+Sat Aug  5 14:09:59 2017	main.get:	GET http://rentooki.ru/moscow/2flat/2128585
+Sat Aug  5 14:09:59 2017	main.get:	proxy = {'http': 'http://163.121.188.2:8080', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:09:59 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0; chromeframe/11.0.696.57)'}
+Sat Aug  5 14:10:00 2017	main.get:	success
+Sat Aug  5 14:10:00 2017	main.get:	GET http://rentooki.ru/moscow/2flat/2128573
+Sat Aug  5 14:10:00 2017	main.get:	proxy = {'http': 'http://83.64.253.168:80', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:10:00 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/4.0; GTB7.4; InfoPath.1; SV1; .NET CLR 2.8.52393; WOW64; en-US)'}
+Sat Aug  5 14:10:15 2017	main.get:	HTTPConnectionPool(host='83.64.253.168', port=80): Max retries exceeded with url: http://rentooki.ru/moscow/2flat/2128573 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000001D1D4B3B978>, 'Connection to 83.64.253.168 timed out. (connect timeout=15)'))
+Sat Aug  5 14:10:15 2017	main.get:	unsuccess
+Sat Aug  5 14:10:15 2017	:	
+Sat Aug  5 14:10:15 2017	main.get:	proxy = {'http': 'http://118.193.142.61:3128', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:10:15 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; chromeframe/12.0.742.112)'}
+Sat Aug  5 14:10:46 2017	main.get:	HTTPConnectionPool(host='118.193.142.61', port=3128): Read timed out.
+Sat Aug  5 14:10:46 2017	main.get:	unsuccess
+Sat Aug  5 14:10:46 2017	:	
+Sat Aug  5 14:10:46 2017	main.get:	proxy = {'http': 'http://83.64.253.168:80', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:10:46 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0)'}
+Sat Aug  5 14:11:01 2017	main.get:	success
+Sat Aug  5 14:11:01 2017	main.get:	GET http://rentooki.ru/moscow/room/2128569
+Sat Aug  5 14:11:01 2017	main.get:	proxy = {'http': 'http://118.193.142.61:3128', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:11:01 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)'}
+Sat Aug  5 14:12:01 2017	main.get:	HTTPConnectionPool(host='118.193.142.61', port=3128): Read timed out.
+Sat Aug  5 14:12:01 2017	main.get:	unsuccess
+Sat Aug  5 14:12:01 2017	:	
+Sat Aug  5 14:12:01 2017	main.get:	proxy = {'http': 'http://12.216.122.7:8080', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:12:01 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; yie8)'}
+Sat Aug  5 14:12:19 2017	main.get:	HTTPConnectionPool(host='12.216.122.7', port=8080): Read timed out. (read timeout=15)
+Sat Aug  5 14:12:19 2017	main.get:	unsuccess
+Sat Aug  5 14:12:19 2017	:	
+Sat Aug  5 14:12:19 2017	main.get:	proxy = {'http': 'http://163.121.188.2:8080', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:12:19 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.2; .NET CLR 1.1.4322; .NET4.0C; Tablet PC 2.0)'}
+Sat Aug  5 14:12:20 2017	main.get:	success
+Sat Aug  5 14:12:20 2017	main.get:	GET http://rentooki.ru/moscow/room/2128566
+Sat Aug  5 14:12:20 2017	main.get:	proxy = {'http': 'http://118.193.142.61:3128', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:12:20 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/4.0; GTB7.4; InfoPath.3; SV1; .NET CLR 3.1.76908; WOW64; en-US)'}
+Sat Aug  5 14:12:47 2017	main.get:	HTTPConnectionPool(host='118.193.142.61', port=3128): Read timed out.
+Sat Aug  5 14:12:47 2017	main.get:	unsuccess
+Sat Aug  5 14:12:47 2017	:	
+Sat Aug  5 14:12:47 2017	main.get:	proxy = {'http': 'http://83.64.253.168:80', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:12:47 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)'}
+Sat Aug  5 14:13:02 2017	main.get:	HTTPConnectionPool(host='83.64.253.168', port=80): Max retries exceeded with url: http://rentooki.ru/moscow/room/2128566 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000001D1D490E208>, 'Connection to 83.64.253.168 timed out. (connect timeout=15)'))
+Sat Aug  5 14:13:02 2017	main.get:	unsuccess
+Sat Aug  5 14:13:02 2017	:	
+Sat Aug  5 14:13:02 2017	main.get:	proxy = {'http': 'http://83.64.253.168:80', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:13:02 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0)'}
+Sat Aug  5 14:13:13 2017	main.get:	success
+Sat Aug  5 14:13:13 2017	main.get:	GET http://rentooki.ru/moscow/1flat/2128562
+Sat Aug  5 14:13:13 2017	main.get:	proxy = {'http': 'http://83.64.253.168:80', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:13:13 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)'}
+Sat Aug  5 14:13:21 2017	main.get:	success
+Sat Aug  5 14:13:21 2017	main.get:	GET http://rentooki.ru/moscow/room/2128563
+Sat Aug  5 14:13:21 2017	main.get:	proxy = {'http': 'http://83.64.253.168:80', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:13:21 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.2; .NET CLR 1.1.4322; .NET4.0C; Tablet PC 2.0)'}
+Sat Aug  5 14:13:27 2017	main.get:	success
+Sat Aug  5 14:13:27 2017	main.get:	GET http://rentooki.ru/moscow/1flat/2128558
+Sat Aug  5 14:13:27 2017	main.get:	proxy = {'http': 'http://83.64.253.168:80', 'https': 'https://118.193.142.61:3128'}
+Sat Aug  5 14:13:27 2017	main.get:	useragent = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; FunWebProducts)'}
