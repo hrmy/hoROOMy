@@ -1,5 +1,4 @@
 from . import *
-from celery import shared_task
 
 
 def parse(**kwargs):
