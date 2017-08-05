@@ -203,17 +203,19 @@ def parse(**kwargs):
                     flat = parseOwner(advert_url)
                     try:
                         flat['date'] = tr.find('div', {'class': 'date'}).text
+
                         if b_url == url['owners table']:
-                            p.append(flat)
+                            flat['type'] = "owner"
                         else:
-                            p.append_snimu(flat)
+                            flat['type'] = "renter"
+
+                        yield flat
+
                     except:
                         logger.error('Error in bezPosrednikov -- writing to db!')
-                        pass
-
 
     for b_url in [url['renters table'], url['owners table']]:  # url['room table']]:
-        parseOwnerList(b_url)
+        yield parseOwnerList(b_url)
 
     p.add_date()
     del p
