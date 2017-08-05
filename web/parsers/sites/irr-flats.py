@@ -103,7 +103,4 @@ def parse(**kwargs):
                 yield data
                 print("Current_page: " + str(page))
             except:
-                alertExc()
-
-    p.add_date()
-    del p
+                logger.error("irr-flats Error")
