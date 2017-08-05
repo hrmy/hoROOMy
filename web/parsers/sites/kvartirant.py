@@ -89,7 +89,7 @@ def get_page_data(html, url):
             i += 1
         loc = temp[start:start + i - 1].split()
 
-    data = {"cost": cost, "date": date, "contacts": contacts, "pics": pics, "descr": descr, "adr": adr, "loc": loc,
+    data = {"type": "owner", "cost": cost, "date": date, "contacts": contacts, "pics": pics, "descr": descr, "adr": adr, "loc": loc,
             "metro": metro, "area": area, "room_num": room_num, "url": url}
     return data
 
@@ -142,7 +142,7 @@ def parse(**kwargs):
                         logger.info('Kvartirant -- Success')
                     else:
                         logger.info('Kvartirant -- Daily')  # | room_num more than 3 rooms | cost more than maxprice')
-                except Exception as e:
+                except:
                     logger.error("Some error in kvartirant")
 
     logger.info('KVARTIRANT Done!')
