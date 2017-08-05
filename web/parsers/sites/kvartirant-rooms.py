@@ -143,5 +143,3 @@ def parse(**kwargs):
                     logger.info('Kvartirant-rooms: Daily')  # | room_num more than 3 rooms | cost more than maxprice')
 
     print('Done!')
-
-    realestate()
