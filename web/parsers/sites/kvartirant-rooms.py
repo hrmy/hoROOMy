@@ -116,8 +116,10 @@ def get_objects_group(html):
     return groups
 
 
-def realestate():
-    maxprice = 30000
+def parse(**kwargs):
+    maxprice = kwargs.get('maxprice', 55000)
+    logger = kwargs['logger']
+
     base_url = 'http://www.kvartirant.ru/bez_posrednikov/Moskva/sniat-komnatu/'
     params = '&cost_limit={0}'.format(maxprice)
     template = 'http://www.kvartirant.ru'
@@ -136,7 +138,7 @@ def realestate():
                 page_data = get_page_data(temp_html, template + url)
                 if page_data:
                     yield page_data
-                    print('Success')
+                    logger.info('Success')
                 else:
                     print('Daily')  # | room_num more than 3 rooms | cost more than maxprice')
 
