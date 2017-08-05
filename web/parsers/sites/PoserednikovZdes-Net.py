@@ -17,8 +17,6 @@ def delliter(stri):
 
 
 def posrednikovnetSdam(**kwargs):
-
-    maxprice = int(kwargs.get('maxprice', 55000))
     logger = kwargs['logger']
 
     u = 'http://msk.posrednikovzdes.net/adv.php?city=73&oper=3'
