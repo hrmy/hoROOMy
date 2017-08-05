@@ -1,4 +1,11 @@
-def bez_posrednikov(maxprice):
+from . import *
+
+
+def parse(**kwargs):
+
+    maxprice = kwargs.get('maxprice', 55000)
+    logger = kwargs['logger']
+
     url = dict()
 
     p = Parse('bezPosrednikov')
