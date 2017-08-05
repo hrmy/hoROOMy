@@ -94,7 +94,7 @@ def get_page_data(html, url):
     except:
         area = 0
 
-    data = {"cost": cost, "date": date, "contacts": contacts, "pics": pics, "descr": descr, "adr": adr, "loc": loc,
+    data = {"type": "owner", "cost": cost, "date": date, "contacts": contacts, "pics": pics, "descr": descr, "adr": adr, "loc": loc,
             "metro": metro, "area": area, "room_num": room_num, "url": url}
     return data
 
@@ -138,9 +138,9 @@ def parse(**kwargs):
                 page_data = get_page_data(temp_html, template + url)
                 if page_data:
                     yield page_data
-                    logger.info('Success')
+                    logger.info('Kvartirant-rooms: one more owner')
                 else:
-                    print('Daily')  # | room_num more than 3 rooms | cost more than maxprice')
+                    logger.info('Kvartirant-rooms: Daily')  # | room_num more than 3 rooms | cost more than maxprice')
 
     print('Done!')
 
