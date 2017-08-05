@@ -89,7 +89,6 @@ def parse(**kwargs):
     base_url = r"http://irr.ru/real-estate/rent/moskva-region/moskva-gorod/search/boundary_in_rooms=2,1,3/price=%20%D0%B4%D0%BE%20" + str(maxprice) + "%20000/rent_period=3674653711/"
     #url = 'http://irr.ru/real-estate/apartments-sale/secondary/3-komn-kvartira-kovrovyy-mkr-advert642695870.html'
     html = get_html(base_url)
-    out_data = []
     total_pages = get_total_pages(html)
     for page in range(total_pages)[1:]:
         url = template + str(page) + "/"

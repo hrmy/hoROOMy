@@ -42,7 +42,6 @@ def get_page_data(html, url):
     descr = data["description"].replace(r'\n', '')
 
     # area
-    area = 'NULL'
     try:
         temp = soup.find_all("div", class_="siteBody__inner")[1].find("div", class_="productPage__infoColumns").find(
             "ul").find_all("li", class_="productPage__infoColumnBlockText")
@@ -51,7 +50,7 @@ def get_page_data(html, url):
                 area = i.text.split(":")[1].strip().split()[0]
                 break
     except:
-        area = 0
+        area = None
 
     # cost
     try:
@@ -62,6 +61,7 @@ def get_page_data(html, url):
     # date
     date = data["params"]["date_create"].split()[0].split('-')
     date = '.'.join(list(reversed(date)))
+    date = datetime.strptime(date, '%d.%m.%Y')
 
     # id
     id = data["id"]
@@ -101,7 +101,6 @@ def parse(**kwargs):
     base_url = r"http://irr.ru/real-estate/rooms-rent/moskva-region/moskva-gorod/search/price=%20%D0%B4%D0%BE%2030%20000/"
     #url = 'http://irr.ru/real-estate/apartments-sale/secondary/3-komn-kvartira-kovrovyy-mkr-advert642695870.html'
     html = get_html(base_url)
-    out_data = []
     total_pages = get_total_pages(html)
     for page in range(total_pages)[1:]:
         url = template + str(page) + "/"
