@@ -156,7 +156,9 @@ def parse(**kwargs):
                             floor = floor[floor.find(" ") + 1:]
                             flat_id = j["id"]
                         url = link_template + flat_id
-                        loc = i.split().reverse()
+                        logger.info("Current loc %s" % i)
+                        loc = i.split()
+                        loc = loc.reverse()
 
                         soup = getsoup(url)
                         all_pics = getpics(soup)
@@ -167,6 +169,8 @@ def parse(**kwargs):
                         descr = getdescr(soup)
                         person_name = getpersonname(soup)
                         date = getposttime(soup)
+
+                        logger.info("Current ADR %s" % adr)
 
                         x = {'type': "owner", 'room_num': room_num, 'metro': all_metro, 'pics': all_pics,
                              "cost": price, "floor": floor,
