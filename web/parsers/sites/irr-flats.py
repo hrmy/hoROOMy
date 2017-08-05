@@ -72,7 +72,7 @@ def get_page_data(html, url):
             break
 
 
-    out = {"type": "owner", "metro": metro, "descr": descr, "area": area, "cost": cost, "date": date, "adr": adr, "contacts": contacts, "room_num": room_num, "pics": pics, "url": url}
+    out = {"type": "owner", "metro": metro, "descr": descr, "area": area, "loc": None, "cost": cost, "date": date, "adr": adr, "contacts": contacts, "room_num": room_num, "pics": pics, "url": url}
     return out
 
 
