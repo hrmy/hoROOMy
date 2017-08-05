@@ -46,7 +46,6 @@ def posrednikovnetSdam():
                 elif "Вчера" in dat:
                     yesterday = datetimedate.today() - timedelta(1)
                     dat = yesterday.strftime("%d.%m.%Y")
-                # print(dat)
 
                 obj = delliter(str(td[2]))
                 obj = obj.split('\n')
@@ -68,7 +67,6 @@ def posrednikovnetSdam():
                     room = -1
                 elif "Комната" in room:
                     room = 0
-                # print(room, distr, street, metro, sep='||')
 
                 pay = delliter(str(td[3]))
                 pay = re.sub(r'\xa0|\t|\r', '', pay).split('\n')
@@ -86,10 +84,8 @@ def posrednikovnetSdam():
                         payment += '000'
                 elif 'руб.' in payment:
                     payment = re.sub(r'руб\.', '', payment)
-                # print(payment)
 
                 floor = delliter(str(td[4]))
-                # print(floor)
 
                 area = delliter(str(td[5]))
                 if "Общ" in area:
@@ -122,7 +118,7 @@ def posrednikovnetSdam():
                         uu = 'http://www.posrednikovzdes.net/foto/files2/%s_b_%s.jpeg' % (idd, a)
                         allPhoto.append(uu)
 
-                x = {'room_num': room, 'metro': metro, 'pics': allPhoto,
+                x = {"type": "owner", 'room_num': room, 'metro': metro, 'pics': allPhoto,
                      "cost": payment, "floor": floor, "contacts": dict(phone=ph, person_name=None), "loc": "",
                      "url": url, "date": dat, "area": area, "adr": str(distr) + " " + str(street), "descr": descript}
                 try:
@@ -214,7 +210,7 @@ def posrednikovnetSnimu():
                         ph = z[z.find('+'):]
                         ph = ph[:17]
 
-                x = {'room_num': room, 'metro': metro,
+                x = {'type': "renter", 'room_num': room, 'metro': metro,
                      "cost": payment, "contacts": dict(phone=ph, person_name=None), "loc": "",
                      "url": url, "date": dat, "adr": str(distr), "descr": descript, "pics": None}
                 try:
