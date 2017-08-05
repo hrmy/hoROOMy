@@ -148,7 +148,7 @@ def parse(**kwargs):
             flat['contacts'] = {'phone': contacts}
             flat['pics'] = photos
             flat['url'] = url['home'] + advert_url
-            flat['loc'] = []
+            flat['loc'] = None
 
             return flat
 
