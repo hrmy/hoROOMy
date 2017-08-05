@@ -1,174 +1,150 @@
 from . import *
 
 
+def get_html(url):
+    r = requests.get(url)
+    print(r, end=' ')
+    return r.text
+
+
+def get_page_data(html, url):
+    print(url)
+
+    # max_price = 30000
+
+    soup = BeautifulSoup(html, 'lxml')
+    base = soup.find('div', class_='boxed-container').find_all('div', class_='bg_lightgray')[0].find('div',
+                                                                                                     class_='container').find(
+        'div', class_='col-md-8 col-obj').find('div', class_='row')
+
+    # f
+    area = ''
+    metro = ''
+    adr = ''
+
+    temp = base.find('div', class_='col-xs-12 obj-info').find_all('span')
+    for i in range(len(temp)):
+        if 'Площадь' in temp[i].text:
+            try:
+                area = float(temp[i].text.split()[1])
+            except:
+                area = '-'
+        elif 'Метро' in temp[i].text:
+            metro = temp[i].text.split('\u2022')
+            metro[0] = ' '.join(metro[0].split()[1:])
+        elif 'Адрес' in temp[i].text:
+            adr = temp[i].text.split()[1:]
+            adr = ' '.join(adr)
+
+    # print(area, metro, adr)
+
+    # Определяем, посуточная аренда или нет
+    try:
+        isDaily = base.find('div', class_='col-xs-12 obj-info').find_all('span', class_='red')[1].text
+        if isDaily == 'ПОСУТОЧНАЯ АРЕНДА':
+            return False
+    except:
+        pass
+
+    # prepay
+    # prepay = base.find('div', class_='col-xs-12 obj-info').find_all('span')[1].text
+    # if 'Предоплата' in prepay or 'Новостройка' in prepay:
+    #   offset = 1
+    #   temp = base.find('div', class_='col-xs-12 obj-info').find_all('span')[2].text
+    #   if 'Предоплата' in temp or 'Новостройка' in temp:
+    #       offset = 2
+    # else:
+    #   offset = 0
+
+    # Metro
+    # if metro_i:
+    #   metro = base.find('div', class_='col-xs-12 obj-info').find_all('span')[metro_i].text.split('\u2022')#.replace('\u2022','').split()[1:]
+    #   metro[0] = ' '.join(metro[0].split()[1:])
+    # else:
+    #   metro = []
+
+
+    # Room number
+    room_num = int(base.find('div', class_='col-xs-12 obj-info').find('h3').text.split()[2].split('-')[0])
+    # if room_num > 3:
+    #   return False
+
+
+    # Cost
+    cost = base.find('div', class_='col-xs-12 obj-info').find('h3').find('span', class_='text-nowrap red').text
+    cost = cost.split()[1:]
+    cost = int(''.join(cost))
+    # if cost > max_price:
+    #   return False
+
+    # Date
+
+    date = \
+        base.find('div', class_='col-xs-12 col-sm-4 text-center padding_t10 obj-data').text.split()[0].split(':')[1]
+    if (date == 'Сегодня'):
+        date = str(datetime.today()).split()[0].split('-')
+        date = '.'.join(list(reversed(date)))
+    else:
+        date = date.replace('/', '.')
+
+    # Contacts
+    contacts = {'vk': "", 'fb': "", 'email': "", 'phone': ""}
+    phone = base.find('div', class_='col-xs-12 col-sm-8 padding_t10 obj-contact').find('span', class_='red').find(
+        'b').text.split("write('")[-1][:-2]  # Вот такой-вот костыль
+    contacts["phone"] = phone
+
+    # Descr
+    descr = base.find('div', class_='col-xs-12 obj-info').find('p').text
+
+    # Pics
+    pics = []
+    temp = base.find('div', class_='text-center col-xs-12 obj-info').find('div', class_='bxContainer').find(
+        'ul').find_all('li')
+    for li in temp:
+        pics.append(li.find('a').get('href'))
+
+    # loc
+    loc = []
+    if not adr or adr == '-':
+        temp = str(soup.find_all('script', type='text/javascript')[-1])
+        sr = temp.find("ymaps.geocode('")
+        start = sr + 15
+        i = 0
+        ch = ''
+        while ch != "'":
+            ch = temp[start + i]
+            i += 1
+        loc = temp[start:start + i - 1].split()
+
+    data = {"cost": cost, "date": date, "contacts": contacts, "pics": pics, "descr": descr, "adr": adr, "loc": loc,
+            "metro": metro, "area": area, "room_num": room_num, "url": url}
+    return data
+
+
+def get_total_pages(html):
+    soup = BeautifulSoup(html, 'lxml')
+
+    total_pages = soup.find('div', class_='boxed-container').find('div', class_='base-pagination').find('ul',
+                                                                                                        class_='pagination').find(
+        'li', class_='last').find('a').get('data-page')
+
+    return int(total_pages) + 1
+
+
+def get_objects_group(html):
+    soup = BeautifulSoup(html, 'lxml')
+    groups = soup.find('div', class_='boxed-container').find_all('div', class_='bg_lightgray')[0].find('div',
+                                                                                                       class_='container').find_all(
+        'div', class_='col-md-8 col-obj')
+    return groups
+
 def parse(**kwargs):
 
     maxprice = int(kwargs.get('maxprice', 55000))
     logger = kwargs['logger']
 
-    def get_html(url):
-        r = requests.get(url)
-        print(r, end=' ')
-        return r.text
-
-    def get_page_data(html, url):
-
-        print(url)
-
-        # max_price = 30000
-
-        soup = BeautifulSoup(html, 'lxml')
-        base = soup.find('div', class_='boxed-container').find_all('div', class_='bg_lightgray')[0].find('div',
-                                                                                                         class_='container').find(
-            'div', class_='col-md-8 col-obj').find('div', class_='row')
-
-        # f
-        area = ''
-        metro = ''
-        adr = ''
-
-        temp = base.find('div', class_='col-xs-12 obj-info').find_all('span')
-        for i in range(len(temp)):
-            if 'Площадь' in temp[i].text:
-                try:
-                    area = float(temp[i].text.split()[1])
-                except:
-                    area = '-'
-            elif 'Метро' in temp[i].text:
-                metro = temp[i].text.split('\u2022')
-                metro[0] = ' '.join(metro[0].split()[1:])
-            elif 'Адрес' in temp[i].text:
-                adr = temp[i].text.split()[1:]
-                adr = ' '.join(adr)
-
-        # print(area, metro, adr)
-
-        # Определяем, посуточная аренда или нет
-        try:
-            isDaily = base.find('div', class_='col-xs-12 obj-info').find_all('span', class_='red')[1].text
-            if isDaily == 'ПОСУТОЧНАЯ АРЕНДА':
-                return False
-        except:
-            pass
-
-        # prepay
-        # prepay = base.find('div', class_='col-xs-12 obj-info').find_all('span')[1].text
-        # if 'Предоплата' in prepay or 'Новостройка' in prepay:
-        #   offset = 1
-        #   temp = base.find('div', class_='col-xs-12 obj-info').find_all('span')[2].text
-        #   if 'Предоплата' in temp or 'Новостройка' in temp:
-        #       offset = 2
-        # else:
-        #   offset = 0
-
-        # Metro
-        # if metro_i:
-        #   metro = base.find('div', class_='col-xs-12 obj-info').find_all('span')[metro_i].text.split('\u2022')#.replace('\u2022','').split()[1:]
-        #   metro[0] = ' '.join(metro[0].split()[1:])
-        # else:
-        #   metro = []
-
-
-        # Room number
-        room_num = int(base.find('div', class_='col-xs-12 obj-info').find('h3').text.split()[2].split('-')[0])
-        # if room_num > 3:
-        #   return False
-
-
-        # Cost
-        cost = base.find('div', class_='col-xs-12 obj-info').find('h3').find('span', class_='text-nowrap red').text
-        cost = cost.split()[1:]
-        cost = int(''.join(cost))
-        # if cost > max_price:
-        #   return False
-
-        # Date
-
-        date = \
-        base.find('div', class_='col-xs-12 col-sm-4 text-center padding_t10 obj-data').text.split()[0].split(':')[1]
-        if (date == 'Сегодня'):
-            date = str(datetime.today()).split()[0].split('-')
-            date = '.'.join(list(reversed(date)))
-        else:
-            date = date.replace('/', '.')
-
-        # Contacts
-        contacts = {'vk': "", 'fb': "", 'email': "", 'phone': ""}
-        phone = base.find('div', class_='col-xs-12 col-sm-8 padding_t10 obj-contact').find('span', class_='red').find(
-            'b').text.split("write('")[-1][:-2]  # Вот такой-вот костыль
-        contacts["phone"] = phone
-
-        # Area
-        # if area_i:
-        #   area = base.find('div', class_='col-xs-12 obj-info').find_all('span')[area_i].text.split()[1]
-        #   if area != '-':
-        #       area = float(area)
-        #       print(area)
-        #   else:
-        #       area = '-'
-        # else:
-        #   area = '-'
-
-
-        # Adr
-        # if adr_i:
-        #   adr = base.find('div', class_='col-xs-12 obj-info').find_all('span')[adr_i].text.split()[1:]
-        #   adr = ' '.join(adr)
-        # else:
-        #   adr = '-'
-        # print(adr)
-
-
-        # Descr
-        descr = base.find('div', class_='col-xs-12 obj-info').find('p').text
-
-        # Pics
-        pics = []
-        temp = base.find('div', class_='text-center col-xs-12 obj-info').find('div', class_='bxContainer').find(
-            'ul').find_all('li')
-        for li in temp:
-            pics.append(li.find('a').get('href'))
-
-        # loc
-        loc = []
-        if not adr or adr == '-':
-            temp = str(soup.find_all('script', type='text/javascript')[-1])
-            sr = temp.find("ymaps.geocode('")
-            start = sr + 15
-            i = 0
-            ch = ''
-            while ch != "'":
-                ch = temp[start + i]
-                i += 1
-            loc = temp[start:start + i - 1].split()
-
-        data = {"cost": cost, "date": date, "contacts": contacts, "pics": pics, "descr": descr, "adr": adr, "loc": loc,
-                "metro": metro, "area": area, "room_num": room_num, "url": url}
-        return data
-
-    def get_total_pages(html):
-        soup = BeautifulSoup(html, 'lxml')
-
-        # try:
-        #   total_pages = soup.find('div', class_ = 'boxed-container').find('div',class_='base-pagination').find('div', class_='container').find('ul').find_all('li')[-1].find('a').text
-        # except Exception as err:
-        #   print(err)
-        #   exit()
-        total_pages = soup.find('div', class_='boxed-container').find('div', class_='base-pagination').find('ul',
-                                                                                                            class_='pagination').find(
-            'li', class_='last').find('a').get('data-page')
-
-        return int(total_pages) + 1
-
-    def get_objects_group(html):
-        soup = BeautifulSoup(html, 'lxml')
-        groups = soup.find('div', class_='boxed-container').find_all('div', class_='bg_lightgray')[0].find('div',
-                                                                                                           class_='container').find_all(
-            'div', class_='col-md-8 col-obj')
-        return groups
 
     def kvartir(maxprice):
-        # maxprice = 30000
         p = Parse('kvartirant')
         base_url = 'http://www.kvartirant.ru/bez_posrednikov/Moskva/sniat-kvartiru/'
         params = '&cost_limit={0}&komnat[]=1&komnat[]=2&komnat[]=3'.format(maxprice)
@@ -198,10 +174,6 @@ def parse(**kwargs):
                             print('Daily')  # | room_num more than 3 rooms | cost more than maxprice')
                     except Exception as e:
                         alertExc()
-                        # del p
-                        # with open('text.txt', 'w', encoding='utf-8') as out_file:
-                        #   out_file.write(str(out))
-                        # break
 
         print('Done!')
         # p = Parse('kvartirant')
