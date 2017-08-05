@@ -115,19 +115,17 @@ def getpersonname(soup):
 def getposttime(soup):
     infa = soup.find("div", {"class": "object_descr_dt_row"})
     if infa is None:
-        posttime = ""
-        return posttime
+        return datetime.today()
     else:
         try:
             posttime = str(infa.find("span", {"class": "object_descr_dt_added"}).a)
             posttime = json.loads(posttime[posttime.find('{'):posttime.rfind('}') + 1])['publication_date']
-            posttime = strftime("%Y-%m-%d %H:%M:%S", gmtime(posttime))
+            posttime = gmtime(posttime)
             return posttime
         except AttributeError:
-            posttime = ""
-            return posttime
+            return datetime.today()
 
-        
+
 def parse(**kwargs):
     logger = kwargs['logger']
 
