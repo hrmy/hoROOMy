@@ -169,7 +169,7 @@ def parse(**kwargs):
         for page in range(pages + 1):
 
             logger.info('bezPosrednikov is on page %d:' % page)
-            
+
             try:
                 full_url = '%s%d' % (b_url, page)
                 print(full_url)
@@ -200,16 +200,15 @@ def parse(**kwargs):
                     flat = parseOwner(advert_url)
                     try:
                         flat['date'] = tr.find('div', {'class': 'date'}).text
-
-                        if b_url == url['owners table']:
-                            flat['type'] = "owner"
-                        else:
-                            flat['type'] = "renter"
-
-                        yield flat
-
                     except:
-                        logger.error('Error in bezPosrednikov -- writing to db!')
+                        flat['date'] = datetime.now()
+
+                    if b_url == url['owners table']:
+                        flat['type'] = "owner"
+                    else:
+                        flat['type'] = "renter"
+
+                    yield flat
 
     for b_url in [url['renters table'], url['owners table']]:  # url['room table']]:
         yield parseOwnerList(b_url)
