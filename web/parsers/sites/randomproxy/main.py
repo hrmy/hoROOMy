@@ -41,7 +41,7 @@ def getpost(url, rtype = 'get', data = None):
     log('GET ' + url, _print=True, head='main.get')
 
     times = 0
-    maxtimes = 7
+    maxtimes = 12
     timeout = 15
 
     while times <= maxtimes:

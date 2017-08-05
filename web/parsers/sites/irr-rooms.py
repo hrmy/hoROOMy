@@ -114,5 +114,5 @@ def parse(**kwargs):
                 if data:
                     yield data
 
-            except:
-                logger.error("irr-rooms Error")
+            except Exception as e:
+                logger.error("irr-rooms Error: %s" %str(e))

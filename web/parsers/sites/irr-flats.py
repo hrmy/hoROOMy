@@ -39,7 +39,10 @@ def get_page_data(html, url):
     descr = data["description"].replace(r'\n','')
 
     #area
-    area = data["params"]["meters-total"]
+    try:
+        area = data["params"]["meters-total"]
+    except:
+        area = None
 
     #cost
     cost = data["params"]["price"]
@@ -103,4 +106,4 @@ def parse(**kwargs):
                 yield data
                 logger.info("Irr-flats current_page: " + str(page))
             except:
-                logger.error("irr-flats Error")
+                logger.error("irr-flats Error %s" %str(e))
