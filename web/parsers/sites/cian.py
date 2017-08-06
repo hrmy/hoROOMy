@@ -118,7 +118,7 @@ def getposttime(soup):
         try:
             posttime = str(infa.find("span", {"class": "object_descr_dt_added"}).a)
             posttime = json.loads(posttime[posttime.find('{'):posttime.rfind('}') + 1])['publication_date']
-            posttime = gmtime(posttime)
+            posttime = datetime.fromtimestamp(posttime)
             return posttime
         except AttributeError:
             return datetime.today()
