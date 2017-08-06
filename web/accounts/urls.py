@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib.auth import views as auth_views
 from .models import Verification
 from . import views
@@ -16,4 +16,7 @@ urlpatterns = [
         {'vn_action': Verification.REG, 'template_name': 'accounts/register_done.html'}, name='register-confirm'),
     url(r'^restore/confirm/(?P<key>.+)/$', views.confirm,
         {'vn_action': Verification.PASS, 'template_name': 'accounts/restore_done.html'}, name='restore-confirm'),
+
+    url(r'^social-auth/creditals/$', views.creditals, name='creditals'),
+    url(r'^social-auth/', include('allauth.urls')),
 ]

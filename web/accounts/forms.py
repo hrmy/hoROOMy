@@ -68,3 +68,8 @@ class SocialNetworksForm(forms.ModelForm):
             'tw': 'Twitter',
             'go': 'Google'
         }
+
+class EmailAndPasswordSetForm(SetPasswordForm):
+    email = forms.EmailField(label='Email')
+    new_password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label='Повтор пароля', widget=forms.PasswordInput)

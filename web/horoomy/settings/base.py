@@ -18,6 +18,7 @@ AUTH_USER_MODEL = 'accounts.User'
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -30,7 +31,16 @@ INSTALLED_APPS = [
     'accounts',
     'core',
     'parsers',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.vk',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -96,7 +106,7 @@ STATICFILES_DIRS = [
 
 # Login settings
 
-LOGIN_REDIRECT_URL = reverse_lazy('home')
+#LOGIN_REDIRECT_URL = reverse_lazy('home')
 LOGIN_URL = reverse_lazy('login')
 LOGOUT_URL = reverse_lazy('logout')
 
@@ -114,3 +124,17 @@ EMAIL_USE_TLS = True
 
 TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django.TemplateBackend'
 TEMPLATED_EMAIL_AUTO_PLAIN = False
+
+# Social auth
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'name'
+ACCOUNT_USERNAME_REQUIRED = False
+SOCIALACCOUNT_PROVIDERS =  {'vk': { 'SCOPE': ['email']}, 'google': {'SCOPE': ['email']}}
+
+SOCIALACCOUNT_ADAPTER = 'accounts.adapter.UserSocialAccountAdapter'
+ACCOUNT_ADAPTER = 'accounts.adapter.UserAccountAdapter'
