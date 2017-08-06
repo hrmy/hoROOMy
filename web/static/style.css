@@ -120,7 +120,7 @@ input, textarea, select {
     font-size: 14px;
 }
 
-input[type=submit], button {
+input[type=submit], button, .btn {
     font-weight: bold;
     border: 0;
     background: #12c064;
@@ -128,6 +128,11 @@ input[type=submit], button {
     padding: 10px 20px;
     font-size: 14px;
     text-transform: uppercase;
+    cursor: pointer;
+}
+
+.btn:hover {
+    color: #fff;
 }
 
 .errorlist {
@@ -376,17 +381,17 @@ img.user-detail {
     display: block;
 }
 
-.btn-generate {
-    padding: 10px;
-    text-decoration: none;
-    height: 50px;
-    background-color: #12c064;
-    font-size: 18px;
-    color: #F4F4F4;
-    border: none;
-    border-radius: 0;
+#search-form {
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.btn-generate:hover {
-    color: #F4F4F4;
+#search-form p {
+    width: auto;
+    margin: 0 10px;
+}
+
+#search-form button {
+    align-self: flex-end;
+    margin: 0 10px;
 }

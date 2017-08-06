@@ -7,15 +7,21 @@
 
     <form action="." method="post" class="form-horizontal">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" value="Готово">Применить</button>
+        <div id="search-form">
+            {{ form.as_p }}
+            <button type="submit" value="Готово">Поиск</button>
+        </div>
     </form>
 
     {% for ad in ads %}
-        <h2 class="object-title">{{ ad.location.address }}</h2>
-        <h3>Количество комнат: {{ ad.rooms }} | Площадь: {{ ad.area }} м<sup>2</sup> | Цена: {{ ad.cost }}</h3>
-        <p>{{ ad.ad.description  }}</p>
-        <!-- url 'generate' ad_id=ad.ad.id -->
-        <a href="/" class="btn-generate">Сгенерировать</a>
+        <h2 class="object-title">{{ ad.flat.location.address }}</h2>
+        <h3>
+            Количество комнат: {{ ad.flat.rooms }} | Площадь: {{ ad.flat.area }} м<sup>2</sup> | Цена: {{ ad.flat.cost }}
+            <a class=".btn" style="float: right;" href="#">{{ ad.flat.metros.all | first }}</a>
+        </h3>
+        <p>{{ ad.description  }}</p>
+        <a href="{% url 'generate' ad_id=ad.id %}" class="btn">Сгенерировать договор</a>
+    {% empty %}
+        <h2 class="object-title">Поиск по заданным параметрам не дал результатов<h2>
     {% endfor %}
 {% endblock %}

@@ -51,7 +51,7 @@ class Flat(models.Model):
     TYPE_CHOICES = {FLAT: 'Flat', ROOM: 'Room', BED: 'Bed'}
     type = models.CharField('type', max_length=1, choices=TYPE_CHOICES.items(), default=FLAT)
 
-    location = AutoOneToOneField(Location, null=True)
+    location = models.OneToOneField(Location, null=True)
     area = models.FloatField('area', null=True, blank=True)
     cost = models.FloatField('cost', null=True, blank=True)
     rooms = models.PositiveSmallIntegerField('rooms', null=True, blank=True)
@@ -77,7 +77,7 @@ class Contacts(models.Model):
         verbose_name = verbose_name_plural = 'Contacts'
 
     def __str__(self):
-        return 'Contacts for {}'.format(self.ad)
+        return 'Contacts for {}'.format(self.name)
 
 
 class Ad(models.Model):
@@ -90,10 +90,10 @@ class Ad(models.Model):
     parser = models.ForeignKey(Parser, null=True, blank=True, related_name='ads')
     raw = models.BooleanField('raw', default=True, blank=True)
 
-    flat = AutoOneToOneField(Flat, null=True, related_name='ad')
+    flat = models.OneToOneField(Flat, null=True, related_name='ad')
     url = models.URLField('url', default='', blank=True)
     description = models.TextField('description', max_length=1024, default='', blank=True)
-    contacts = AutoOneToOneField(Contacts, null=True, related_name='ad')
+    contacts = models.OneToOneField(Contacts, null=True, related_name='ad')
 
     class Meta:
         verbose_name = 'Ad'
