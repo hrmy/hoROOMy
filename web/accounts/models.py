@@ -77,7 +77,7 @@ USER_ROLE_CHOICES = [
 class User(AbstractBaseUser, PermissionsMixin):
     # Стандартные поля (password уже наследован)
     role = models.CharField('role', choices=USER_ROLE_CHOICES, default='0', blank=False, max_length=10)
-    email = models.EmailField('email', unique=True)
+    email = models.EmailField('email', unique=True, null=True)
     name = models.CharField('name', max_length=128, blank=False)
     second_name = models.CharField('second_name', max_length=128, blank=False, default=None)
     # Флажки, нужные для django-admin, ну или просто полезные
@@ -102,7 +102,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = 'Юзеры'
 
     def __str__(self):
-        return self.email
+        return self.name
 
     # Где-то вызываются админом или чем-нибудь еще. Короче нужны
     get_full_name = get_short_name = lambda self: self.name

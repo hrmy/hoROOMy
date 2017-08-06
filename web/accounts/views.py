@@ -92,3 +92,32 @@ def edit_password(request):
     else:
         form = ChangePasswordForm(request.user)
     return render(request, 'accounts/password_edit.html', locals())
+
+@login_required
+def creditals(request):
+    user = request.user
+    isSetPassword = False
+    print(user.check_password(user.password))
+    if user.email:
+        if not user.check_password(user.password):
+            isSetPassword = True
+        else:
+            return redirect('/')
+    if request.method == 'POST':
+        if isSetPassword:
+            form = PasswordSetForm(request.user, request.POST)
+        else:
+            form = EmailAndPasswordSetForm(request.user, request.POST)
+        if form.is_valid():
+            if not isSetPassword:
+                user.email = form.cleaned_data.get('email')
+            user.set_password(form.cleaned_data.get('new_password1'))
+            user.save()
+            return redirect('/')
+    else:
+        if isSetPassword:
+            form = PasswordSetForm(request.user)
+        else:
+            form = EmailAndPasswordSetForm(request.user)
+
+    return render(request, 'accounts/password_set.html', locals())

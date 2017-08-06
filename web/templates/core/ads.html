@@ -4,5 +4,18 @@
 
 {% block content %}
     <h1>Объявления</h1>
-    <p>Тут мы хотели вывести модельки из базы, но вообщем-то от нас этого и не требовали, да и фронта у нас нет...</p>
+
+    <form action="." method="post" class="form-horizontal">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" value="Готово">Применить</button>
+    </form>
+
+    {% for ad in ads %}
+        <h2 class="object-title">{{ ad.location.address }}</h2>
+        <h3>Количество комнат: {{ ad.rooms }} | Площадь: {{ ad.area }} м<sup>2</sup> | Цена: {{ ad.cost }}</h3>
+        <p>{{ ad.ad.description  }}</p>
+        <!-- url 'generate' ad_id=ad.ad.id -->
+        <a href="/" class="btn-generate">Сгенерировать</a>
+    {% endfor %}
 {% endblock %}

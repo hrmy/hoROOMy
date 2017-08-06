@@ -25,9 +25,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-    border-bottom: 1px solid #bbb;
+    border-bottom: 2px solid #bbb;
     padding: 0 0 10px 0;
     margin: 10px 0 20px 0;
+}
+
+.object-title {
+    border-bottom: 1px solid #bbb;
+    padding: 0 0 10px 0;
 }
 
 h2 {
@@ -369,4 +374,19 @@ img.user-detail {
 
 .inline label {
     display: block;
+}
+
+.btn-generate {
+    padding: 10px;
+    text-decoration: none;
+    height: 50px;
+    background-color: #12c064;
+    font-size: 18px;
+    color: #F4F4F4;
+    border: none;
+    border-radius: 0;
+}
+
+.btn-generate:hover {
+    color: #F4F4F4;
 }
