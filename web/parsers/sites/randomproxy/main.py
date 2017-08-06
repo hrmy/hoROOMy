@@ -1,7 +1,6 @@
 import requests
 from random import choice
 import os
-from .log import log
 
 root = os.path.dirname(__file__)
 
@@ -38,7 +37,7 @@ def make_request(url, rtype = 'get', data = None, headers = None, proxies = None
 
 def getpost(url, rtype = 'get', data = None):
     url = str(url)
-    log('GET ' + url, _print=True, head='main.get')
+    print('GET ' + url)
 
     times = 0
     maxtimes = 12
@@ -51,34 +50,34 @@ def getpost(url, rtype = 'get', data = None):
             proxy = get_proxy()
             useragent = get_useragent()
         except Exception as exc:
-            log(str(exc), _print=True, head='main.get')
+            print(str(exc))
             continue
 
-        log('proxy = ' + str(proxy), _print=True, head='main.get')
-        log('useragent = ' + str(useragent), _print=True, head='main.get')
+        print('proxy = ' + str(proxy))
+        print('useragent = ' + str(useragent))
 
         try:
             r = make_request(url, rtype=rtype, data=data, headers=useragent, proxies=proxy, timeout=timeout)
             if (r.status_code == 200):
-                log('success', _print=True, head='main.get')
+                print('success')
                 return r
             else:
-                log('Unsuccess. Request is done, but status code is %d' % r.status_code, head='main.get')
+                print('Unsuccess. Request is done, but status code is %d' % r.status_code)
         except Exception as exc:
-            log(str(exc), _print=True, head='main.get')
-            log('unsuccess', head='main.get')
+            print(str(exc))
+            print('unsuccess')
 
-        log('', _print=True)
+        #log('', _print=True)
 
-    log('proxie did not work %d times, returning request made only with headers' % maxtimes, head='main.get')
+    print('proxy did not work %d times, returning request made only with headers' % maxtimes)
 
     try:
         useragent = get_useragent()
         r = make_request(url, rtype=rtype, data=data, headers=useragent)
         return r
     except Exception as exc:
-        log(str(exc), head='main.get')
-        log('request caused an error, returning None', head='main.get')
+        print(str(exc))
+        print('request caused an error, returning None')
         return exc
 
 
