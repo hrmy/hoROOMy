@@ -3,7 +3,7 @@ import dj_database_url as db_url
 
 # Basic
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # Security
