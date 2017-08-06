@@ -2,8 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 from celery import shared_task
 
-from .log import log, clearlog
-
 
 timeout = 15
 stats = {}
@@ -13,11 +11,11 @@ def clear_proxy(type = 'all'):
     if (type == 'all' or type == 'http'):
         with open('http_proxies.txt', 'w') as logfile:
             a = 1
-        log('http-proxies cleared', head = 'proxyparser')
+        print('http-proxies cleared')
     if (type == 'all' or type == 'https'):
         with open('https_proxies.txt', 'w') as logfile:
             a = 1
-        log('https-proxies cleared', head = 'proxyparser')
+        print('https-proxies cleared')
 
 
 def add_proxy(proxy, type = 'http'):
@@ -25,14 +23,14 @@ def add_proxy(proxy, type = 'http'):
         with open('http_proxies.txt', 'a') as proxiesfile:
             proxiesfile.write(str(proxy) + '\n')
 
-        log('added http-proxy: ' + proxy, head = 'proxyparser')
+        print('added http-proxy: ' + proxy)
         stats['http'] += 1
 
     elif (type == 'https'):
         with open('https_proxies.txt', 'a') as proxiesfile:
             proxiesfile.write(str(proxy) + '\n')
 
-        log('added https-proxy: ' + proxy, head = 'proxyparser')
+        print('added https-proxy: ' + proxy)
         stats['https'] += 1
 
 
@@ -44,48 +42,47 @@ def parse_proxy():
     stats['http'] = 0
     stats['https'] = 0
 
-    log('Parsing started.', head='proxyparser')
+    print('Parsing started.')
 
     try:
         html = requests.get(url).text
         soup = BeautifulSoup(html, 'lxml')
     except Exception as exc:
-        log(str(exc), True)
+        print(str(exc))
 
     try:
         proxy_table = soup.find('table', {'class': 'htable proxylist'})
         proxy_list = proxy_table.find_all('tr')
         proxy_list = proxy_list[1:-1]
     except Exception as exc:
-        log(str(exc), True)
+        print(str(exc))
 
-    log('Found %d proxies' % len(proxy_list), head = 'proxyparser')
+    print('Found %d proxies' % len(proxy_list))
 
     for number, proxy_element in enumerate(proxy_list):
         try:
             proxy = proxy_element.find('td')
             proxy = proxy.text.strip()
-            log('Checking %d/%d proxy: ' % (number + 1, len(proxy_list)) + str(proxy), _print = True, head = 'proxyparser')
+            print('Checking %d/%d proxy: ' % (number + 1, len(proxy_list)) + str(proxy))
         except Exception as exc:
-            log(str(exc), True)
+            print(str(exc))
 
         try:
             r = requests.get('http://sitespy.ru', proxies={'http': 'http://' + proxy}, timeout = timeout)
-            log('http://sitespy.ru: ' + str(r.status_code), _print = True, head = 'proxyparser')
+            print('http://sitespy.ru: ' + str(r.status_code))
             if (r.status_code == 200):
                 add_proxy(proxy, 'http')
         except Exception as exc:
-            log('http://sitespy.ru: ' + str(exc), _print = True, head = 'proxyparser')
+            print('http://sitespy.ru: ' + str(exc))
 
         try:
             r = requests.get('https://pythonworld.ru', proxies={'https': 'https://' + proxy}, timeout = timeout)
-            log('https://pythonworld.ru: ' + str(r.status_code), _print = True, head = 'proxyparser')
+            print('https://pythonworld.ru: ' + str(r.status_code))
             if (r.status_code == 200):
                 add_proxy(proxy, 'https')
         except Exception as exc:
-            log('https://pythonworld.ru: ' + str(exc), _print = True, head = 'proxyparser')
+            print('https://pythonworld.ru: ' + str(exc))
 
-        log('', _print = True)
+        #log('', _print = True)
 
-    log('Parsing finished. Found %d valid http-proxies and %d valid https-proxies.' % (stats['http'], stats['https']), _print = True, head = 'proxyparser')
-    log('', _print = True)
+    print('Parsing finished. Found %d valid http-proxies and %d valid https-proxies.' % (stats['http'], stats['https']))
