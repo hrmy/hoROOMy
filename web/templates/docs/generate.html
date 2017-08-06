@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Генерация документов{% endblock %}
+
+{% block content %}
+    <h1>Генерация договора аренды</h1>
+    <form action="." method="post" class="form-inline">
+        {% csrf_token %}
+        <div class="flex">
+            <div class="flex-item">
+                <h2>ФИО</h2>
+                {{ initials_form.as_p }}
+            </div>
+            <div class="flex-item">
+                <h2>Паспортные данные</h2>
+                {{ passport_form.as_p }}
+            </div>
+            <div class="flex-item">
+                <h2>Условия аренды</h2>
+                <div class="inline">
+                    {{ rent_form.as_p }}
+                </div>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn">Сгенерировать</button>
+    </form>
+{% endblock %}

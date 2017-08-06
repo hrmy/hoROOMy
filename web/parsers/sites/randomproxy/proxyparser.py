@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
+from celery import shared_task
 
-from log import log, clearlog
+from .log import log, clearlog
 
 
 timeout = 15
@@ -35,7 +36,7 @@ def add_proxy(proxy, type = 'http'):
         stats['https'] += 1
 
 
-
+@shared_task(name='parsers.parse_proxies')
 def parse_proxy():
     clear_proxy()
 
@@ -88,6 +89,3 @@ def parse_proxy():
 
     log('Parsing finished. Found %d valid http-proxies and %d valid https-proxies.' % (stats['http'], stats['https']), _print = True, head = 'proxyparser')
     log('', _print = True)
-
-
-parse_proxy()

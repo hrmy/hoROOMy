@@ -356,8 +356,17 @@ img.user-detail {
 /* profile */
 .flex {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .flex-item {
     margin-right: 50px;
+}
+
+.inline * {
+    float: none;
+}
+
+.inline label {
+    display: block;
 }

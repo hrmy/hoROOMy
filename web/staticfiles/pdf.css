@@ -1,0 +1,41 @@
+@font-face {
+    font-family: CODE2000;
+    src: url("CODE2000.TTF");
+}
+
+html {
+    font-family: CODE2000;
+}
+
+h1 {
+    font-size: 24pt;
+    text-align: center;
+}
+
+h2 {
+    font-size: 18pt;
+    text-align: center;
+}
+
+p {
+    font-size: 10pt;
+}
+
+.medium {
+    font-size: 12pt;
+}
+
+@page {
+    margin-top: 1cm;
+    margin-left: 1cm;
+    margin-right: 1cm;
+    margin-bottom: 2cm;
+
+    @frame footer {
+        -pdf-frame-content:footer;
+        height: 1cm;
+        bottom: 0.6cm;
+        right: 1cm;
+        left: 1cm;
+    }
+}
