@@ -233,12 +233,11 @@ def create(data, logger):
 # Обертка на парсеры
 def wrap(func, name):
     # Конкретно *эта* функция будет вызываться в качестве Celery-таска
-    def deco():
+    def deco(**config):
         logger = Logger()
         logger.name = 'Wrapper'
         logger.info('Parser "{}" task initializing...'.format(name))
         parser = Parser.objects.get(name=name)
-        config = parser.get_config()
         config['logger'] = logger
         logger.info('Got config: {}'.format(config))
 

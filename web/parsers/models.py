@@ -5,7 +5,6 @@ from json import dumps, loads
 
 class Parser(models.Model):
     name = models.CharField('name', max_length=50, primary_key=True)
-    config = models.TextField('config', max_length=255, default='{}', blank=True)
 
     class Meta:
         verbose_name = 'Parser'
@@ -13,14 +12,7 @@ class Parser(models.Model):
 
     def __str__(self):
         return '{} parser'.format(self.name.title())
-
-    def get_config(self):
-        try:
-            config = loads(self.config)
-        except:
-            return {}
-        return config
-
+        
 class Location(models.Model):
     lat = models.FloatField('latitude', null=True, blank=True)
     long = models.FloatField('longitude', null=True, blank=True)
