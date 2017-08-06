@@ -3,13 +3,13 @@ from random import choice
 import os
 from .log import log
 
-os.chdir(os.path.dirname(__file__))
+root = os.path.dirname(__file__)
 
 def get_proxy():
 
-    with open('http_proxies.txt', 'r') as f:
+    with open(root+'/http_proxies.txt', 'r') as f:
         http_proxies = f.read().split('\n')
-    with open('https_proxies.txt', 'r') as f:
+    with open(root+'/https_proxies.txt', 'r') as f:
         https_proxies = f.read().split('\n')
 
     proxy = {'http': 'http://' + choice(http_proxies),
@@ -19,7 +19,7 @@ def get_proxy():
 
 def get_useragent():
 
-    with open('headers.txt', 'r') as f:
+    with open(root+'/headers.txt', 'r') as f:
         useragents = f.read().split('\n')
 
     useragent = {'User-Agent': choice(useragents)}
