@@ -90,7 +90,8 @@ def try_default(func, value, default=None):
         return default
 
 
-def clean(data, logger):
+def clean(data, config):
+    logger = config['logger']
     logger.name = 'Clean'
     logger.info('Cleaning data...')
     logger.timestamp('clean')
@@ -101,8 +102,14 @@ def clean(data, logger):
     clean_data['metros'] = []
     raw_metros = data.get('metro', [])
     if isinstance(raw_metros, list) or isinstance(raw_metros, tuple):
-        raw_metros = [trim(i).lower() for i in raw_metros]
-        clean_data['metros'] = list(filter(None, raw_metros))
+        metros = []
+        for raw in raw_metros:
+            metro = trim(raw).lower()
+            if metro.startswith('м.'): 
+                metro = metro.replace('м.', '').lstrip()
+            if metro: 
+                metros.append(metro)
+        clean_data['metros'] = metros
 
     # Flat location
     logger.check_keys(data, 'loc', 'adr', name='data')
@@ -147,10 +154,10 @@ def clean(data, logger):
         clean_data['contacts']['fb'] = trim(raw_contacts.get('fb'))
 
     # Ad
-    logger.check_keys(data, 'url', 'descr', 'date', 'parser', 'type', name='data')
+    logger.check_keys(data, 'url', 'descr', 'date', 'type', name='data')
     clean_data['url'] = trim(data.get('url'))
     clean_data['description'] = trim(data.get('descr'))
-    clean_data['parser'] = data.get('parser')
+    clean_data['parser'] = config['parser']
     clean_data['type'] = Ad.OWNER if data.get('type', 'owner') == 'owner' else Ad.RENTER
     clean_data['created'] = None
     raw_date = data.get('date')
@@ -172,7 +179,8 @@ def clean(data, logger):
     return clean_data
 
 
-def create(data, logger):
+def create(data, config):
+    logger = config['logger']
     logger.name = 'Create'
     logger.info('Creating objects...')
     # logger.info('Raw data: {}'.format(data))
@@ -237,9 +245,14 @@ def wrap(func, name):
         logger = Logger()
         logger.name = 'Wrapper'
         logger.info('Parser "{}" task initializing...'.format(name))
+        
         parser = Parser.objects.get(name=name)
+        config.update(parser.get_config())
         config['logger'] = logger
+        config['parser'] = parser
         logger.info('Got config: {}'.format(config))
+        max_objects = config.get('max_objects', 100)
+        max_errors = config.get('max_errors', 20)
 
         logger.info('Parsing...')
         logger.name = name.title()
@@ -248,14 +261,22 @@ def wrap(func, name):
         try:
             for data in func(**config):
                 try:
-                    data['parser'] = parser
-                    clean_data = clean(data, logger)
-                    create(clean_data, logger)
+                    clean_data = clean(data, config)
+                    create(clean_data, config)
                 except:
                     logger.error('Error during data processing:\n', format_exc())
                     errors += 1
+                    if errors == max_errors:
+                        logger.info('Max errors count reached: {}'.format(errors))
+                        break
                 else:
                     objects += 1
+                    if objects == max_objects:
+                        logger.info('Max objects count reached: {}'.format(objects))
+                        break
+                        
+                logger.info('Parsing...')
+                logger.name = name.title()
         except:
             logger.error('Unexpected error - shutting down...\n', format_exc())
             errors += 1
