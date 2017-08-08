@@ -9,7 +9,7 @@ dj-database-url
 whitenoise
 gunicorn
 psycopg2
-celery==3.1.17
+celery==3.1.25
 redis
 html5lib
 lxml
