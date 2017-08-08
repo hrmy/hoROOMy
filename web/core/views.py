@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from parsers.models import Ad, Flat
 from .forms import *
 
-@login_required
+
 def ads(request):
     if request.method == 'POST':
         form = SearchAdsForm(request.POST)
@@ -28,8 +28,8 @@ def ads(request):
             if form.cleaned_data.get('type'):
                 ads = ads.filter(flat__type=form.cleaned_data.get('type'))
 
-            ads = list(reversed(ads))
+            ads = list(reversed(ads))[:30]
     else:
         form = SearchAdsForm()
-        ads = list(reversed(Ad.objects.all()))[:10]
+        ads = list(reversed(Ad.objects.all()))[:30]
     return render(request, 'core/ads.html', locals())

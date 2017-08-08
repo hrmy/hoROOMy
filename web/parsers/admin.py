@@ -3,7 +3,6 @@ from .tasks import parser_tasks
 from .models import *
 
 
-
 def start_parser(modeladmin, request, queryset):
     for parser in queryset:
         task_name = 'parsers.' + parser.name
