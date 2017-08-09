@@ -86,8 +86,7 @@ def getphone(soup):
 def getdescr(soup):
     descr_info = soup.find("div", {"class": "object_descr_text"})
     if descr_info is None:
-        descr = "No descr"
-        return descr
+        return None
     else:
         descr_info = str(descr_info)[1:]
         bord_r = descr_info.find("<")
