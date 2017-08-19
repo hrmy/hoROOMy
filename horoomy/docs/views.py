@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils.timezone import now
 from .forms import *
-from parsers.models import *
+from horoomy.parsers.models import *
 
 
 @login_required

@@ -1,0 +1,5 @@
+# Доп. пакеты для деплоя
+-r base.txt
+
+gunicorn
+redis

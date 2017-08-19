@@ -1,5 +1,5 @@
 from django import forms
-from parsers.models import *
+from horoomy.parsers.models import *
 
 class SearchAdsForm(forms.Form):
     type = forms.ChoiceField(label='Тип',choices=[(str(i), x) for i, x in enumerate(['Квартира', 'Комната', 'Кровать'])])

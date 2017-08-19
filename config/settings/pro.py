@@ -1,12 +1,11 @@
 from .base import *
-import dj_database_url as db_url
 
-# Basic
+# SECURTY CONFIGURATION
 
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+DEBUG = env.bool('DJANGO_DEBUG', False)
+ALLOWED_HOSTS = ['.herokuapp.com']
 
-# Security
+# SSL CONFIGURATION
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -16,18 +15,11 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 X_FRAME_OPTIONS = 'DENY'
 
-# Database
+# STATIC FILES CONFIGURATION
 
-DATABASES = {
-    'default': db_url.config(conn_max_age=500)
-}
-
-# Static
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-# Celery
+# CELERY CONFIGURATION
 
-BROKER_URL = os.environ['REDIS_URL']
+BROKER_URL = env('REDIS_URL')
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'

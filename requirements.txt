@@ -1,0 +1,2 @@
+# Special for Heroku
+-r config/requirements/pro.txt

@@ -1,0 +1,4 @@
+# Доп. пакеты для разработки
+-r base.txt
+
+django-debug-toolbar
