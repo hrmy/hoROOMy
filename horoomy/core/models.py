@@ -15,6 +15,12 @@ class Location(models.Model):
     def __str__(self):
         return 'Location "{}"'.format(self.address or (self.lat, self.lon))
 
+    # Входит ли локация other в круг с центром в данной локации и радиусом radius км.
+    def is_in_circle(self, other, radius=5):
+        # Пересчет километров в градусы
+        radius /= 111
+        distance = ((self.lat - other.lat) ** 2 + (self.lon - other.lon) ** 2) ** 0.5
+        return distance if distance <= radius else False
 
 class Metro(models.Model):
     location = AutoOneToOneField(Location, null=True)
@@ -26,6 +32,18 @@ class Metro(models.Model):
 
     def __str__(self):
         return 'Metro "{}"'.format(self.name)
+
+    # Получить ближайшие метро в радиусе radius км.
+    def get_closest(self, radius=5):
+        closest = []
+        qs = Metro.objects.all().exclude(pk=self.pk).select_related('location')
+        for other in qs:
+            distance = other.location.is_in_circle(self.location, radius)
+            if distance is not False:
+                other.distance = distance
+                closest.append(other)
+        closest.sort(key=lambda x: x.distance)
+        return closest
 
 
 class Flat(models.Model):
