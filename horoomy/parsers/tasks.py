@@ -1,8 +1,7 @@
 from .sites import tasks as parser_tasks
-from .sites.randomproxy.proxyparser import parse_proxy
 from celery import shared_task
-from .sites.utils import Logger, TgBot
-from .models import *
+from horoomy.utils.logger import Logger, TgBot
+from horoomy.core.models import Ad
 
 
 @shared_task(name='parsers.clear_duplicates')

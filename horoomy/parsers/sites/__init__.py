@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from time import gmtime, strftime, strptime
 from datetime import datetime, timedelta
 from datetime import date as datetimedate
-from .randomproxy import main as requests
+from horoomy.proxy import main as requests
 
 __all__ = ['requests', 'json', 'time', 'base64', 'datetime', 'BeautifulSoup', 'gmtime',
            'strftime', 'strptime', 'datetimedate', 'timedelta', 're']  # ... и прописываем в __all__

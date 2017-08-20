@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from horoomy.parsers.models import Ad, Flat
+from .models import Ad, Flat
 from .forms import *
 
 

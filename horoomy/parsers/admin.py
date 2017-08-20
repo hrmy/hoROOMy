@@ -16,9 +16,3 @@ class ParserAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Parser, ParserAdmin)
-admin.site.register(Location)
-admin.site.register(Metro)
-admin.site.register(Flat)
-admin.site.register(Contacts)
-admin.site.register(Ad)
-admin.site.register(Image)

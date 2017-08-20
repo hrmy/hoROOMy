@@ -78,11 +78,11 @@ MIDDLEWARE = [
 #     'sites': 'horoomy.contrib.sites.migrations'
 # }
 
-# FIXTURE CONFIGURATION (???)
+# FIXTURE CONFIGURATION
 
-# FIXTURE_DIRS = (
-#     str(APPS_DIR.path('fixtures')),
-# )
+FIXTURE_DIRS = (
+    str(APPS_DIR.path('fixtures')),
+)
 
 # EMAIL CONFIGURATION
 
