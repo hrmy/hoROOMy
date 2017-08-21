@@ -56,6 +56,7 @@ LOCAL_APPS = [
     'horoomy.core',
     'horoomy.parsers',
     'horoomy.docs',
+    'horoomy.proxy',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

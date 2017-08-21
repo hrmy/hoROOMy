@@ -1,12 +1,13 @@
 from django.contrib import admin
-from .tasks import parser_tasks
+from celery import current_app
 from .models import *
 
 
 def start_parser(modeladmin, request, queryset):
     for parser in queryset:
-        task_name = 'parsers.' + parser.name
-        parser_tasks[task_name].delay()
+        # TODO: FIX THAT SHIT
+        current_app.send_task(parser.name)
+
 
 start_parser.short_description = 'Запустить выбранные парсеры'
 
@@ -16,3 +17,6 @@ class ParserAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Parser, ParserAdmin)
+
+# TODO: FIX
+from . import tasks

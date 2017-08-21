@@ -1,6 +1,7 @@
 from django.db import models
 from annoying.fields import AutoOneToOneField
 from horoomy.parsers.models import Parser
+from horoomy.utils.models import Choices
 
 
 class Location(models.Model):
@@ -47,9 +48,8 @@ class Metro(models.Model):
 
 
 class Flat(models.Model):
-    FLAT, ROOM, BED = map(str, range(3))
-    TYPE_CHOICES = {FLAT: 'Flat', ROOM: 'Room', BED: 'Bed'}
-    type = models.CharField('type', max_length=1, choices=TYPE_CHOICES.items(), default=FLAT)
+    TYPES = Choices('Flat', 'Room', 'Bed')
+    type = models.CharField('type', max_length=1, choices=TYPES, default=TYPES.FLAT)
 
     location = models.OneToOneField(Location, null=True)
     area = models.FloatField('area', null=True, blank=True)
@@ -62,7 +62,7 @@ class Flat(models.Model):
         verbose_name_plural = 'Flats'
 
     def __str__(self):
-        return '{} at {}'.format(self.TYPE_CHOICES[self.type], self.location)
+        return '{} at {}'.format(self.TYPES[self.type], self.location)
 
 
 # TODO: Перенести в accounts и замержить с SocialNetworks
@@ -81,9 +81,8 @@ class Contacts(models.Model):
 
 
 class Ad(models.Model):
-    OWNER, RENTER = map(str, range(2))
-    TYPE_CHOICES = {OWNER: 'Owner Ad', RENTER: 'Renter Ad'}
-    type = models.CharField('type', max_length=1, choices=TYPE_CHOICES.items(), default='0')
+    TYPES = Choices('Owner', 'Renter')
+    type = models.CharField('type', max_length=1, choices=TYPES, default='0')
 
     created = models.DateTimeField('date created', null=True, blank=True)
     received = models.DateTimeField('date received', auto_now_add=True)
@@ -100,13 +99,12 @@ class Ad(models.Model):
         verbose_name_plural = 'Ads'
 
     def __str__(self):
-        return self.TYPE_CHOICES[self.type] + ' #{}'.format(self.pk)
+        return self.TYPES[self.type] + ' Ad #{}'.format(self.pk)
 
 
 class Image(models.Model):
-    LOCAL, REMOTE = map(str, range(2))
-    TYPE_CHOICES = {LOCAL: 'Local image', REMOTE: 'Remote image'}
-    type = models.CharField('type', max_length=1, choices=TYPE_CHOICES.items(), default='0')
+    TYPES = Choices('Local', 'Remote')
+    type = models.CharField('type', max_length=1, choices=TYPES, default='0')
     url = models.URLField('remote url', default='', blank=True)
     image = models.ImageField('local image', upload_to='images/')
     ad = models.ForeignKey(Ad, related_name='images')
@@ -116,4 +114,4 @@ class Image(models.Model):
         verbose_name_plural = 'Images'
 
     def __str__(self):
-        return self.TYPE_CHOICES[self.type]
+        return self.TYPES[self.type] + ' Image'

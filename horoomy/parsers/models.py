@@ -14,12 +14,12 @@ class Parser(models.Model):
         verbose_name_plural = 'Parsers'
 
     def __str__(self):
-        return '{} parser'.format(self.name.title())
+        return 'Parser ({})'.format(self.name)
 
     def save(self, **kwargs):
         if not self.task:
             task = PeriodicTask(name='{} Parser task'.format(self.name.title()))
-            task.task = 'parsers.' + self.name
+            task.task = self.name
             task.enabled = False
             task.save()
             self.task = task

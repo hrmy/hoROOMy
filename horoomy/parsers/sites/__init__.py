@@ -9,31 +9,23 @@ from datetime import datetime, timedelta
 from datetime import date as datetimedate
 from horoomy.proxy import main as requests
 
-__all__ = ['requests', 'json', 'time', 'base64', 'datetime', 'BeautifulSoup', 'gmtime',
-           'strftime', 'strptime', 'datetimedate', 'timedelta', 're']  # ... и прописываем в __all__
+# ... и прописываем в __all__
+__all__ = [
+    'requests',
+    'json',
+    'time',
+    'base64',
+    'datetime',
+    'BeautifulSoup',
+    'gmtime',
+    'strftime',
+    'strptime',
+    'datetimedate',
+    'timedelta',
+    're'
+]
 
-# Подготавливаем таски, заодно создавая несуществующие конфиги
-from pkgutil import iter_modules
-from celery import shared_task
-from annoying.functions import get_object_or_None
-from ..models import *
-from .utils import wrap
+from horoomy.utils.loader import load_all_modules
 
-# Это потом будем импортировать из других модулей
-tasks = {}
-# Проверка на существование таблицы в БД
-try:
-    list(Parser.objects.all())
-except: pass
-else:
-    # Идем по модулям в пакете
-    for _, name, _ in iter_modules(__path__):
-        # Аналогично from . import <name>
-        module = getattr(__import__(__package__, fromlist=[name]), name)
-        # Проверяем, есть ли там функция parse
-        if not hasattr(module, 'parse'): continue
-        # Проверяем наличие конфига и создаем таск
-        task_name = 'parsers.' + name
-        tasks[task_name] = shared_task(name=task_name)(wrap(module.parse, name))
-        if get_object_or_None(Parser, name=name) is None:
-            Parser.objects.create(name=name)
+# Без понятия как это работает
+load_all_modules(__package__, __path__)

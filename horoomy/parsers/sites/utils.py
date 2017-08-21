@@ -3,6 +3,7 @@ from horoomy.core.models import *
 from traceback import format_exc
 from horoomy.utils.logger import Logger, TgBot
 from horoomy.utils.data import *
+from celery import shared_task
 
 
 def clean(data, config):
@@ -154,8 +155,9 @@ def create(data, config):
 
 
 # Обертка на парсеры
-def wrap(func, name):
+def wrap(func, name=None):
     # Конкретно *эта* функция будет вызываться в качестве Celery-таска
+    @shared_task(name='parsers.' + name)
     def deco(**config):
         logger = Logger()
         logger.name = 'Wrapper'
@@ -202,7 +204,5 @@ def wrap(func, name):
         logger.info('Parser task succeed in {} seconds'.format(delta.seconds))
         logger.info('Total objects created: {} / {}. Warm shutdown: {}'.format(objects, objects + errors, success))
         TgBot.send(logger.get_text())
-
-    deco.__name__ = 'parse_' + name
 
     return deco
