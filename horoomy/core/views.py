@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Ad, Flat
-from .forms import *
+from .models import Ad, Flat, Metro
+from .forms import SearchAdsForm
 
 
 def ads(request):
@@ -8,7 +8,6 @@ def ads(request):
         form = SearchAdsForm(request.POST)
         if form.is_valid():
             ads = Ad.objects.all()
-
             if form.cleaned_data.get('price_from') and form.cleaned_data.get('price_to'):
                 price_from, price_to = form.clean_price()
                 ads = ads.filter(flat__cost__lte=price_to, flat__cost__gte=price_from)
@@ -19,13 +18,16 @@ def ads(request):
                 price_to = form.cleaned_data.get('price_to')
                 ads = ads.filter(flat__cost__lte=price_to)
 
+            if form.cleaned_data.get('type'):
+                ads = ads.filter(flat__type=form.cleaned_data.get('type'))
+
             if form.cleaned_data.get('room_num'):
                 room_num = form.cleaned_data.get('room_num')
                 ads = ads.filter(flat__rooms=room_num)
+
             if form.cleaned_data.get('metro'):
-                ads = ads.filter(flat__metros=form.cleaned_data.get('metro'))
-            if form.cleaned_data.get('type'):
-                ads = ads.filter(flat__type=form.cleaned_data.get('type'))
+                metros = [Metro.objects.get(id=int(i)+1) for i in form.cleaned_data.get('metro')]
+                ads = list(dict.fromkeys(ads.filter(flat__metros__in=metros)).keys())
 
             ads = list(reversed(ads))[:30]
     else:
