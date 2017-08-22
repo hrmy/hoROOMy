@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from time import gmtime, strftime, strptime
 from datetime import datetime, timedelta
 from datetime import date as datetimedate
-from horoomy.proxy import main as requests
+from horoomy.proxy import wrapper as requests
 
 # ... и прописываем в __all__
 __all__ = [

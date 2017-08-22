@@ -1,10 +1,20 @@
-def trim(s):
-    if not s or not isinstance(s, str): return ''
-    words = filter(None, re.split('\s', s))
-    return ' '.join(words)
+import re
 
 
-def try_default(func, value, default=None):
+trim = lambda s: ' '.join(filter(None, re.split('\s', s)))
+fullstrip = lambda s: re.sub('\s', '', s)
+
+
+def dfilter(d, nested=True):
+    d = dict(filter(lambda x: x[1], d.items()))
+    if nested:
+        for k, v in d.items():
+            if isinstance(v, dict):
+                d[k] = dfilter(v)
+    return d
+
+
+def cast(func, value, default=None):
     try:
         return func(value)
     except:

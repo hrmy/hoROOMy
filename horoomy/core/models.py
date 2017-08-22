@@ -2,6 +2,7 @@ from django.db import models
 from annoying.fields import AutoOneToOneField
 from horoomy.parsers.models import Parser
 from horoomy.utils.models import Choices
+from .utils import YMapsAPI
 
 
 class Location(models.Model):
@@ -22,6 +23,14 @@ class Location(models.Model):
         radius /= 111
         distance = ((self.lat - other.lat) ** 2 + (self.lon - other.lon) ** 2) ** 0.5
         return distance if distance <= radius else False
+
+    def evolve(self):
+        geodata = YMapsAPI.get_geodata(self)
+        self.lat = geodata['lat']
+        self.lon = geodata['lon']
+        self.address = geodata['address']
+        return geodata['exact']
+
 
 class Metro(models.Model):
     location = AutoOneToOneField(Location, null=True)

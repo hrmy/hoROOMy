@@ -18,8 +18,8 @@ class Parser(models.Model):
 
     def save(self, **kwargs):
         if not self.task:
-            task = PeriodicTask(name='{} Parser task'.format(self.name.title()))
-            task.task = self.name
+            task = PeriodicTask(name='{} Parser Task'.format(self.name.title()))
+            task.task = 'parse.' + self.name.lower()
             task.enabled = False
             task.save()
             self.task = task

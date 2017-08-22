@@ -1,4 +1,5 @@
 from django.utils.text import slugify
+from django.db import connection
 
 
 # Упрощенная и подпиленная версия Choices из либы django-model-utils
@@ -20,3 +21,8 @@ class Choices:
 
     def __getitem__(self, item):
         return self.choices[item]
+
+
+# Существует ли таблица в базе данных
+def table_exists(name):
+    return name in connection.introspection.table_names()

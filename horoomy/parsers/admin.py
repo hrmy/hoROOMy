@@ -6,7 +6,7 @@ from .models import *
 def start_parser(modeladmin, request, queryset):
     for parser in queryset:
         # TODO: FIX THAT SHIT
-        current_app.send_task(parser.name)
+        current_app.send_task('parse.' + parser.name.lower())
 
 
 start_parser.short_description = 'Запустить выбранные парсеры'

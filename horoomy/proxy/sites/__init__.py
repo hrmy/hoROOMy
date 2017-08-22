@@ -9,7 +9,6 @@ __all__ = [
     'requests',
     'BS',
     'time',
-    'utils',
     'Proxy',
     'HTTP_URL',
     'HTTPS_URL',

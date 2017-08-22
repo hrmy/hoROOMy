@@ -19,7 +19,6 @@ class YMapsAPI:
         data = json['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']
         lon, lat = map(float, data['Point']['pos'].split(' '))
         data = data['metaDataProperty']['GeocoderMetaData']
-        address = None
-        if data['precision'] == 'exact':
-            address = data['Address']['formatted']
-        return {'lat': lat, 'lon': lon, 'address': address}
+        address = data['Address']['formatted']
+        exact = data['precision'] == 'exact'
+        return {'lat': lat, 'lon': lon, 'address': address, 'exact': exact}

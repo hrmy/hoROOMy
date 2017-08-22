@@ -15,3 +15,5 @@ celery==3.1.25
 html5lib
 lxml
 beautifulsoup4
+python-telegram-bot
+fuzzywuzzy
