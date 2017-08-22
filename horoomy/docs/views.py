@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils.timezone import now
 from .forms import *
-from horoomy.parsers.models import *
+from horoomy.core.models import Ad, Flat
 
 
 @login_required
@@ -36,7 +36,7 @@ def get_pdf_context(context):
     DATE = now().strftime('%d / %m / %Y') + ' г.'
     OWNER_FULL_NAME = context['ad'].contacts.name or '[???]'
     RENTER_FULL_NAME = context['initials_form'].get_full_name()
-    TYPE = Flat.TYPE_CHOICES[context['ad'].flat.type]
+    TYPE = Flat.TYPES[context['ad'].flat.type]
     ROOMS = context['ad'].flat.rooms
     ADDRESS = context['ad'].flat.location.address or '[???]'
     START_DATE = context['rent']['start'].strftime('%d / %m / %Y') + ' г.'
