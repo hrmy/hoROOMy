@@ -2,12 +2,34 @@
 
 {% block title %} {{ ad.flat.location.address }} {% endblock %}
 
+{% block head %}
+<script type="text/javascript">
+    ymaps.ready(init);
+    var myMap,
+        myPlacemark;
+
+    function init(){
+        myMap = new ymaps.Map("map", {
+            center: [{{ coords }}],
+            zoom: 17
+        });
+
+        myPlacemark = new ymaps.Placemark([{{ coords }}], {
+            balloonContent: '{{ ad.flat.location.address }}'
+        });
+
+        myMap.geoObjects.add(myPlacemark);
+    }
+</script>
+{% endblock %}
+
+
 {% block content %}
 <div class="ad-detail">
     <h1> {{ ad.flat.location.address }} </h1>
     <div class="flex">
         <div class="flex-item-left">
-            <h2 class="cost"> {{ ad.flat.cost }} &#8381; / мес</h2>
+            <h2 class="cost">{{ ad.flat.cost }} &#8381; / мес</h2>
             <div class="description">
                 <p class="description-content"> {{ ad.description }} </p>
             </div>
@@ -17,21 +39,20 @@
                     • Площадь: {{ ad.flat.area }} м<sup>2</sup><br>
                     • Кол-во комнат: {{ ad.flat.rooms }}<br>
                     • Адрес: {{ ad.flat.location.address }}<br>
-                    • Метро: {% for metro in ad.flat.metros.all %} м. {{ metro.name }} {% endfor %}<br>
+                    • Метро: {% for metro in ad.flat.metros.all %} <a href="#" class="metro">м. {{ metro.name }}</a> {% endfor %}<br>
                 </p>
             </div>
             <div class="map">
                 <h3> <strong>На карте:</strong> </h3>
-                <img src="https://static-maps.yandex.ru/1.x/?ll={{ coords }}&size=650,400&z=13&l=map&pt={{ coords }},pm2rdl" class="img-map">
+                <div id="map" style="width: 650px; height: 400px" class="img-map"></div>
+
             </div>
         </div>
         <div class="contacts-info">
             <img src="{{ image.url }}" class="img-responsive">
             <p>Размещено: {{ ad.created }}</p>
-            <hr>
             <h4>Связаться с владельцем: <strong>{{ ad.contacts.phone }}</strong></h4>
-            <hr class="sep">
-             <a href="{% url 'generate' ad_id=ad.id %}" class="btn">Сгенерировать договор</a>
+            <a href="{% url 'generate' ad_id=ad.id %}" class="btn">Сгенерировать договор</a>
         </div>
     </div>
 </div>

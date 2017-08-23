@@ -47,10 +47,6 @@ p {
     border: 1px solid #bbb;
 }
 
-.ad-detail .sep {
-    margin-bottom: 20px;
-}
-
 .round-img {
     width: 30px;
     height: 30px;
@@ -59,13 +55,17 @@ p {
 }
 
 .contacts-info h4 {
-    margin: 10px 0;
+    margin: 10px 0 20px 0;;
     font-size: 16px;
 }
 
 .contacts-info hr {
     width: 565px;
     margin-top: 0px;
+}
+
+.ad-detail .info .metro {
+    font-color: #1cdf78;
 }
 
 a {
