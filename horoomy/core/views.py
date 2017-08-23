@@ -38,6 +38,6 @@ def ads(request):
 
 def ad_detail(request, ad_id):
     ad = Ad.objects.get(id=ad_id)
-    image = Image.objects.filter(ad=ad)[0]
+    images = Image.objects.filter(ad=ad)
     coords = str(ad.flat.location.lat).replace(',', '.') + "," + str(ad.flat.location.lon).replace(',', '.')
     return render(request, 'core/ad_detail.html', locals())

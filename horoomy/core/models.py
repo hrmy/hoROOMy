@@ -115,7 +115,7 @@ class Image(models.Model):
     TYPES = Choices('Local', 'Remote')
     type = models.CharField('type', max_length=1, choices=TYPES, default='0')
     url = models.URLField('remote url', default='', blank=True)
-    image = models.ImageField('local image', upload_to='images/')
+    image = models.ImageField('local image', upload_to='images/', blank=True)
     ad = models.ForeignKey(Ad, related_name='images')
 
     class Meta:
