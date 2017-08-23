@@ -10,6 +10,64 @@ p {
     line-height: 1.8;
 }
 
+.ad-detail .title {
+    margin-bottom: 0;
+}
+
+.description-content {
+    margin-top: 5px;
+    max-width: 700px;
+}
+
+.ad-detail .flex-item-left {
+    margin-right: 100px;
+}
+
+.ad-detail .contacts {
+    border-bottom: 1px solid black;
+    text-align: center;
+}
+
+.img-responsive {
+    max-width: 600px;
+    max-height: 350px;
+    border: 1px solid #bbb;
+}
+
+.contacts-info {
+    margin-top: 40px;
+}
+
+.contacts-info p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.ad-detail .img-map {
+    border: 1px solid #bbb;
+}
+
+.ad-detail .sep {
+    margin-bottom: 20px;
+}
+
+.round-img {
+    width: 30px;
+    height: 30px;
+    margin: 0 2px;
+    border-radius: 5px;
+}
+
+.contacts-info h4 {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.contacts-info hr {
+    width: 565px;
+    margin-top: 0px;
+}
+
 a {
     color: #12c064;
     text-decoration: none;

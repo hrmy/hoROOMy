@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Ad, Flat, Metro
+from .models import Ad, Flat, Metro, Image
 from .forms import SearchAdsForm
 
 
@@ -34,3 +34,10 @@ def ads(request):
         form = SearchAdsForm()
         ads = list(reversed(Ad.objects.all()))[:30]
     return render(request, 'core/ads.html', locals())
+
+
+def ad_detail(request, ad_id):
+    ad = Ad.objects.get(id=ad_id)
+    image = Image.objects.filter(ad=ad)[0]
+    coords = str(ad.flat.location.lon).replace(',', '.') + "," + str(ad.flat.location.lat).replace(',', '.')
+    return render(request, 'core/ad_detail.html', locals())

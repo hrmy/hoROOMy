@@ -124,3 +124,4 @@ class Image(models.Model):
 
     def __str__(self):
         return self.TYPES[self.type] + ' Image'
+

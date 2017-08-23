@@ -20,7 +20,7 @@
             <a class=".btn" style="float: right;" href="#">{{ ad.flat.metros.all | first }}</a>
         </h3>
         <p>{{ ad.description  }}</p>
-        <a href="{% url 'generate' ad_id=ad.id %}" class="btn">Сгенерировать договор</a>
+        <a href="{% url 'generate' ad_id=ad.id %}" class="btn">Сгенерировать договор</a> <a href="{% url 'ad-detail' ad_id=ad.id %}" class="btn">Подробнее</a>
     {% empty %}
         <h2 class="object-title">Поиск по заданным параметрам не дал результатов<h2>
     {% endfor %}
