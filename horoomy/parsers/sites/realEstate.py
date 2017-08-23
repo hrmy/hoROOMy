@@ -47,11 +47,11 @@ def get_page_data(html):
         elif 'Общая площадь' in t:
             area_i = i
 
-
             # Rooms
     room_num = \
-    info.find('div', class_='object-params').find('div', class_='params-block').find_all('div', class_='params-item')[
-        room_num_i].find('div', class_='float-right').text
+        info.find('div', class_='object-params').find('div', class_='params-block').find_all('div',
+                                                                                             class_='params-item')[
+            room_num_i].find('div', class_='float-right').text
     if room_num == 'комната':
         room_num = 0
     else:
@@ -97,7 +97,7 @@ def get_total_pages(url):
     soup = BeautifulSoup(get_html(url), 'lxml')
     total_pages = soup.find('section', class_='clear-fix').find_all('div', class_='contentblock')[1].find('div',
                                                                                                           class_='main-content').find(
-        'div', class_='list-panel').find('div', class_='more-info').find_all('a')[-1].get('href').split('pg')[1][
+        'div', class_='b_o-panel').find('div', class_='more-info').find_all('a')[-1].get('href').split('pg')[1][
                   :-1]
     return int(total_pages)
 
@@ -119,13 +119,19 @@ def parse(**kwargs):
         soup = BeautifulSoup(get_html(page_url), 'lxml')
         ads = soup.find('section', class_='clear-fix').find_all('div', class_='contentblock')[1].find('div',
                                                                                                       class_='main-content').find(
-            'div', class_='list-panel').find_all('div', class_='obj')
+            'div', class_='b_o-panel').find_all('div', class_='b_o')
 
         logger.info("On page %d" % currentPage)
         for ad in ads:
             try:
-                url = template + ad.find('div', class_='obj-item').find('a').get('href')
-                adr = ad.find('div', class_='obj-item').find('a', class_='obj-name house-Geoposition').text
+                url = template + ad.find('div', class_='b_o-item').find('a').get('href')
+                adr_t = ad.find('div', class_='b_o-item').find('div',
+                                                               class_='b_o-info').find_all('div',
+                                                                                           class_='b_o-location_item')[
+                    1].find_all('a',
+                                class_='b_o-location_item-link')
+
+                adr = ' '.join([a.text for a in adr_t])
 
                 html = get_html(url)
                 date, cost, descr, pics, room_num, area, metro, contacts = get_page_data(html)
