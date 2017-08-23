@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ ad.flat.location.address }} {% endblock %}
+
+{% block content %}
+<div class="ad-detail">
+    <h1> {{ ad.flat.location.address }} </h1>
+    <div class="flex">
+        <div class="flex-item-left">
+            <h2 class="cost"> {{ ad.flat.cost }} &#8381; / мес</h2>
+            <div class="description">
+                <p class="description-content"> {{ ad.description }} </p>
+            </div>
+            <div class="info">
+                <h3 class="title"> <strong>Общая информация:</strong> </h3>
+                <p>
+                    • Площадь: {{ ad.flat.area }} м<sup>2</sup><br>
+                    • Кол-во комнат: {{ ad.flat.rooms }}<br>
+                    • Адрес: {{ ad.flat.location.address }}<br>
+                    • Метро: {% for metro in ad.flat.metros.all %} м. {{ metro.name }} {% endfor %}<br>
+                </p>
+            </div>
+            <div class="map">
+                <h3> <strong>На карте:</strong> </h3>
+                <img src="https://static-maps.yandex.ru/1.x/?ll={{ coords }}&size=650,400&z=13&l=map&pt={{ coords }},pm2rdl" class="img-map">
+            </div>
+        </div>
+        <div class="contacts-info">
+            <img src="{{ image.url }}" class="img-responsive">
+            <p>Размещено: {{ ad.created }}</p>
+            <hr>
+            <h4>Связаться с владельцем: <strong>{{ ad.contacts.phone }}</strong></h4>
+            <hr class="sep">
+             <a href="{% url 'generate' ad_id=ad.id %}" class="btn">Сгенерировать договор</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
