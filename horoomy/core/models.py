@@ -25,7 +25,10 @@ class Location(models.Model):
         return distance if distance <= radius else False
 
     def evolve(self):
-        geodata = YMapsAPI.get_geodata(self)
+        try:
+            geodata = YMapsAPI.get_geodata(self)
+        except ValueError:
+            return None
         self.lat = geodata['lat']
         self.lon = geodata['lon']
         self.address = geodata['address']

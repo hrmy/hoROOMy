@@ -8,6 +8,8 @@ class YMapsAPI:
     def get_geodata(location):
         address = location.address
         lat, lon = location.lat, location.lon
+        if not address and not (lat and lon):
+            raise ValueError('Location object don\'t have any geodata')
         data = {
             'kind': 'house',
             'lang': 'ru_RU',

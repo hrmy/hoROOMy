@@ -37,10 +37,10 @@ class TgReporter(AbsReporter):
             file = BytesIO(file)
         TgReporter.BOT.send_document(TgReporter.CHAT_ID, file, filename=name, caption=caption)
 
-    def report(self, title):
-        caption = 'Logs'
-        if title: caption = title + ' ' + caption
-        message_text = caption + '\n' + self.logger.text(threshold=Logger.STATUS)
+    def report(self, title=None):
+        caption = ' Logs '
+        if title: caption = ' ' + title + caption
+        message_text = '{:=^35}'.format(caption) + '\n' + self.logger.text(threshold=Logger.STATUS)
         TgReporter.send_text(message_text)
         file_text = self.logger.text()
         TgReporter.send_file(caption, 'logs.txt', file_text.encode('utf-8'))

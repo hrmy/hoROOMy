@@ -1,5 +1,7 @@
-from fuzzywuzzy.process import extractOne
+from fuzzywuzzy.process import extractOne, extractBests
+from fuzzywuzzy.fuzz import token_sort_ratio
 from django.utils.timezone import make_aware, get_current_timezone
+from django.core.exceptions import ValidationError
 from horoomy.core.models import *
 from traceback import format_exc
 from horoomy.utils.logger import Logger
@@ -7,48 +9,68 @@ from horoomy.utils.data import *
 from celery import shared_task
 
 METROS = [i.name for i in Metro.objects.all()]
+METROS_THRESHOLD = 30
 METROS_REPLACE = {
     'м.': '',
     'ул.': 'улица',
     'пр-т': 'проспект',
     'б-р': 'бульвар',
 }
+DESCRIPTION_THRESHOLD = 80
 
 
 def get_metro(raw):
     raw = raw.lower().strip()
     for old, new in METROS_REPLACE.items():
         raw = raw.replace(old, new)
-    best = extractOne(raw, METROS)[0]
+    best, ratio = extractOne(raw, METROS)
+    if ratio < METROS_THRESHOLD: return None
     return Metro.objects.get(name=best)
 
 
-def clean(data, **config):
-    logger = config['logger']
+def get_duplicates(data):
+    ad = data['ad']
+    ads = Ad.objects.all()
+    if ad.pk: ads = ads.exclude(pk=ad.pk)
+    duplicates = extractBests(
+        ad, ads,
+        processor=lambda x: x.description,
+        scorer=lambda *x: token_sort_ratio(*x, force_ascii=False),
+        score_cutoff=DESCRIPTION_THRESHOLD,
+        limit=None
+    )
+    return duplicates
+
+
+def fix_phone(raw):
+    digits = re.sub(r'[^\d]+', '', raw)
+    if len(digits) < 10: return None
+    digits = digits[:-10]
+    phone = '8 ({}) {}-{}-{}'.format(digits[0:3], digits[3:6], digits[6:8], digits[8:10])
+    return phone
+
+
+# Пытается подогнать сырые данные парсеров к нормальным названиям ключей и типам данных
+def fix(data, **config):
+    logger = config['logger'].channel('Fix')
     logger.info('Cleaning data...')
     data = dfilter(data)
     clean_data = {}
 
     # Metros
     logger.check_keys(data, 'metro')
-    clean_data['metros'] = []
-    raw_metros = data.get('metro', [])
+    raw_metros = data.get('metro')
     if isinstance(raw_metros, list) or isinstance(raw_metros, tuple):
-        metros = []
+        clean_data['metros'] = []
         for raw in raw_metros:
-            metro = trim(raw).lower()
-            if metro.startswith('м.'):
-                metro = metro.replace('м.', '').lstrip()
-            if metro:
-                metros.append(metro)
-        clean_data['metros'] = metros
+            metro = cast(trim, raw)
+            if not metro: continue
+            clean_data['metros'].append(metro)
 
     # Flat location
     logger.check_keys(data, 'loc', 'adr')
-    clean_data['address'] = trim(data.get('adr', ''))
-    clean_data['lat'] = None
-    clean_data['lon'] = None
-    raw_loc = data.get('loc', None)
+    clean_data['address'] = cast(trim, data.get('adr'))
+    raw_loc = data.get('loc')
     if isinstance(raw_loc, str): raw_loc = trim(raw_loc).split(',')
     if isinstance(raw_loc, list) or isinstance(raw_loc, tuple):
         try:
@@ -64,34 +86,32 @@ def clean(data, **config):
     logger.check_keys(data, 'cost', 'area', 'room_num')
     clean_data['cost'] = cast(float, data.get('cost'))
     clean_data['area'] = cast(float, data.get('area'))
-    clean_data['rooms'] = None
     raw_rooms = cast(int, data.get('room_num'))
-    if raw_rooms == -1:
-        clean_data['flat_type'] = Flat.TYPES.BED
-    elif raw_rooms == 0:
-        clean_data['flat_type'] = Flat.TYPES.ROOM
-    else:
-        clean_data['flat_type'] = Flat.TYPES.FLAT
-        clean_data['rooms'] = raw_rooms
+    if isinstance(raw_rooms, int):
+        if raw_rooms == -1:
+            clean_data['flat_type'] = Flat.TYPES.BED
+        elif raw_rooms == 0:
+            clean_data['flat_type'] = Flat.TYPES.ROOM
+        else:
+            clean_data['flat_type'] = Flat.TYPES.FLAT
+            clean_data['rooms'] = raw_rooms
 
     # Contacts
     logger.check_keys(data, 'contacts')
-    clean_data['contacts'] = dict.fromkeys(('name', 'phone', 'vk', 'fb'), '')
-    raw_contacts = data.get('contacts', None)
-    if raw_contacts:
+    clean_data['contacts'] = {}
+    raw_contacts = data.get('contacts')
+    if isinstance(raw_contacts, dict):
         logger.check_keys(raw_contacts, 'person_name', 'phone')
-        clean_data['contacts']['name'] = trim(raw_contacts.get('person_name', ''))
-        clean_data['contacts']['phone'] = trim(raw_contacts.get('phone', ''))
-        clean_data['contacts']['vk'] = trim(raw_contacts.get('vk', ''))
-        clean_data['contacts']['fb'] = trim(raw_contacts.get('fb', ''))
+        clean_data['contacts']['name'] = cast(trim, raw_contacts.get('person_name'))
+        clean_data['contacts']['phone'] = cast(fix_phone, raw_contacts.get('phone'))
+        clean_data['contacts']['vk'] = cast(trim, raw_contacts.get('vk'))
+        clean_data['contacts']['fb'] = cast(trim, raw_contacts.get('fb'))
 
     # Ad
     logger.check_keys(data, 'url', 'descr', 'date', 'type')
-    clean_data['url'] = trim(data.get('url', ''))
-    clean_data['description'] = trim(data.get('descr', ''))
-    clean_data['parser'] = config['parser']
+    clean_data['url'] = cast(trim, data.get('url'))
+    clean_data['description'] = cast(trim, data.get('descr'))
     clean_data['type'] = Ad.TYPES.OWNER if data.get('type', 'owner') == 'owner' else Ad.TYPES.RENTER
-    clean_data['created'] = None
     raw_date = data.get('date')
     try:
         clean_data['created'] = make_aware(raw_date, get_current_timezone())
@@ -100,71 +120,130 @@ def clean(data, **config):
 
     # Images
     logger.check_keys(data, 'pics')
-    clean_data['images'] = []
     raw_pics = data.get('pics')
     if isinstance(raw_pics, list) or isinstance(raw_pics, tuple):
-        if all(map(lambda x: isinstance(x, str), raw_pics)):
-            clean_data['images'].extend(map(trim, raw_pics))
+        clean_data['images'] = []
+        for raw in raw_pics:
+            image = cast(trim, raw)
+            if not image: continue
+            clean_data['images'].append(raw)
+
+    clean_data = dfilter(clean_data)
+    delta = logger.timestamp('started')
+    logger.info('Succeed in {:.3f} seconds'.format(delta.total_seconds()))
+    return clean_data
+
+
+def evolve(data, **config):
+    logger = config['logger'].channel('Evolve')
+    logger.info('Evolving data...')
+    clean_data = {}
+
+    # Metros
+    clean_data['metros'] = []
+    for raw in data.get('metros', []):
+        metro = get_metro(raw)
+        if metro is None: continue
+        clean_data['metros'].append(metro)
+
+    # Flat location
+    flat_location = Location(
+        address=data.get('address', ''),
+        lat=data.get('lat'),
+        lon=data.get('lon')
+    )
+    flat_location.exact = flat_location.evolve()
+    clean_data['flat_location'] = flat_location
+
+    # Flat
+    clean_data['flat'] = Flat(
+        type=data.get('flat_type', Flat.TYPES.FLAT),
+        cost=data.get('cost'),
+        area=data.get('area'),
+        rooms=data.get('rooms'),
+    )
+
+    # Contacts
+    raw_contacts = data.get('contacts', {})
+    clean_data['contacts'] = Contacts(
+        name=raw_contacts.get('name', ''),
+        phone=raw_contacts.get('phone', ''),
+        vk=raw_contacts.get('vk', ''),
+        fb=raw_contacts.get('fb', '')
+    )
+
+    # Ad
+    clean_data['ad'] = Ad(
+        type=data.get('type', Ad.TYPES.OWNER),
+        url=data.get('url', ''),
+        description=data.get('description', ''),
+        created=data.get('created'),
+    )
+    try:
+        clean_data['ad'].clean_fields(('flat', 'contacts'))
+    except ValidationError:
+        clean_data['ad'].url = ''
+
+    # Images
+    clean_data['images'] = []
+    for raw in data['images']:
+        image = Image(type=Image.TYPES.REMOTE, url=raw)
+        try:
+            image.clean_fields(('ad',))
+        except ValidationError:
+            continue
+        clean_data['images'].append(image)
 
     delta = logger.timestamp('started')
     logger.info('Succeed in {:.3f} seconds'.format(delta.total_seconds()))
     return clean_data
 
 
-def create(data, **config):
-    logger = config['logger']
-    logger.info('Creating objects...')
+def validate(data, **config):
+    logger = config['logger'].channel('Validate')
+    logger.info('Validating objects...')
 
-    # Metros
-    metros = [Metro.objects.get_or_create(name=i)[0] for i in data['metros']]
+    # Mandatory
+    valid = not any((
+        not data['contacts'].phone,
+        data['flat_location'].exact is None,
+        not data['ad'].url,
+        get_duplicates(data)
+    ))
+    if not valid: return False
 
-    # Flat location
-    flat_location = Location(
-        address=data['address'],
-        lat=data['lat'],
-        lon=data['lon']
-    )
-    flat_location.save()
-
-    # Flat
-    flat = Flat(
-        type=data['flat_type'],
-        cost=data['cost'],
-        area=data['area'],
-        rooms=data['rooms'],
-        location=flat_location
-    )
-    flat.save()
-    flat.metros.add(*metros)
-
-    # Contacts
-    contacts = Contacts(
-        name=data['contacts']['name'],
-        phone=data['contacts']['phone'],
-        vk=data['contacts']['vk'],
-        fb=data['contacts']['fb']
-    )
-    contacts.save()
-
-    # Ad
-    ad = Ad(
-        type=data['type'],
-        url=data['url'],
-        description=data['description'],
-        created=data['created'],
-        parser=data['parser'],
-        contacts=contacts,
-        flat=flat,
-    )
-    ad.save()
-
-    # Images
-    images = [Image(type=Image.TYPES.REMOTE, ad=ad, url=i) for i in data['images']]
-    Image.objects.bulk_create(images)
+    # Raw
+    raw = any((
+        not data['flat_location'].exact,
+        not data['flat'].cost,
+        not data['flat'].area,
+        data['flat'].type == Flat.TYPES.FLAT and not data['flat'].rooms,
+    ))
+    data['ad'].raw = raw
 
     delta = logger.timestamp('started')
     logger.info('Succeed in {:.3f} seconds'.format(delta.total_seconds()))
-    return ad
+    return data
+
+
+def create(data, **config):
+    logger = config['logger'].channel('Create')
+    logger.info('Creating objects...')
+
+    data['flat_location'].save()
+    data['flat'].location = data['flat_location']
+    data['flat'].save()
+    data['flat'].metros.add(*data['metros'])
+    data['contacts'].save()
+    data['ad'].contacts = data['contacts']
+    data['ad'].flat = data['flat']
+    data['ad'].save()
+    for i in data['images']: i.ad = data['ad']
+    Image.objects.bulk_create(data['images'])
+
+    delta = logger.timestamp('started')
+    logger.info('Succeed in {:.3f} seconds'.format(delta.total_seconds()))
+    return data['ad']
 
 
 # Обертка на парсеры
@@ -179,19 +258,33 @@ def wrap(func, name=None):
         parser = Parser.objects.get(name=name)
         config.update(parser.get_config())
         config['parser'] = parser
-        logger.info('Got config: {}'.format(config))
+        # TODO: FIX (IN PARSERS)
+        config['logger'] = logger.channel('Parser')
+        logger.info('Got config:', config)
         max_objects = config.get('max_objects', 100)
         max_errors = config.get('max_errors', 20)
 
         logger.status('Parsing...')
         logger.name = name.title()
 
+        # TODO: FIX
         objects, errors, success = 0, 0, True
+        valid_objects, raw_objects, invalid_objects = 0, 0, 0
         try:
-            for data in func(logger=logger.channel('Parser'), **config):
+            for data in func(**config):
                 try:
-                    clean_data = clean(data, logger=logger.channel('Clean'), **config)
-                    create(clean_data, logger=logger.channel('Create'), **config)
+                    data = fix(data, **config)
+                    data = evolve(data, **config)
+                    data = validate(data, **config)
+                    if not data:
+                        logger.warning('Validation failed')
+                        invalid_objects += 1
+                    else:
+                        if data['ad'].raw:
+                            raw_objects += 1
+                        else:
+                            valid_objects += 1
+                        create(data, **config)
                 except:
                     logger.error('Error during data processing:\n', format_exc())
                     errors += 1
@@ -203,19 +296,24 @@ def wrap(func, name=None):
                     if objects == max_objects:
                         logger.status('Max objects count reached: {}'.format(objects))
                         break
-
-                logger.info('Parsing...')
-                logger.name = name.title()
         except:
             logger.status('Unexpected error - shutting down...')
             logger.error('Exception:\n', format_exc())
             errors += 1
             success = False
 
-        logger.name = 'Wrapper'
         delta = logger.timestamp('started')
         logger.status('Parser task succeed in {} seconds'.format(delta.seconds))
-        logger.status('Total objects created: {} / {}. Warm shutdown: {}'.format(objects, objects + errors, success))
+        logger.status('Total objects created: {} / {}. Warm shutdown: {}'.format(
+            objects,
+            objects + errors,
+            success
+        ))
+        logger.status('Valid objects: {}. Raw objects: {}. Invalid objects: {}'.format(
+            valid_objects,
+            raw_objects,
+            invalid_objects
+        ))
         logger.report('{} Parser Task'.format(name.title()))
 
     return deco
