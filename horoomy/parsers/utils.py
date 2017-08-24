@@ -5,10 +5,11 @@ from django.core.exceptions import ValidationError
 from horoomy.core.models import *
 from traceback import format_exc
 from horoomy.utils.logger import Logger
+from horoomy.utils.models import table_exists
 from horoomy.utils.data import *
 from celery import shared_task
 
-METROS = [i.name for i in Metro.objects.all()]
+METROS = [i.name for i in Metro.objects.all()] if table_exists('core_metro') else []
 METROS_THRESHOLD = 30
 METROS_REPLACE = {
     'м.': '',
