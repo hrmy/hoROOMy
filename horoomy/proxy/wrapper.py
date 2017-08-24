@@ -8,7 +8,7 @@ PROXIES = {
 }
 USER_AGENTS = {
     'enabled': [],
-    'disabled': list(UserAgent.objects.all())
+    'disabled': []
 }
 
 
@@ -21,10 +21,11 @@ def reset_proxies():
 
 
 def reset_user_agents():
-    USER_AGENTS['enabled'] = USER_AGENTS['disabled']
+    USER_AGENTS['enabled'] = []
     USER_AGENTS['disabled'] = []
-    for i in USER_AGENTS['enabled']:
+    for i in UserAgent.objects.all():
         i.requests = 0
+        USER_AGENTS['enabled'].append(i)
 
 
 def get_proxy(type):

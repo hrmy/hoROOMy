@@ -10,5 +10,5 @@ urlpatterns = [
     url(r'^faq/$', lambda r: render(r, 'core/faq.html', {'section': 'faq'}), name='faq'),
     url(r'^contacts/$', lambda r: render(r, 'core/contacts.html', {'section': 'contacts'}), name='contacts'),
     url(r'^ads/$', views.ads, name='ads'),
-    url(r'^ad-detail/(?P<ad_id>[0-9]+)/$', views.ad_detail, name='ad-detail'),
+    url(r'^ad-details/(?P<ad_id>[0-9]+)/$', views.ad_details, name='ad-details'),
 ]

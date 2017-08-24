@@ -74,7 +74,7 @@ class Flat(models.Model):
         verbose_name_plural = 'Flats'
 
     def __str__(self):
-        return '{} at {}'.format(self.TYPES[self.type], self.location)
+        return '{} at {}'.format(self.TYPES[self.type], self.location.address)
 
 
 # TODO: Перенести в accounts и замержить с SocialNetworks
@@ -89,7 +89,7 @@ class Contacts(models.Model):
         verbose_name = verbose_name_plural = 'Contacts'
 
     def __str__(self):
-        return 'Contacts for {}'.format(self.name)
+        return 'Contacts ({})'.format(self.phone or self.name)
 
 
 class Ad(models.Model):
