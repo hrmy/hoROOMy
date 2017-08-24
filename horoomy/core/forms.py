@@ -2,7 +2,7 @@ from django import forms
 from horoomy.utils.models import table_exists
 from .models import *
 
-METRO_CHOICES = [(i, x.name) for i, x in enumerate(Metro.objects.all(), 1)] if table_exists('core_metro') else []
+METRO_CHOICES = [(i.pk, i.name) for i in Metro.objects.all()] if table_exists('core_metro') else []
 
 
 class SearchAdsForm(forms.Form):

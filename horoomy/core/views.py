@@ -27,6 +27,9 @@ def ads(request):
 
             if form.cleaned_data.get('metro'):
                 metros = [Metro.objects.get(pk=i) for i in form.cleaned_data.get('metro')]
+                if len(metros) == 1:
+                    closest = metros[0].get_closest(radius=3)
+                    metros.extend(closest)
                 qs = list(dict.fromkeys(qs.filter(flat__metros__in=metros)).keys())
 
             qs = list(reversed(qs))[:30]
