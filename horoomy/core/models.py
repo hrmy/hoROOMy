@@ -42,6 +42,7 @@ class Metro(models.Model):
     class Meta:
         verbose_name = 'Metro'
         verbose_name_plural = 'Metros'
+        ordering = ('name',)
 
     def __str__(self):
         return 'Metro "{}"'.format(self.name)

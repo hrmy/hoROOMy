@@ -26,7 +26,7 @@ def ads(request):
                 qs = qs.filter(flat__rooms=room_num)
 
             if form.cleaned_data.get('metro'):
-                metros = [Metro.objects.get(id=int(i) + 1) for i in form.cleaned_data.get('metro')]
+                metros = [Metro.objects.get(pk=i) for i in form.cleaned_data.get('metro')]
                 qs = list(dict.fromkeys(qs.filter(flat__metros__in=metros)).keys())
 
             qs = list(reversed(qs))[:30]
