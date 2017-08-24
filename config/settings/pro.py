@@ -17,6 +17,7 @@ X_FRAME_OPTIONS = 'DENY'
 
 # STATIC FILES CONFIGURATION
 
+STATIC_ROOT = str(ROOT_DIR.path('staticfiles'))
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # CELERY CONFIGURATION
