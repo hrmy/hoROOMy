@@ -5,6 +5,7 @@ from traceback import format_exc
 from horoomy.utils.logger import Logger
 from horoomy.utils.data import *
 from celery import shared_task
+from horoomy.utils.dummy import Dummy
 
 METROS = [i.name for i in Metro.objects.all()]
 METROS_REPLACE = {
@@ -112,7 +113,7 @@ def clean(data, **config):
 
 
 def create(data, **config):
-    logger = config['logger']
+    logger = config.get('logger', Dummy())
     logger.info('Creating objects...')
 
     # Metros
