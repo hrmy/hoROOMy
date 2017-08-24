@@ -1,6 +1,7 @@
 from django.utils.timezone import now
 from telegram.bot import Bot
 from io import BytesIO
+from time import sleep
 import sys
 
 
@@ -26,16 +27,27 @@ class TgReporter(AbsReporter):
     TOKEN = '394409524:AAHkv2WTjrHig7RouUOQAAVdZ5TgVlQOgPs'
     CHAT_ID = -227813278
     BOT = Bot(TOKEN)
+    MAX_RETRIES = 5
 
     @staticmethod
     def send_text(text):
-        TgReporter.BOT.send_message(TgReporter.CHAT_ID, text)
+        for _ in range(TgReporter.MAX_RETRIES):
+            try:
+                TgReporter.BOT.send_message(TgReporter.CHAT_ID, text)
+            except:
+                continue
+            break
 
     @staticmethod
     def send_file(caption, name, file):
         if isinstance(file, bytes):
             file = BytesIO(file)
-        TgReporter.BOT.send_document(TgReporter.CHAT_ID, file, filename=name, caption=caption)
+        for _ in range(TgReporter.MAX_RETRIES):
+            try:
+                TgReporter.BOT.send_document(TgReporter.CHAT_ID, file, filename=name, caption=caption)
+            except:
+                continue
+            break
 
     def report(self, title=None):
         caption = ' Logs '
@@ -65,7 +77,7 @@ class Logger:
     def __init__(self, parent=None, task=None):
         self.parent = parent
         self.name = Logger.DEFAULT_NAME
-        self.reporters = [i(self) for i in Logger.DEFAULT_REPORTERS]
+        self.reporters = [i(parent or self) for i in Logger.DEFAULT_REPORTERS]
         self.timestamps = {'started': now()}
         if self.parent is None:
             self.logs = []

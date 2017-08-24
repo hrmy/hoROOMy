@@ -45,7 +45,7 @@ def get_duplicates(data):
 def fix_phone(raw):
     digits = re.sub(r'[^\d]+', '', raw)
     if len(digits) < 10: return None
-    digits = digits[:-10]
+    digits = digits[-10:]
     phone = '8 ({}) {}-{}-{}'.format(digits[0:3], digits[3:6], digits[6:8], digits[8:10])
     return phone
 
@@ -186,7 +186,7 @@ def evolve(data, **config):
 
     # Images
     clean_data['images'] = []
-    for raw in data['images']:
+    for raw in data.get('images', []):
         image = Image(type=Image.TYPES.REMOTE, url=raw)
         try:
             image.clean_fields(('ad',))
@@ -204,22 +204,38 @@ def validate(data, **config):
     logger.info('Validating objects...')
 
     # Mandatory
+    logger.info('Checking mandatory data...')
+    logger.info('Phone provided:', bool(data['contacts'].phone))
+    logger.info('Flat location:', data['flat_location'])
+    logger.info('Location precision:', data['flat_location'].exact)
+    logger.info('Ad url provided:', bool(data['ad'].url))
+    duplicates = get_duplicates(data)
+    logger.info('Ad duplicates:', duplicates)
     valid = not any((
         not data['contacts'].phone,
         data['flat_location'].exact is None,
         not data['ad'].url,
-        get_duplicates(data)
+        duplicates,
     ))
     if not valid: return False
 
-    # Raw
-    raw = any((
-        not data['flat_location'].exact,
-        not data['flat'].cost,
-        not data['flat'].area,
-        data['flat'].type == Flat.TYPES.FLAT and not data['flat'].rooms,
-    ))
-    data['ad'].raw = raw
+    # Complete
+    logger.info('Checking other data...')
+    logger.info('Ad type:', Ad.TYPES[data['ad'].type])
+    logger.info('Flat type:', Flat.TYPES[data['flat'].type])
+    logger.info('Flat cost provided:', bool(data['flat'].cost))
+    logger.info('Flat area provided:', bool(data['flat'].area))
+    logger.info('Flat rooms provided:', bool(data['flat'].rooms))
+    complete = False
+    if data['ad'].type == Ad.TYPES.OWNER:
+        complete = any((
+            not data['flat_location'].exact,
+            not data['flat'].cost,
+            not data['flat'].area,
+            data['flat'].type == Flat.TYPES.FLAT and not data['flat'].rooms,
+        ))
+    logger.info('Complete:', complete)
+    data['ad'].complete = complete
 
     delta = logger.timestamp('started')
     logger.info('Succeed in {:.3f} seconds'.format(delta.total_seconds()))
@@ -237,6 +253,7 @@ def create(data, **config):
     data['contacts'].save()
     data['ad'].contacts = data['contacts']
     data['ad'].flat = data['flat']
+    data['ad'].parser = config.get('parser')
     data['ad'].save()
     for i in data['images']: i.ad = data['ad']
     Image.objects.bulk_create(data['images'])
@@ -269,7 +286,7 @@ def wrap(func, name=None):
 
         # TODO: FIX
         objects, errors, success = 0, 0, True
-        valid_objects, raw_objects, invalid_objects = 0, 0, 0
+        complete_objects, raw_objects, invalid_objects = 0, 0, 0
         try:
             for data in func(**config):
                 try:
@@ -283,7 +300,7 @@ def wrap(func, name=None):
                         if data['ad'].raw:
                             raw_objects += 1
                         else:
-                            valid_objects += 1
+                            complete_objects += 1
                         create(data, **config)
                 except:
                     logger.error('Error during data processing:\n', format_exc())
@@ -309,8 +326,8 @@ def wrap(func, name=None):
             objects + errors,
             success
         ))
-        logger.status('Valid objects: {}. Raw objects: {}. Invalid objects: {}'.format(
-            valid_objects,
+        logger.status('Complete objects: {}. Raw objects: {}. Invalid objects: {}'.format(
+            complete_objects,
             raw_objects,
             invalid_objects
         ))

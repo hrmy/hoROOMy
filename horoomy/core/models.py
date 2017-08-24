@@ -27,7 +27,7 @@ class Location(models.Model):
     def evolve(self):
         try:
             geodata = YMapsAPI.get_geodata(self)
-        except ValueError:
+        except:
             return None
         self.lat = geodata['lat']
         self.lon = geodata['lon']
@@ -98,8 +98,8 @@ class Ad(models.Model):
 
     created = models.DateTimeField('date created', null=True, blank=True)
     received = models.DateTimeField('date received', auto_now_add=True)
-    parser = models.ForeignKey(Parser, null=True, blank=True, related_name='ads')
-    raw = models.BooleanField('raw', default=True, blank=True)
+    parser = models.ForeignKey(Parser, null=True, blank=True, related_name='ads', on_delete=models.SET_NULL)
+    complete = models.BooleanField('complete', default=True, blank=True)
 
     flat = models.OneToOneField(Flat, null=True, related_name='ad')
     url = models.URLField('url', default='', blank=True)

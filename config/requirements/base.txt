@@ -16,4 +16,4 @@ html5lib
 lxml
 beautifulsoup4
 python-telegram-bot
-fuzzywuzzy
+fuzzywuzzy[speedup]
