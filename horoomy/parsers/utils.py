@@ -298,10 +298,10 @@ def wrap(func, name=None):
                         logger.warning('Validation failed')
                         invalid_objects += 1
                     else:
-                        if data['ad'].raw:
-                            raw_objects += 1
-                        else:
+                        if data['ad'].complete:
                             complete_objects += 1
+                        else:
+                            raw_objects += 1
                         create(data, **config)
                 except:
                     logger.error('Error during data processing:\n', format_exc())
