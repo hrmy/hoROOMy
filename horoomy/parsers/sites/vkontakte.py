@@ -2,19 +2,15 @@
 
 import re
 import json
-import requests
+import requests     # todo: remove when finished testing !!!
 from . import *
 
+# =====================================REGULAR EXPRESSIONS==============================================
 
 ALL_METROS_URL = "https://api.superjob.ru/2.0/suggest/town/4/metro/all/"
 
 ALL_METROS = requests.get(ALL_METROS_URL).text
 ALL_METROS = json.loads(ALL_METROS.lower()).get("objects", [])
-
-ERROR_FILE = open("error_file.txt", 'w', encoding="utf-8")
-
-OFFERS = json.loads(open("offers-sdam.json", 'r', encoding='utf-8').read().replace("\n", " "))
-OFFERS.append(json.loads(open("offers-snimu.json", 'r', encoding='utf-8').read().replace("\n", " ")))
 
 # ------------------------------------------REGEXPS----------------------------------------------------
 
@@ -148,7 +144,7 @@ class SocialOffer:
     def get_phone(self):
         phone = re.search(phonExp, self.prepared_contents)
         if phone is not None:
-            re.sub(phonExp, "", offer)
+            self.prepared_contents = re.sub(phonExp, "", self.prepared_contents)
             phone = phone.group()
             self.phone = phone
             return phone
@@ -221,18 +217,7 @@ class SocialOffer:
             self.get_rooms()
 
 
-if __name__ == "__main__":
-    for offer in OFFERS:
-        while type(offer) == type([]):
-            offer = offer[0]
-
-        offr = SocialOffer(offer)
-        if offr.type != "error":
-            print(offr.__dict__)
-        else:
-            print("---")
-
-
+# ==========================================VKONTAKTE PARSER==================================================
 
 ACCESS_TOKEN = "732c7b09732c7b09732c7b090673709b7f7732c732c7b092a6093eafb623ad5547f142f"
 
@@ -290,7 +275,11 @@ def parse_vk_community(n=300):
                 c, ACCESS_TOKEN, offset)
             print(adr)
             offers = requests.get(adr).json()
-            ALL_OFFERS.append(offers['response'][1:])
+            try:
+                for offer in offers['response'][1:]:
+                    ALL_OFFERS.append(offer.get('text', ''))
+            except:
+                pass
 
             #for offer in offers[1:]:
                 #yield {'date': str(strftime("%Y-%m-%d %H:%M:%S", gmtime(offer['date']))), 'cost': 0, 'room_num': 0,
@@ -314,9 +303,12 @@ def vkfeed(n=300):
                 adr = "https://api.vk.com/method/newsfeed.search?q=%s&count=100&access_token=%s&offset=%s" % (
                 query, ACCESS_TOKEN, offset)
                 print(adr)
-                news = requests.get(adr).json()['response'][1:]
-                # print(news)
-                ALL_OFFERS.append(news)
+                try:
+                    news = requests.get(adr).json()['response'][1:]
+                    # print(news)
+                    for offer in news: ALL_OFFERS.append(offer.get('text', ''))
+                except:
+                    pass
 
                 # for offer in news[1:]:
                 #         if wish == 'сдам ':
@@ -333,7 +325,7 @@ def vkfeed(n=300):
                 #                  'url': "https://vk.com/wall%s_%s" % (str(offer['owner_id']), str(offer['id'])),
                 #                  'loc': "-.-", 'adr': 'no_adress'}
 import json
-def parse():
+def parse(**kwargs):
 
     parse_vk_community()
     vkfeed()
@@ -344,8 +336,10 @@ def parse():
     # f.write(json.dumps(ALL_OFFERS, ensure_ascii=False))
     # f.close()
 
-    #for offer in ALL_OFFERS:
-
+    for offer in ALL_OFFERS:
+        print(offer)
+        processed_offer = SocialOffer(offer).__dict__
+        print(str(processed_offer))
 
 
 if __name__ == "__main__":
