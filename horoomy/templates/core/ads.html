@@ -14,14 +14,50 @@
     </form>
 
     {% for ad in ads %}
-        <h2 class="object-title">{{ ad.flat.location.address }}</h2>
-        <h3>
-            Количество комнат: {{ ad.flat.rooms }} | Площадь: {{ ad.flat.area }} м<sup>2</sup> | Цена: {{ ad.flat.cost }}
-            <a class=".btn" style="float: right;" href="#">{{ ad.flat.metros.all | first }}</a>
-        </h3>
-        <p>{{ ad.description  }}</p>
-        <a href="{% url 'generate' ad_id=ad.id %}" class="btn">Сгенерировать договор</a>
-        <a href="{% url 'ad-details' ad_id=ad.id %}" class="btn">Подробнее</a>
+        <div class="{% if not ad.complete %}ad-inline-incomplete{% endif %}">
+            <div class="ad-inline-title color-block-brighter flex">
+                <b>
+                    {{ ad.flat.get_type_display }} — {{ ad.flat.location.address|default:'< Нет адреса >' }}
+                </b>
+                <div class="inline-float-right">
+                {% if ad.complete %}
+                    Полное
+                {% else %}
+                    Неполное
+                {% endif %}
+                </div>
+            </div>
+            <div class="ad-inline-body">
+                <div class="flex flex-v-align-center">
+                    {% if ad.flat.type == '0' %}
+                    <span class="color-text flex-spacing">
+                        Комнат: <b>{{ ad.flat.rooms|default:'—' }}</b>
+                    </span>
+                    {% endif %}
+                    <span class="color-text flex-spacing">
+                        Площадь: <b>{{ ad.flat.area|default:'—' }}</b> м<sup>2</sup>
+                    </span>
+                    <span class="color-text flex-spacing">
+                        Цена: <b>{{ ad.flat.cost|default:'—' }}</b> ₽
+                    </span>
+                    {% with metros=ad.flat.metros.all %}
+                        {% if metros %}
+                        <div class="color-block inline-float-right">
+                            {{ metros|first }}
+                            {% if ad.flat.metros.all|length > 1 %}
+                                + {{ ad.flat.metros.all|length|add:'-1' }}
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                <p class="p-margin">{{ ad.description|default:'< Нет описания >' }}</p>
+                <div class="flex">
+                    <a href="{% url 'generate' ad_id=ad.id %}" class="btn flex-spacing">Сгенерировать договор</a>
+                    <a href="{% url 'ad-details' ad_id=ad.id %}" class="btn flex-spacing">Подробнее >>></a>
+                </div>
+            </div>
+        </div>
     {% empty %}
         <h2 class="object-title">Поиск по заданным параметрам не дал результатов</h2>
     {% endfor %}

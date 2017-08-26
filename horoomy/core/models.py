@@ -45,7 +45,7 @@ class Metro(models.Model):
         ordering = ('name',)
 
     def __str__(self):
-        return 'Metro "{}"'.format(self.name)
+        return 'Метро "{}"'.format(self.name)
 
     # Получить ближайшие метро в радиусе radius км.
     def get_closest(self, radius=5):
@@ -61,7 +61,7 @@ class Metro(models.Model):
 
 
 class Flat(models.Model):
-    TYPES = Choices('Flat', 'Room', 'Bed')
+    TYPES = Choices(('Flat', 'Квартира'), ('Room', 'Комната'), ('Bed', 'Кровать'))
     type = models.CharField('type', max_length=1, choices=TYPES, default=TYPES.FLAT)
 
     location = models.OneToOneField(Location, null=True)
@@ -90,7 +90,7 @@ class Contacts(models.Model):
         verbose_name = verbose_name_plural = 'Contacts'
 
     def __str__(self):
-        return 'Contacts ({})'.format(self.phone or self.name)
+        return 'Contacts "{}"'.format(self.phone or self.name)
 
 
 class Ad(models.Model):
@@ -104,7 +104,7 @@ class Ad(models.Model):
 
     flat = models.OneToOneField(Flat, null=True, related_name='ad')
     url = models.URLField('url', default='', blank=True)
-    description = models.TextField('description', max_length=1024, default='', blank=True)
+    description = models.TextField('description', default='', blank=True)
     contacts = models.OneToOneField(Contacts, null=True, related_name='ad')
 
     class Meta:

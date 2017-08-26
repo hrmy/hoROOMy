@@ -229,7 +229,7 @@ def validate(data, **config):
     logger.info('Flat rooms provided:', bool(data['flat'].rooms))
     complete = False
     if data['ad'].type == Ad.TYPES.OWNER:
-        complete = any((
+        complete = not any((
             not data['flat_location'].exact,
             not data['flat'].cost,
             not data['flat'].area,

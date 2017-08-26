@@ -42,5 +42,5 @@ def ads(request):
 def ad_details(request, ad_id):
     ad = Ad.objects.get(id=ad_id)
     images = Image.objects.filter(ad=ad)
-    coords = str(ad.flat.location.lat).replace(',', '.') + "," + str(ad.flat.location.lon).replace(',', '.')
+    coords = str((ad.flat.location.lat, ad.flat.location.lon))[1:-1]
     return render(request, 'core/ad_details.html', locals())

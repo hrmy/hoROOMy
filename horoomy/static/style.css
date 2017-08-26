@@ -10,22 +10,9 @@ p {
     line-height: 1.8;
 }
 
-.ad-detail .title {
-    margin-bottom: 0;
-}
-
 .description-content {
     margin-top: 5px;
     max-width: 700px;
-}
-
-.ad-detail .flex-item-left {
-    margin-right: 100px;
-}
-
-.ad-detail .contacts {
-    border-bottom: 1px solid black;
-    text-align: center;
 }
 
 .img-responsive {
@@ -34,48 +21,10 @@ p {
     border: 1px solid #bbb;
 }
 
-.contacts-info {
-    margin-top: 40px;
-}
-
-.contacts-info p {
-    margin: 0;
-    font-size: 14px;
-}
-
-.ad-detail .img-map {
-    border: 1px solid #bbb;
-}
-
-.round-img {
-    width: 30px;
-    height: 30px;
-    margin: 0 2px;
-    border-radius: 5px;
-}
-
-.owner-info {
-    margin-left: 20px;
-}
-
-.contacts-info h4 {
-    margin: 10px 0 20px 0;;
-    font-size: 16px;
-}
-
 .contacts-info hr {
     width: 565px;
     margin-top: 0px;
 
-}
-.bxslider {
-    width: 700px;
-    height: 400px;
-}
-
-
-.ad-detail .info .metro {
-    font-color: #1cdf78;
 }
 
 a {
@@ -105,6 +54,10 @@ h1 {
 
 h2 {
     margin: 30px 0 20px;
+}
+
+h3 {
+    font-size: 20px;
 }
 
 ol {
@@ -437,6 +390,12 @@ img.user-detail {
     flex-wrap: wrap;
 }
 
+.flex-vertical {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
 .flex-item {
     margin-right: 50px;
 }
@@ -462,4 +421,106 @@ img.user-detail {
 #search-form button {
     align-self: flex-end;
     margin: 0 10px;
+}
+
+#search-form input[type=number] {
+    max-width: 100px;
+}
+
+/* Ad inline */
+
+/* Incomplete */
+.ad-inline-incomplete .color-block-brighter {
+    background: #4f9a72;
+    color: #efefef;
+}
+
+.ad-inline-incomplete .btn {
+    background: #508066;
+    color: #efefef;
+}
+
+.ad-inline-incomplete .color-block {
+    background: #508066;
+}
+
+.ad-inline-incomplete .color-text {
+    color: #456754;
+}
+
+/* Main style */
+
+.ad-inline-body {
+    background: #efefef;
+    padding: 10px;
+}
+
+.ad-inline-body p {
+    max-height: 9em;
+    overflow: hidden;
+}
+
+.ad-inline-title {
+    font-size: 20px;
+    margin-top: 30px;
+}
+
+/* Ad details and extra */
+.inline-float-right {
+    display: inline-block;
+    margin-left: auto;
+}
+
+.color-block {
+    padding: 10px 20px;
+    color: #ffffff;
+    background: #0db35b;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.color-block-gray {
+    padding: 10px 20px;
+    color: #000000;
+    background: #efefef;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+.color-text {
+    color: #0f9c51;
+    font-size: 18px;
+    padding: 5px;
+}
+
+.color-block-brighter {
+    padding: 10px 20px;
+    color: #ffffff;
+    background: #1cde78;
+    text-transform: uppercase;
+}
+
+.flex-spacing {
+    margin-right: 10px;
+}
+
+.flex-v-spacing {
+    margin-bottom: 10px;
+}
+
+.flex-v-align-center {
+    align-items: center;
+}
+
+.p-margin {
+    margin: 10px;
+}
+
+sup {
+    font-size: 0.6em;
+    font-weight: bold;
+}
+
+.details-col {
+    min-width: 250px;
 }

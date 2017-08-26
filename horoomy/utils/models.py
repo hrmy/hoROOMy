@@ -12,7 +12,7 @@ class Choices:
             if isinstance(value, tuple):
                 const_value, value = value
             self.choices[db_value] = value
-            attr = slugify(const_value).upper()
+            attr = slugify(const_value).replace('-', '_').upper()
             setattr(self, attr, db_value)
 
     def __iter__(self):

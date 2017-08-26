@@ -5,16 +5,14 @@
 {% block head %}
 <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
     ymaps.ready(init);
-    var myMap,
-        myPlacemark;
 
     function init(){
-        myMap = new ymaps.Map("map", {
+        var myMap = new ymaps.Map("map", {
             center: [{{ coords }}],
             zoom: 17
         });
 
-        myPlacemark = new ymaps.Placemark([{{ coords }}], {
+        var myPlacemark = new ymaps.Placemark([{{ coords }}], {
             balloonContent: '{{ ad.flat.location.address }}'
         });
 
@@ -25,50 +23,118 @@
 
 
 {% block content %}
-<div class="ad-detail">
-    <h1> {{ ad.flat.location.address }} </h1>
-    <div class="flex">
-        <div class="flex-item-left">
-            <h2 class="cost">{{ ad.flat.cost }} &#8381; / мес</h2>
-            <div class="description">
-                <p class="description-content"> {{ ad.description }} </p>
-            </div>
-            <div class="info">
-                <h3 class="title"> <strong>Общая информация:</strong> </h3>
-                <p>
-                    • Площадь: {{ ad.flat.area }} м<sup>2</sup><br>
-                    • Кол-во комнат: {{ ad.flat.rooms }}<br>
-                    • Адрес: {{ ad.flat.location.address }}<br>
-                    • Метро: {% for metro in ad.flat.metros.all %} <a href="#" class="metro">м. {{ metro.name }}</a> {% endfor %}<br>
-                </p>
-            </div>
-            <div class="map">
-                <h3> <strong>На карте:</strong> </h3>
-                <div id="map" style="width: 650px; height: 400px" class="img-map"></div>
+    <h1 class="flex flex-v-align-center">
+        {{ ad.flat.get_type_display }} — {{ ad.flat.location.address|default:'< Нет адреса >' }}
+        <div class="inline-float-right {% if not ad.complete %}ad-inline-incomplete{% endif %}">
+            <div class="color-block">
+            {% if ad.complete %}
+                Полное
+            {% else %}
+                Неполное
+            {% endif %}
             </div>
         </div>
-        <div class="contacts-info">
-            <h4>Размещено: {{ ad.created }}</h4>
-            <ul class="bxslider">
-                {% for image in images %}
-                    <li><img src="{{ image.url }}" class="img-responsive"></li>
-                {% endfor %}
-            </ul>
-            <div class="owner-info">
-                <h3><strong>О владельце:</strong></h3>
-                <h4>• Контактный номер: <strong>{{ ad.contacts.phone }}</strong></h4>
+    </h1>
+    <div class="flex shit" style="justify-content: space-between;">
+        <div class="details-col">
+            <h2>Основное:</h2>
+            <div class="flex-vertical">
+                {% if ad.flat.type == '0' %}
+                <span class="color-block-gray flex-v-spacing">
+                    Комнат: <b>{{ ad.flat.rooms|default:'—' }}</b>
+                </span>
+                {% endif %}
+                <span class="color-block-gray flex-v-spacing">
+                    Площадь: <b>{{ ad.flat.area|default:'—' }}</b> м<sup>2</sup>
+                </span>
+                <span class="color-block-gray flex-v-spacing">
+                    Цена: <b>{{ ad.flat.cost|default:'—' }}</b> ₽
+                </span>
+            </div>
+        </div>
+        <div class="details-col">
+            <h2>Дополнительно:</h2>
+            <div class="flex-vertical">
+                <span class="color-block-gray flex-v-spacing">
+                    Размещено: <b>{{ ad.created|date:'d.m.Y' }}</b>
+                </span>
+                <span class="color-block-gray flex-v-spacing">
+                    Парсер: <b>{{ ad.parser.name }}</b>
+                </span>
+                <span class="color-block-gray flex-v-spacing">
+                    Ссылка: <a href="{{ ad.url }}"><b>клик</b></a>
+                </span>
+            </div>
+        </div>
+        <div class="details-col">
+            <h2>Контакты:</h2>
+            <div class="flex-vertical">
+                {% if ad.contacts.name %}
+                <span class="color-block-gray flex-v-spacing">
+                    Имя: <b>{{ ad.contacts.name }}</b>
+                </span>
+                {% endif %}
+                <span class="color-block-gray flex-v-spacing">
+                    Телефон: <b>{{ ad.contacts.phone }}</b>
+                </span>
+                {% if ad.contacts.email %}
+                <span class="color-block-gray flex-v-spacing">
+                    Email: <b>{{ ad.contacts.email}}</b>
+                </span>
+                {% endif %}
                 {% if ad.contacts.vk %}
-                    <h4>• Вконтакте: <strong>{{ ad.contacts.vk }}</strong></h4>
+                <span class="color-block-gray flex-v-spacing">
+                    Вконтакте: <a href="{{ ad.contacts.vk }}"><b>клик</b></a>
+                </span>
+                {% endif %}
+                {% if ad.contacts.fb %}
+                <span class="color-block-gray flex-v-spacing">
+                    Facebook: <a href="{{ ad.contacts.fb }}"><b>клик</b></a>
+                </span>
                 {% endif %}
             </div>
-
+        </div>
+        <div class="details-col">
+            {% with metros=ad.flat.metros.all %}
+                {% if metros %}
+                    <h2>Метро:</h2>
+                    <div class="flex-vertical">
+                    {% for metro in metros %}
+                        <span class="color-block flex-v-spacing" style="font-size: 16px;">
+                            м. {{ metro.name }}
+                        </span>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
         </div>
     </div>
-</div>
-
+    <h2>Описание:</h2>
+    {% if ad.description %}
+    <p class="p-margin">{{ ad.description }}</p>
+    {% else %}
+    <p>< Нет описания ></p>
+    {% endif %}
+    <div class="flex">
+    <div style="width: 550px; height: 400px; margin-right: 30px">
+        <h2>Фотографии:</h2>
+        {% if images %}
+        <ul id="slider">
+            {% for image in images %}
+                <li><img src="{{ image.url }}" class="img-responsive"></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>< Нет фотографий ></p>
+        {% endif %}
+    </div>
+    <div>
+        <h2>На карте:</h2>
+        <div id="map" style="width: 550px; height: 400px;" class="img-map"></div>
+    </div>
 <script>
     $(document).ready(function(){
-        $('.bxslider').bxSlider({
+        $('#slider').bxSlider({
             slideWidth: 600,
             speed: 500,
             auto: true,
