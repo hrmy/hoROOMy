@@ -1,10 +1,6 @@
 # This Python file uses the following encoding: utf-8
 
-import re
-import json
-import requests     # todo: remove when finished testing !!!
 from . import *
-from time import strftime, strptime, gmtime
 
 # =====================================REGULAR EXPRESSIONS==============================================
 
@@ -33,11 +29,10 @@ spacesExp = re.compile(r" {2,}")
 # cost
 costExp = re.compile(r"(\D\d{1,2} ?)((\d{3}\D)|т((ыс)| ?р))")
 
-# adress
+# address
 adrExp = re.compile(r"((адресу?)|(ул(ица)?)) (\w*) (д(ом)?)? \d{1,3} ?к?(орпус)? ?\d{,2}?")
 
 # area
-#areaExp = re.compile(r"(общ(ей|ая)?)? ?(жил(ая|ой)?)? ?(площад[ьи]ю?)? ?\d\d ?([mм] ?2|кв м)?")
 areaExp = re.compile(r"\D(общ(ей|ая)?)?(площад[ьи]ю?)? ?\d\d ?(([mм] ?2)|(кв м))\D")
 
 # room number
@@ -72,14 +67,10 @@ class SocialOffer:
     def prepare_contents(self, raw_contents=None):
         if raw_contents is None: raw_contents = self.raw_contents
 
-        try:
-            contents = re.sub(prepareExp, " ", raw_contents).lower()
-            contents = re.sub(spacesExp, " ", contents)
-            self.prepared_contents = contents
-            return contents
-        except:
-            print(raw_contents)
-            self.raise_error("Some error in preparing contents")
+        contents = re.sub(prepareExp, " ", raw_contents).lower()
+        contents = re.sub(spacesExp, " ", contents)
+        self.prepared_contents = contents
+        return contents
 
     # metro - also check whether the flat is in msk
     def get_metro(self):
@@ -101,10 +92,6 @@ class SocialOffer:
             if 'т' in cost:
                 cost += '000'
             cost = int(re.sub(r"\D", "", cost))
-
-            #while len(str(cost)) > 5:
-            #    cost //= 1000
-
             self.cost = cost
             return cost
 
@@ -124,9 +111,7 @@ class SocialOffer:
 
     # retrieve urls from text
     def get_urls(self):
-        #print("Geturls started")
         urls = re.findall(urlExp, self.raw_contents)
-        #print(urls)
         if urls:
             self.urls = urls
             return urls
@@ -172,10 +157,9 @@ class SocialOffer:
         area = re.search(areaExp, self.prepared_contents)
         if area is not None:
             area = area.group()
-            area = re.sub(r"(м ?2)|\D", '', area)
+            area = int(re.sub(r"(м ?2)|\D", '', area))
             self.area = area
             return area
-        return None
 
     def __init__(self, raw_contents):
         self.raw_contents = raw_contents
@@ -188,13 +172,10 @@ class SocialOffer:
         if len(re.findall('<br>', self.raw_contents)) > 6:
             self.raise_error("Bullshit filter -- bad contents")
             return
-        #self.remove_urls()
 
         contents = self.prepare_contents()
         is_owner = re.search(ownerExp, contents) is not None
         is_renter = re.search(renterExp, contents) is not None
-        #self.is_owner = is_owner
-        #self.is_renter = is_renter
 
         if (is_owner and is_renter) or not (is_owner or is_renter):
             self.raise_error("Cant get wtf this is")
@@ -245,46 +226,41 @@ SEARCH_KEYWORDS = ["квартиру", "комнату",
 WISH_KEYWORDS = ["сдам ", "сниму "]
 
 
-
 def set_priority(descr):
-    for kword in PRIORITY_KEYWORDS:
-        if kword in descr.lower():
+    for keyword in PRIORITY_KEYWORDS:
+        if keyword in descr.lower():
             return "----!PRIORITY!----\n" + descr
-    for kword in METRO_KEYWORDS:
-        if (kword + " метро") in descr.lower():
+    for keyword in METRO_KEYWORDS:
+        if (keyword + " метро") in descr.lower():
             return "----!PRIORITY!----\n" + descr
 
     return descr
 
 
 def getVkId(offer):
-    vkid = offer['from_id']
-    if vkid < 0:
-        return "http://vk.com/club" + str(-vkid)
-    return "http://vk.com/id" + str(vkid)
+    vk_id = offer['from_id']
+    if vk_id < 0:
+        return "http://vk.com/club" + str(-vk_id)
+    return "http://vk.com/id" + str(vk_id)
 
 
 def picsarr(offer):
-    parr = []
-    try:
-        pics = offer['attachments']
-        # print(len(pics))
-        for pic in pics:
-            if pic['type'] == "photo":
-                picurl = pic['photo']['src_big']
-                parr.append(picurl)
-    except:
-        # alertExc()
-        pass
-    return parr
+    pics_arr = []
+    pics = offer.get('attachments', [])
+
+    for pic in pics:
+        if pic['type'] == "photo":
+            pic_url = pic.get('photo', dict()).get('src_big', None)
+            if pic_url is not None:
+                pics_arr.append(pic_url)
+
+    return pics_arr
 
 
 # =================================SEARCH VK FEED====================================
 
 def parse(n=300):
-    #raise Exception('test')
     print('pars')
-    #n = kwargs.get('n', 300)
 
     for par in SEARCH_KEYWORDS:
         print(par)
@@ -292,26 +268,24 @@ def parse(n=300):
             query = wish + par
 
             for offset in range(0, n, 100):
-                adr = "https://api.vk.com/method/newsfeed.search?q=%s&count=100&access_token=%s&offset=%s" % (
-                query, ACCESS_TOKEN, offset)
+                adr = "https://api.vk.com/method/newsfeed.search?q=%s&count=100&access_token=%s&offset=%s" % (query, ACCESS_TOKEN, offset)
                 print(adr)
 
-                try:
-                    news = requests.get(adr).json()['response'][1:]
-                    # print(news)
-                except:
-                    continue
+                news = requests.get(adr).json().get('response', None)
+                if isinstance(news, list):
+                    if len(news) > 1:
+                        news = news[1:]
 
                 for offer in news:
                     print(type(offer))
                     if isinstance(offer, dict):
                         processed_offer = SocialOffer(offer.get('text', ''))
                         if processed_offer.type != 'error':
-                            print( {'type': processed_offer.type, 'date': str(strftime("%Y-%m-%d %H:%M:%S", gmtime(offer['date']))), 'cost': processed_offer.cost,
+                            yield {'type': processed_offer.type, 'date': str(strftime("%Y-%m-%d %H:%M:%S", gmtime(offer['date']))), 'cost': processed_offer.cost,
                                       'room_num': processed_offer.room_num, 'area': processed_offer.area, 'contacts': {'phone': processed_offer.phone, 'vk': getVkId(offer)},
                                       'pics': picsarr(offer), 'descr': set_priority(processed_offer.raw_contents), 'metro': processed_offer.metro,
                                       'url': "https://vk.com/wall%s_%s" % (str(offer['owner_id']), str(offer['id'])),
-                                      'loc': None, 'adr': processed_offer.adr})
+                                      'loc': None, 'adr': processed_offer.adr}
 
     for community in COMMUNITIES:
         c = community['id']
@@ -319,18 +293,18 @@ def parse(n=300):
             adr = "https://api.vk.com/method/wall.get?owner_id=-%s&count=100&filter=all&access_token=%s&offset=%s" % (
                 c, ACCESS_TOKEN, offset)
             print(adr)
-            try:
-                offers = requests.get(adr).json()['response'][1:]
-            except:
-                continue
+            offers = requests.get(adr).json().get('response', None)
+            if isinstance(offers, list):
+                if len(offers) > 1:
+                    offers = offers[1:]
 
             for offer in offers:
                 if isinstance(offer, dict):
                     processed_offer = SocialOffer(offer.get('text', ''))
                     if processed_offer.type != 'error':
-                        print({'type': processed_offer.type, 'date': str(strftime("%Y-%m-%d %H:%M:%S", gmtime(offer['date']))), 'cost': processed_offer.cost, 'room_num': processed_offer.room_num,
-                           'area': processed_offer.area, 'contacts': {'phone': processed_offer.phone, 'vk': getVkId(offer)}, 'pics': picsarr(offer),
-                           'descr': set_priority(processed_offer.raw_contents), 'metro': processed_offer.metro,
-                           'url': "https://vk.com/wall-%s_%s" % (c, str(offer['id'])), 'loc': None, 'adr': processed_offer.adr})
+                        yield {'type': processed_offer.type, 'date': gmtime(offer['date']), 'cost': processed_offer.cost, 'room_num': processed_offer.room_num,
+                               'area': processed_offer.area, 'phone': processed_offer.phone, 'contacts': {'phone': processed_offer.phone, 'vk': getVkId(offer)}, 'pics': picsarr(offer),
+                               'descr': set_priority(processed_offer.raw_contents), 'metro': processed_offer.metro,
+                               'url': "https://vk.com/wall-%s_%s" % (c, str(offer['id'])), 'loc': None, 'adr': processed_offer.adr}
 
 parse()
