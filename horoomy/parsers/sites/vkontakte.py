@@ -281,11 +281,18 @@ def parse(n=300):
                     if isinstance(offer, dict):
                         processed_offer = SocialOffer(offer.get('text', ''))
                         if processed_offer.type != 'error':
-                            yield {'type': processed_offer.type, 'date': str(strftime("%Y-%m-%d %H:%M:%S", gmtime(offer['date']))), 'cost': processed_offer.cost,
-                                      'room_num': processed_offer.room_num, 'area': processed_offer.area, 'contacts': {'phone': processed_offer.phone, 'vk': getVkId(offer)},
-                                      'pics': picsarr(offer), 'descr': set_priority(processed_offer.raw_contents), 'metro': processed_offer.metro,
-                                      'url': "https://vk.com/wall%s_%s" % (str(offer['owner_id']), str(offer['id'])),
-                                      'loc': None, 'adr': processed_offer.adr}
+                            yield {'type': processed_offer.type,
+                                   'date': datetime.fromtimestamp(offer['date']),
+                                   'cost': processed_offer.cost,
+                                   'room_num': processed_offer.room_num,
+                                   'area': processed_offer.area,
+                                   'contacts': {'phone': processed_offer.phone, 'vk': getVkId(offer)},
+                                   'pics': picsarr(offer),
+                                   'descr': set_priority(processed_offer.raw_contents),
+                                   'metro': processed_offer.metro,
+                                   'url': "https://vk.com/wall%s_%s" % (str(offer['owner_id']), str(offer['id'])),
+                                   'loc': None,
+                                   'adr': processed_offer.adr}
 
     for community in COMMUNITIES:
         c = community['id']
@@ -302,10 +309,19 @@ def parse(n=300):
                 if isinstance(offer, dict):
                     processed_offer = SocialOffer(offer.get('text', ''))
                     if processed_offer.type != 'error':
-                        yield {'type': processed_offer.type, 'date': gmtime(offer['date']), 'cost': processed_offer.cost, 'room_num': processed_offer.room_num,
-                               'area': processed_offer.area, 'phone': processed_offer.phone, 'contacts': {'phone': processed_offer.phone, 'vk': getVkId(offer)}, 'pics': picsarr(offer),
-                               'descr': set_priority(processed_offer.raw_contents), 'metro': processed_offer.metro,
-                               'url': "https://vk.com/wall-%s_%s" % (c, str(offer['id'])), 'loc': None, 'adr': processed_offer.adr}
+                        yield {'type': processed_offer.type,
+                               'date': datetime.fromtimestamp(offer['date']),
+                               'cost': processed_offer.cost,
+                               'room_num': processed_offer.room_num,
+                               'area': processed_offer.area,
+                               'phone': processed_offer.phone,
+                               'contacts': {'phone': processed_offer.phone, 'vk': getVkId(offer)},
+                               'pics': picsarr(offer),
+                               'descr': set_priority(processed_offer.raw_contents),
+                               'metro': processed_offer.metro,
+                               'url': "https://vk.com/wall-%s_%s" % (c, str(offer['id'])),
+                               'loc': None,
+                               'adr': processed_offer.adr}
 
 if __name__ == "__main__":
     parse()
