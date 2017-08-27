@@ -307,4 +307,5 @@ def parse(n=300):
                                'descr': set_priority(processed_offer.raw_contents), 'metro': processed_offer.metro,
                                'url': "https://vk.com/wall-%s_%s" % (c, str(offer['id'])), 'loc': None, 'adr': processed_offer.adr}
 
-parse()
+if __name__ == "__main__":
+    parse()
