@@ -221,16 +221,27 @@ class SocialOffer:
 
 ACCESS_TOKEN = "732c7b09732c7b09732c7b090673709b7f7732c732c7b092a6093eafb623ad5547f142f"
 
-COMMUNITIES = [{'id': '1060484', 'name': "sdamsnimu"}, {'id': '29403745', 'name': "sdatsnyat"},
-               {'id': '62069824', 'name': "rentm"}, {'id': '49428949', 'name': "novoselie"}]
+COMMUNITIES = [{'id': '1060484', 'name': "sdamsnimu"},
+               {'id': '29403745', 'name': "sdatsnyat"},
+               {'id': '62069824', 'name': "rentm"},
+               {'id': '49428949', 'name': "novoselie"}]
 
-PRIORITY_KEYWORDS = ["без комиссии", "без посредников", "сам", "самостоятельно", "на длительный срок", "долгосрочн",
-                     "долгий", "собственник"]
-METRO_KEYWORDS = ["у", "возле", "рядом", "недалеко", "поблизости"]
-SEARCH_KEYWORDS = ["квартиру", "комнату", "покомнатно", "койко место"]
+PRIORITY_KEYWORDS = ["без комиссии",
+                     "без посредников",
+                     "сам", "самостоятельно",
+                     "на длительный срок",
+                     "долгосрочн",
+                     "долгий",
+                     "собственник"]
+
+METRO_KEYWORDS = ["у", "возле",
+                  "рядом", "недалеко",
+                  "поблизости"]
+
+SEARCH_KEYWORDS = ["квартиру", "комнату",
+                   "покомнатно", "койко место"]
+
 WISH_KEYWORDS = ["сдам ", "сниму "]
-
-ALL_OFFERS = []
 
 
 def set_priority(descr):
@@ -266,80 +277,61 @@ def picsarr(offer):
     return parr
 
 
-def parse_vk_community(n=300):
-    for community in COMMUNITIES:
-        c = community['id']
-        for i in range(0, n, 100):
-            offset = str(i)
-            adr = "https://api.vk.com/method/wall.get?owner_id=-%s&count=100&filter=all&access_token=%s&offset=%s" % (
-                c, ACCESS_TOKEN, offset)
-            print(adr)
-            offers = requests.get(adr).json()
-            try:
-                for offer in offers['response'][1:]:
-                    ALL_OFFERS.append(offer.get('text', ''))
-            except:
-                pass
-
-            #for offer in offers[1:]:
-                #yield {'date': str(strftime("%Y-%m-%d %H:%M:%S", gmtime(offer['date']))), 'cost': 0, 'room_num': 0,
-                #       'area': 0, 'contacts': {'phone': '---', 'vk': getVkId(offer)}, 'pics': picsarr(offer),
-                #       'descr': set_priority(offer['text']), 'metro': ['---'],
-                #       'url': "https://vk.com/wall-%s_%s" % (c, str(offer['id'])), 'loc': "-.-", 'adr': 'no_adress'}
-
-
 # =================================SEARCH VK FEED====================================
 
 
 
 
-def vkfeed(n=300):
+def parse(**kwargs):
+    print('pars')
+    n = kwargs.get('n', 300)
+
     for par in SEARCH_KEYWORDS:
+        print(par)
         for wish in WISH_KEYWORDS:
             query = wish + par
 
-            for i in range(0, n, 100):
-                offset = str(i)
+            for offset in range(0, n, 100):
                 adr = "https://api.vk.com/method/newsfeed.search?q=%s&count=100&access_token=%s&offset=%s" % (
                 query, ACCESS_TOKEN, offset)
                 print(adr)
+
                 try:
                     news = requests.get(adr).json()['response'][1:]
                     # print(news)
-                    for offer in news: ALL_OFFERS.append(offer.get('text', ''))
                 except:
-                    pass
+                    continue
 
-                # for offer in news[1:]:
-                #         if wish == 'сдам ':
-                #             yield {'date': str(strftime("%Y-%m-%d %H:%M:%S", gmtime(offer['date']))), 'cost': 0,
-                #                       'room_num': 0, 'area': 0, 'contacts': {'phone': '---', 'vk': getVkId(offer)},
-                #                       'pics': picsarr(offer), 'descr': set_priority(offer['text']), 'metro': ['---'],
-                #                       'url': "https://vk.com/wall%s_%s" % (str(offer['owner_id']), str(offer['id'])),
-                #                       'loc': "-.-", 'adr': 'no_adress'}
-                #         else:
-                #
-                #                 yield {'type': 'renter', 'date': str(strftime("%Y-%m-%d %H:%M:%S", gmtime(offer['date']))), 'cost': 0,
-                #                  'room_num': 0, 'area': 0, 'contacts': {'phone': '---', 'vk': getVkId(offer)},
-                #                  'pics': picsarr(offer), 'descr': set_priority(offer['text']), 'metro': ['---'],
-                #                  'url': "https://vk.com/wall%s_%s" % (str(offer['owner_id']), str(offer['id'])),
-                #                  'loc': "-.-", 'adr': 'no_adress'}
-import json
-def parse(**kwargs):
+                for offer in news:
+                    print(type(offer))
+                    if isinstance(offer, dict):
+                        processed_offer = SocialOffer(offer.get('text', ''))
+                        if processed_offer.type != 'error':
+                            print( {'type': processed_offer.type, 'date': str(strftime("%Y-%m-%d %H:%M:%S", gmtime(offer['date']))), 'cost': processed_offer.cost,
+                                      'room_num': processed_offer.room_num, 'area': processed_offer.area, 'contacts': {'phone': processed_offer.phone, 'vk': getVkId(offer)},
+                                      'pics': picsarr(offer), 'descr': set_priority(processed_offer.raw_contents), 'metro': processed_offer.metro,
+                                      'url': "https://vk.com/wall%s_%s" % (str(offer['owner_id']), str(offer['id'])),
+                                      'loc': None, 'adr': processed_offer.adr})
 
-    parse_vk_community()
-    vkfeed()
+    for community in COMMUNITIES:
+        c = community['id']
+        for offset in range(0, n, 100):
+            adr = "https://api.vk.com/method/wall.get?owner_id=-%s&count=100&filter=all&access_token=%s&offset=%s" % (
+                c, ACCESS_TOKEN, offset)
+            print(adr)
+            try:
+                offers = requests.get(adr).json()['response'][1:]
+            except:
+                continue
 
-    print(len(ALL_OFFERS))
-
-    # f = open("somefile.txt", 'w', encoding='utf-8')
-    # f.write(json.dumps(ALL_OFFERS, ensure_ascii=False))
-    # f.close()
-
-    for offer in ALL_OFFERS:
-        print(offer)
-        processed_offer = SocialOffer(offer).__dict__
-        print(str(processed_offer))
+            for offer in offers:
+                if isinstance(offer, dict):
+                    processed_offer = SocialOffer(offer.get('text', ''))
+                    if processed_offer.type != 'error':
+                        yield {'type': processed_offer.type, 'date': str(strftime("%Y-%m-%d %H:%M:%S", gmtime(offer['date']))), 'cost': processed_offer.cost, 'room_num': processed_offer.room_num,
+                           'area': processed_offer.area, 'contacts': {'phone': processed_offer.phone, 'vk': getVkId(offer)}, 'pics': picsarr(offer),
+                           'descr': set_priority(processed_offer.raw_contents), 'metro': processed_offer.metro,
+                           'url': "https://vk.com/wall-%s_%s" % (c, str(offer['id'])), 'loc': None, 'adr': processed_offer.adr}
 
 
 if __name__ == "__main__":
