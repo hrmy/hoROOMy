@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
 
 from . import *
+import requests  # Why do we need proxies for vk?
 
 # =====================================REGULAR EXPRESSIONS==============================================
 
@@ -325,7 +326,3 @@ def parse(n=300, **kwargs):
                                'url': "https://vk.com/wall-%s_%s" % (c, str(offer['id'])),
                                'loc': None,
                                'adr': processed_offer.adr}
-
-
-if __name__ == "__main__":
-    parse()

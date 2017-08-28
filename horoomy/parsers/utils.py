@@ -203,6 +203,8 @@ def evolve(data, **config):
 def validate(data, **config):
     logger = config['logger'].channel('Validate')
     logger.info('Validating objects...')
+    light = config.get('light_validation', False)
+    logger.info('Validation mode:', 'light' if light else 'full')
 
     # Mandatory
     logger.info('Checking mandatory data...')
@@ -218,6 +220,8 @@ def validate(data, **config):
         not data['ad'].url,
         duplicates,
     ))
+    logger.info('Valid:', valid)
+    valid = valid if not light else not duplicates
     if not valid: return False
 
     # Complete
@@ -236,7 +240,7 @@ def validate(data, **config):
             data['flat'].type == Flat.TYPES.FLAT and not data['flat'].rooms,
         ))
     logger.info('Complete:', complete)
-    data['ad'].complete = complete
+    data['ad'].complete = complete if not light else (valid and complete)
 
     delta = logger.timestamp('started')
     logger.info('Succeed in {:.3f} seconds'.format(delta.total_seconds()))
@@ -281,6 +285,7 @@ def wrap(func, name=None):
         logger.info('Got config:', config)
         max_objects = config.get('max_objects', 100)
         max_errors = config.get('max_errors', 20)
+        light_validation = config.get('light_validation', False)
 
         logger.status('Parsing...')
         logger.name = name.title()
