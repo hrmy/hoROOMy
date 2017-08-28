@@ -87,7 +87,7 @@ class SocialOffer:
 
         if cost is not None:
             cost = cost.group()
-            print(cost)
+            self.logger.info(cost)
 
             if 'т' in cost:
                 cost += '000'
@@ -103,7 +103,7 @@ class SocialOffer:
         adr = re.search(adrExp, self.prepared_contents)
         if adr is not None:
             adr = adr.group()
-            print(adr)
+            self.logger.info(adr)
             self.adr = adr
 
     def getAll_adr(self):
@@ -142,7 +142,7 @@ class SocialOffer:
 
     def get_rooms(self):
         notFlat = self.bed_or_room()
-        print(notFlat)
+        self.logger.info(notFlat)
         if notFlat is not None:
             self.room_num = notFlat
             return notFlat
@@ -161,7 +161,8 @@ class SocialOffer:
             self.area = area
             return area
 
-    def __init__(self, raw_contents):
+    def __init__(self, raw_contents, logger):
+        self.logger = logger
         self.raw_contents = raw_contents
 
         self.get_urls()
@@ -259,17 +260,19 @@ def picsarr(offer):
 
 # =================================SEARCH VK FEED====================================
 
-def parse(n=300):
-    print('pars')
+def parse(n=300, **kwargs):
+    logger = kwargs.get('logger').channel('Vkontakte')
+    logger.info('pars')
 
     for par in SEARCH_KEYWORDS:
-        print(par)
+        logger.info(par)
         for wish in WISH_KEYWORDS:
             query = wish + par
 
             for offset in range(0, n, 100):
-                adr = "https://api.vk.com/method/newsfeed.search?q=%s&count=100&access_token=%s&offset=%s" % (query, ACCESS_TOKEN, offset)
-                print(adr)
+                adr = "https://api.vk.com/method/newsfeed.search?q=%s&count=100&access_token=%s&offset=%s" % (
+                    query, ACCESS_TOKEN, offset)
+                logger.info(adr)
 
                 news = requests.get(adr).json().get('response', None)
                 if isinstance(news, list):
@@ -277,9 +280,9 @@ def parse(n=300):
                         news = news[1:]
 
                 for offer in news:
-                    print(type(offer))
+                    logger.info(type(offer))
                     if isinstance(offer, dict):
-                        processed_offer = SocialOffer(offer.get('text', ''))
+                        processed_offer = SocialOffer(offer.get('text', ''), logger)
                         if processed_offer.type != 'error':
                             yield {'type': processed_offer.type,
                                    'date': datetime.fromtimestamp(offer['date']),
@@ -299,7 +302,7 @@ def parse(n=300):
         for offset in range(0, n, 100):
             adr = "https://api.vk.com/method/wall.get?owner_id=-%s&count=100&filter=all&access_token=%s&offset=%s" % (
                 c, ACCESS_TOKEN, offset)
-            print(adr)
+            logger.info(adr)
             offers = requests.get(adr).json().get('response', None)
             if isinstance(offers, list):
                 if len(offers) > 1:
@@ -307,7 +310,7 @@ def parse(n=300):
 
             for offer in offers:
                 if isinstance(offer, dict):
-                    processed_offer = SocialOffer(offer.get('text', ''))
+                    processed_offer = SocialOffer(offer.get('text', ''), logger)
                     if processed_offer.type != 'error':
                         yield {'type': processed_offer.type,
                                'date': datetime.fromtimestamp(offer['date']),
@@ -322,6 +325,7 @@ def parse(n=300):
                                'url': "https://vk.com/wall-%s_%s" % (c, str(offer['id'])),
                                'loc': None,
                                'adr': processed_offer.adr}
+
 
 if __name__ == "__main__":
     parse()
