@@ -6,7 +6,7 @@ fullstrip = lambda s: re.sub('\s', '', s)
 
 
 def dfilter(d, nested=True):
-    d = dict(filter(lambda x: x[1], d.items()))
+    d = dict(filter(lambda x: x[1] is not None, d.items()))
     if nested:
         for k, v in d.items():
             if isinstance(v, dict):
