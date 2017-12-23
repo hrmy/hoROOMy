@@ -27,6 +27,9 @@
         <li {% if section == 'contacts' %} class='selected' {% endif %} >
             <a href="{% url 'contacts' %}">Контакты</a>
         </li>
+        <li {% if section == 'list-all' %} class='selected' {% endif %} >
+            <a href="{% url 'list-all' %}">Документы</a>
+        </li>
     </ul>
 
     <span class="user">

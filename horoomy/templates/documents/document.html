@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %} Документ {% endblock %}
+
+{% block content %}
+
+<h1>Документ #{{ document.id }}</h1>
+<h3>Загружен пользователем <strong>{{ document.user.name }}</strong> - id{{ document.user.id }}</h3>
+<p>Расширение файла: .{{ document.file_extension }}</p>
+<a href="{% url 'document-download' id=document.id %}", class="btn">Скачать</a>
+{% if is_pdf %}
+    <a href="{% url 'document-open' id=document.id %}", class="btn" target="_blank">Открыть</a>
+{% else %}
+    <h4>Невозможно открыть данный файл в браузере.</h4>
+{% endif %}
+
+<form action="." method="post" class="form-horizontal">
+        {% csrf_token %}
+        {{ general_form.as_p }}
+        <button type="submit">Отправить</button>
+</form>
+{% endblock %}

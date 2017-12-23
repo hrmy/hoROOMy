@@ -1,0 +1,39 @@
+{% block subject %} Активация аккаунта {% endblock %}
+{% block html %}
+
+{% load static %}
+
+<table align="center" width="60%" bgcolor="#F4F4F4" style="border: none;">
+	<tr>
+		<td width="100%" height="40" bgcolor="#12c064">
+			<a href="{{ scheme }}://{{ host }}/" style="text-decoration: none;"><h2 style="color: #F4F4F4; margin-left: 20px;">Horoomy</h2></a>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<table align="center" width="40%">
+				<tr> 
+					<td width="50%">
+						<h2  style="color: #333333;">Загружен новый документ.</h2>
+						<hr style="background-color: #333333; border: none; height: 1px; width: 560px; margin-bottom: 0;">
+					</td>
+				</tr>
+				<tr>
+					<td width="100%">
+						<p style="color: #333333">Только что в базу был добавлен новый документ под уникальным <strong>id{{ document_id }}</strong></p>
+					</td>
+				</tr>
+				<tr>
+					<td width="100%" height="80">
+						<a href="{{ scheme }}://{{ host }}/documents/document/{{ document_id }}" target="_blank" style="padding: 10px; text-decoration: none; height: 50px; background-color: #12c064; font-size: 18px; color: #F4F4F4; border: none; border-radius: 0;">Открыть</a>
+					</td>	
+				</tr>
+				<tr>
+					<td width="100%" align="center" height="20">
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>		
+{% endblock %}

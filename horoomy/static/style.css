@@ -10,6 +10,24 @@ p {
     line-height: 1.8;
 }
 
+
+.document-block {
+    min-height: 140px;
+    background-color: #f7f7f7;
+    border: 1px solid #444444;
+    padding: 7px 30px;
+    margin-top: 15px;
+}
+
+.document-block h3 {
+    margin-top: 10px;
+}
+
+.documents-list-all-upload-link {
+    margin-bottom: 60px;
+}
+
+
 .description-content {
     margin-top: 5px;
     max-width: 700px;

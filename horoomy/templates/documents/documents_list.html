@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %} Список документов {% endblock %}
+
+{% block content %}
+<div class="documents-list-all-upload-link">
+    <h1>Загрузить документ.</h1>
+    <a href="{% url 'upload' %}" class="btn">Загрузить</a>
+</div>
+
+<div class="documents-list-all">
+    <h1>Список загруженных документов.</h1>
+
+    {% for doc in documents %}
+        <div class="document-block">
+            <h3>Документ <strong>#{{ doc.id }}</strong> пользователя <strong>{{ doc.user.name }}</strong></h3>
+            <p>Расширение файла: <strong>.{{ doc.file_extension }}</strong></p>
+            <a href="{% url 'document' id=doc.id %}" class="btn">Перейти</a>
+        </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

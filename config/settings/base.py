@@ -1,11 +1,11 @@
-import environ
+import environ, os
 env = environ.Env()
+
 
 # PATH CONFIGURATION
 
 ROOT_DIR = environ.Path(__file__) - 3  # (horoomy/config/settings/base.py - 3 = horoomy/)
 APPS_DIR = ROOT_DIR.path('horoomy')
-
 # SECUTIRY CONFIGURATION
 
 ADMIN_URL = r'^admin/'
@@ -57,6 +57,7 @@ LOCAL_APPS = [
     'horoomy.parsers',
     'horoomy.docs',
     'horoomy.proxy',
+    'horoomy.documents',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -156,8 +157,8 @@ STATICFILES_FINDERS = [
 
 # MEDIA CONFIGURATION (???)
 
-# MEDIA_ROOT = str(APPS_DIR('media'))
-# MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(str(APPS_DIR), "static", "media")
+MEDIA_URL = '/media/'
 
 # URL CONFIGURATION
 
